@@ -1,0 +1,80 @@
+import { Shield, Users, Award, Clock } from 'lucide-react';
+import './About.css';
+
+export default function About() {
+  const values = [
+    { icon: <Shield size={28} />, title: 'Quality Assurance', desc: 'Every part undergoes rigorous testing before reaching you. Only genuine and OEM-grade components.' },
+    { icon: <Users size={28} />, title: 'Customer First', desc: 'We build lasting relationships with distributors, mechanics, and fleet operators across India.' },
+    { icon: <Award size={28} />, title: 'Industry Expertise', desc: 'Over a decade of experience in vehicle AC spare parts distribution and technical support.' },
+    { icon: <Clock size={28} />, title: 'Fast Turnaround', desc: 'Quick order processing and reliable delivery through our established logistics network.' },
+  ];
+
+  return (
+    <div className="about-page">
+      <section className="about-hero">
+        <div className="container">
+          <div className="section-label">About RCS <span className="dot"></span></div>
+          <h1 className="section-title">
+            Powering India's <span className="highlight">Vehicle Cooling</span>
+          </h1>
+          <p className="about-hero-desc">
+            RCS is a leading distributor of AC spare parts for all types of vehicles — from personal cars to 
+            heavy commercial fleets. We connect top manufacturers with mechanics, workshops, and fleet operators 
+            across the country.
+          </p>
+        </div>
+      </section>
+
+      <section className="about-story">
+        <div className="container about-story-grid">
+          <div className="story-content">
+            <h2>Our Story</h2>
+            <p>
+              Founded with a simple mission — to make quality AC spare parts accessible and affordable for every 
+              vehicle on the road. Over the years, RCS has grown into a trusted name in the automotive cooling 
+              industry, serving thousands of customers nationwide.
+            </p>
+            <p>
+              We stock parts from leading global manufacturers including Denso, Sanden, Valeo, Behr, and Bitzer. 
+              Whether you need a compressor for a sedan, a condenser for a truck, or a complete AC kit for a 
+              fleet of buses — RCS has you covered.
+            </p>
+          </div>
+          <div className="story-stats">
+            <div className="story-stat">
+              <span className="stat-num">10+</span>
+              <span>Years Experience</span>
+            </div>
+            <div className="story-stat">
+              <span className="stat-num">500+</span>
+              <span>Products</span>
+            </div>
+            <div className="story-stat">
+              <span className="stat-num">1000+</span>
+              <span>Happy Customers</span>
+            </div>
+            <div className="story-stat">
+              <span className="stat-num">50+</span>
+              <span>Trusted Brands</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="about-values">
+        <div className="container">
+          <h2 className="section-title">Our <span className="highlight">Values</span></h2>
+          <div className="values-grid">
+            {values.map((v, i) => (
+              <div key={i} className="value-card">
+                <div className="value-icon">{v.icon}</div>
+                <h3>{v.title}</h3>
+                <p>{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
