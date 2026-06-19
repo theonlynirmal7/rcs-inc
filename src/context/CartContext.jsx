@@ -59,20 +59,17 @@ export function CartProvider({ children }) {
       message += `${index + 1}. *${item.name}*\n`;
       message += `   Brand: ${item.brand}\n`;
       message += `   Category: ${item.category}\n`;
-      message += `   Price: ₹${item.price.toLocaleString()}\n`;
-      message += `   Qty: ${item.quantity}\n`;
-      message += `   Subtotal: ₹${(item.price * item.quantity).toLocaleString()}\n\n`;
+      message += `   Qty: ${item.quantity}\n\n`;
     });
 
     message += '━━━━━━━━━━━━━━━━━━━\n';
-    message += `*Total Items:* ${cartCount}\n`;
-    message += `*Grand Total:* ₹${cartTotal.toLocaleString()}\n\n`;
+    message += `*Total Items:* ${cartCount}\n\n`;
     message += 'Please confirm availability and delivery details. Thank you! 🙏';
 
     return encodeURIComponent(message);
   };
 
-  const openWhatsApp = (phoneNumber = '919876543210') => {
+  const openWhatsApp = (phoneNumber = '919962173870') => {
     const message = generateWhatsAppMessage();
     const url = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(url, '_blank');

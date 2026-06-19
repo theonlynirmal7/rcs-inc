@@ -37,16 +37,16 @@ export default function Admin() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.price) {
+    if (!form.name) {
       addToast('Please fill in required fields', 'error');
       return;
     }
 
     if (editing) {
-      updateProduct(editing, { ...form, price: Number(form.price) });
+      updateProduct(editing, { ...form, price: Number(form.price) || 0 });
       addToast('Product updated successfully!');
     } else {
-      addProduct({ ...form, price: Number(form.price) });
+      addProduct({ ...form, price: Number(form.price) || 0 });
       addToast('Product added successfully!');
     }
 
@@ -86,7 +86,7 @@ export default function Admin() {
   };
 
   return (
-    <div className="admin-page">
+    <div className="admin-page page-transition">
       <div className="container">
         <div className="admin-header">
           <div>
@@ -144,18 +144,6 @@ export default function Admin() {
                 </select>
               </div>
 
-              <div className="form-group">
-                <label>Price (₹) *</label>
-                <input
-                  type="number"
-                  name="price"
-                  value={form.price}
-                  onChange={handleChange}
-                  placeholder="e.g. 8500"
-                  required
-                  id="form-price"
-                />
-              </div>
 
               <div className="form-group">
                 <label>Image URL</label>
@@ -214,7 +202,6 @@ export default function Admin() {
                 <th>Product</th>
                 <th>Category</th>
                 <th>Brand</th>
-                <th>Price</th>
                 <th>Stock</th>
                 <th>Actions</th>
               </tr>
@@ -236,7 +223,6 @@ export default function Admin() {
                   </td>
                   <td><span className={`table-badge ${product.category.toLowerCase()}`}>{product.category}</span></td>
                   <td>{product.brand}</td>
-                  <td className="table-price">₹{product.price.toLocaleString()}</td>
                   <td>
                     <span className={`stock-badge ${product.inStock ? 'in' : 'out'}`}>
                       {product.inStock ? 'In Stock' : 'Out'}

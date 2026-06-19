@@ -30,13 +30,10 @@
   flex-shrink: 0;
 }
 
-.logo-text {
-  font-family: var(--font-heading);
-  font-size: 30px;
-  font-weight: 900;
-  font-style: italic;
-  color: var(--red);
-  letter-spacing: 6px;
+.logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
 }
 
 /* ===== NAV LINKS (centered) ===== */
@@ -51,24 +48,52 @@
 
 .nav-link {
   position: relative;
-  padding: 6px 16px;
-  font-size: 14px;
+  padding: 8px 16px;
+  font-size: 14.5px;
   font-weight: 500;
   color: var(--gray-600);
-  border-radius: 3px;
-  transition: var(--transition);
+  transition: color 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   white-space: nowrap;
+  z-index: 1;
+}
+
+/* Premium scale-in hover pill background */
+.nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 2px 0;
+  border-radius: var(--radius-sm);
+  background: var(--gray-100);
+  opacity: 0;
+  z-index: -1;
+  transform: scale(0.95);
+  transition: opacity 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .nav-link:hover {
   color: var(--black);
 }
 
+.nav-link:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .nav-link.active {
   color: var(--red);
-  border: 1.5px solid var(--red);
   font-weight: 600;
-  padding: 5px 15px;
+}
+
+/* Sliding active underline indicator */
+.nav-indicator {
+  position: absolute;
+  bottom: -2px;
+  height: 2px;
+  background: var(--red);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 2;
+  transition: left 0.38s cubic-bezier(0.25, 1, 0.5, 1), width 0.38s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
 }
 
 /* ===== RIGHT ACTIONS ===== */
@@ -81,7 +106,7 @@
 
 .nav-cart {
   position: relative;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
@@ -185,6 +210,19 @@
     padding: 14px 16px;
     font-size: 16px;
     border-radius: var(--radius-md);
+  }
+
+  .nav-link::before {
+    display: none !important;
+  }
+
+  .nav-link.active {
+    background: rgba(212, 32, 39, 0.05);
+    color: var(--red);
+  }
+
+  .nav-indicator {
+    display: none !important;
   }
 
   .nav-whatsapp {

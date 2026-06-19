@@ -28,33 +28,74 @@
   flex-wrap: wrap;
 }
 
-.search-box {
+.custom-search-container {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  padding: 10px 16px;
+  gap: 8px;
   flex: 1;
-  max-width: 400px;
+  max-width: 650px;
   transition: var(--transition);
 }
 
-.search-box:focus-within {
-  border-color: var(--red);
-  box-shadow: 0 0 0 3px rgba(212, 32, 39, 0.08);
+.search-ac-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #FFD43F;
+  color: #1A1A1A;
+  font-weight: 500;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  white-space: nowrap;
+  height: 40px;
 }
 
-.search-box input {
+.search-ac-badge svg {
+  color: #1A1A1A;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
   flex: 1;
-  background: transparent;
-  font-size: 14px;
-  color: var(--black);
+  background: #F3F4F6;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  height: 40px;
+  transition: var(--transition);
 }
 
-.search-box input::placeholder {
+.search-input-wrapper:focus-within {
+  border-color: var(--gray-400);
+  background: var(--white);
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  font-size: 13.5px;
+  color: var(--black);
+  padding: 0 40px 0 14px;
+  border: none;
+}
+
+.search-input-wrapper input::placeholder {
   color: var(--gray-400);
+}
+
+.search-input-icon {
+  position: absolute;
+  right: 14px;
+  color: var(--gray-400);
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+.search-input-wrapper:focus-within .search-input-icon {
+  color: var(--black);
 }
 
 .toolbar-actions {
@@ -167,14 +208,42 @@
   font-weight: 600;
 }
 
+.search-clear-btn {
+  position: absolute;
+  right: 14px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400);
+  transition: var(--transition);
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.search-clear-btn:hover {
+  background: var(--gray-100);
+  color: var(--black);
+}
+
 @media (max-width: 600px) {
   .products-toolbar {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .search-box {
+  .custom-search-container {
     max-width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .search-ac-badge {
+    width: 100%;
+    justify-content: center;
   }
 
   .toolbar-actions {

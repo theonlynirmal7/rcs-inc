@@ -5,17 +5,17 @@ export default function About() {
   const values = [
     { icon: <Shield size={28} />, title: 'Quality Assurance', desc: 'Every part undergoes rigorous testing before reaching you. Only genuine and OEM-grade components.' },
     { icon: <Users size={28} />, title: 'Customer First', desc: 'We build lasting relationships with distributors, mechanics, and fleet operators across India.' },
-    { icon: <Award size={28} />, title: 'Industry Expertise', desc: 'Over a decade of experience in vehicle AC spare parts distribution and technical support.' },
+    { icon: <Award size={28} />, title: 'Industry Expertise', desc: 'Over two decades of experience in vehicle AC spare parts distribution and technical support.' },
     { icon: <Clock size={28} />, title: 'Fast Turnaround', desc: 'Quick order processing and reliable delivery through our established logistics network.' },
   ];
 
   return (
-    <div className="about-page">
+    <div className="about-page page-transition">
       <section className="about-hero">
         <div className="container">
           <div className="section-label">About RCS <span className="dot"></span></div>
           <h1 className="section-title">
-            Powering India's <span className="highlight">Vehicle Cooling</span>
+            Trusted by India's <span className="highlight">Premier Garages</span> and Car Owners
           </h1>
           <p className="about-hero-desc">
             RCS is a leading distributor of AC spare parts for all types of vehicles — from personal cars to 
@@ -42,20 +42,20 @@ export default function About() {
           </div>
           <div className="story-stats">
             <div className="story-stat">
-              <span className="stat-num">10+</span>
-              <span>Years Experience</span>
+              <span className="stat-num">20+</span>
+              <span>Years in Automotive Cooling Solutions</span>
             </div>
             <div className="story-stat">
               <span className="stat-num">500+</span>
-              <span>Products</span>
+              <span>Products Available</span>
             </div>
             <div className="story-stat">
               <span className="stat-num">1000+</span>
-              <span>Happy Customers</span>
+              <span>Dealers & Workshops Served</span>
             </div>
             <div className="story-stat">
               <span className="stat-num">50+</span>
-              <span>Trusted Brands</span>
+              <span>OEM & Aftermarket Brands</span>
             </div>
           </div>
         </div>

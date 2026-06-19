@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Car, X } from 'lucide-react';
 import { getProducts, categories, brands } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import './Products.css';
@@ -8,12 +8,12 @@ import './Products.css';
 export default function Products() {
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || 'All';
+  const initialSearch = searchParams.get('search') || '';
 
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(initialSearch);
   const [category, setCategory] = useState(initialCategory);
   const [brand, setBrand] = useState('All');
-  const [sortBy, setSortBy] = useState('name');
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
@@ -23,6 +23,9 @@ export default function Products() {
   useEffect(() => {
     const cat = searchParams.get('category');
     if (cat) setCategory(cat);
+
+    const srch = searchParams.get('search');
+    if (srch) setSearch(srch);
   }, [searchParams]);
 
   const filtered = products
@@ -32,14 +35,10 @@ export default function Products() {
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.description.toLowerCase().includes(search.toLowerCase())
     )
-    .sort((a, b) => {
-      if (sortBy === 'price-low') return a.price - b.price;
-      if (sortBy === 'price-high') return b.price - a.price;
-      return a.name.localeCompare(b.name);
-    });
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="products-page">
+    <div className="products-page page-transition">
       <section className="products-hero">
         <div className="container">
           <div className="section-label">Our Catalog <span className="dot"></span></div>
@@ -56,29 +55,34 @@ export default function Products() {
         <div className="container">
           {/* TOOLBAR */}
           <div className="products-toolbar" id="products-toolbar">
-            <div className="search-box">
-              <Search size={18} />
-              <input
-                type="text"
-                placeholder="Search parts..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                id="search-input"
-              />
+            <div className="custom-search-container">
+              <div className="search-ac-badge">
+                <Car size={16} strokeWidth={1.8} />
+                <span>Search AC Parts</span>
+              </div>
+              <div className="search-input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Search By : Part Number, Category, Name..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  id="search-input"
+                />
+                {search ? (
+                  <button
+                    className="search-clear-btn"
+                    onClick={() => setSearch('')}
+                    aria-label="Clear search"
+                  >
+                    <X size={16} strokeWidth={1.8} />
+                  </button>
+                ) : (
+                  <Search size={16} strokeWidth={1.8} className="search-input-icon" />
+                )}
+              </div>
             </div>
 
             <div className="toolbar-actions">
-              <select
-                value={sortBy}
-                onChange={e => setSortBy(e.target.value)}
-                className="sort-select"
-                id="sort-select"
-              >
-                <option value="name">Sort by Name</option>
-                <option value="price-low">Price: Low → High</option>
-                <option value="price-high">Price: High → Low</option>
-              </select>
-
               <button
                 className="filter-toggle"
                 onClick={() => setFiltersOpen(!filtersOpen)}

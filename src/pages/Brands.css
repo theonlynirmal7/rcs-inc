@@ -45,19 +45,40 @@
   margin-bottom: 16px;
 }
 
-.brand-initial {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--red);
-  color: var(--white);
-  font-family: var(--font-heading);
-  font-size: 24px;
-  font-weight: 900;
+.partner-brand-logo-container {
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 6px;
+  overflow: hidden;
+}
+
+.partner-brand-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.partner-brand-logo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--red) 0%, #a81418 100%);
+  color: var(--white);
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .brand-card-top h3 {

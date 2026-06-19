@@ -154,3 +154,25 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Embedded Map */
+.contact-map-section {
+  padding: 0 0 80px;
+}
+
+.map-wrapper {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+
+.map-wrapper:hover {
+  border-color: var(--red);
+  box-shadow: var(--shadow-lg);
+}
+
+.map-wrapper iframe {
+  display: block;
+}

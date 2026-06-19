@@ -1,0 +1,388 @@
+.car-brands-page {
+  padding-top: 64px; /* header height */
+  min-height: 80vh;
+}
+
+/* ===== HERO SECTION ===== */
+.car-brands-hero {
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+  padding: 64px 0 48px;
+  text-align: center;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.car-brands-hero .container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.car-brands-hero .hero-subtitle {
+  font-size: 16px;
+  color: var(--gray-600);
+  max-width: 600px;
+  margin: 16px auto 0;
+  line-height: 1.6;
+}
+
+/* ===== COMPATIBILITY HIGHLIGHTS ===== */
+.compatibility-highlights {
+  padding: 40px 0;
+  background: var(--white);
+}
+
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.highlight-card {
+  text-align: center;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.highlight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--red-light);
+}
+
+.highlight-icon {
+  color: var(--red);
+  margin-bottom: 16px;
+}
+
+.highlight-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--black);
+}
+
+.highlight-card p {
+  font-size: 13.5px;
+  color: var(--gray-500);
+  line-height: 1.5;
+}
+
+/* ===== SEARCH AND FILTERS ===== */
+.brands-search-section {
+  padding: 32px 0 16px;
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.search-filter-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.brand-search-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  transition: var(--transition);
+}
+
+.brand-search-box:focus-within {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(212, 32, 39, 0.12);
+}
+
+.brand-search-box input {
+  flex: 1;
+  font-size: 14.5px;
+  color: var(--black);
+  background: transparent;
+}
+
+.brand-search-box svg {
+  color: var(--gray-400);
+}
+
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-600);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
+  transition: var(--transition);
+}
+
+.tab-btn:hover {
+  border-color: var(--gray-400);
+  color: var(--black);
+}
+
+.tab-btn.active {
+  background: var(--red);
+  color: var(--white);
+  border-color: var(--red);
+}
+
+/* ===== BRANDS GRID ===== */
+.car-brands-grid-section {
+  padding: 48px 0;
+  background: var(--white);
+}
+
+.car-brands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.car-brand-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.car-brand-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--gray-300);
+}
+
+.brand-logo-container {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-50);
+  padding: 24px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.brand-logo-img {
+  max-height: 100%;
+  max-width: 80%;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.85;
+  transition: var(--transition);
+}
+
+.car-brand-card:hover .brand-logo-img {
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.brand-logo-fallback {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.brand-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.brand-info h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--black);
+}
+
+.brand-meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.brand-origin {
+  font-size: 11px;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.brand-tag {
+  font-size: 11px;
+  background: rgba(212, 32, 39, 0.05);
+  color: var(--red);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.brand-desc {
+  font-size: 13px;
+  color: var(--gray-500);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.view-parts-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+  margin-top: auto;
+}
+
+.view-parts-link:hover {
+  color: var(--red-dark);
+}
+
+.view-parts-link svg {
+  transition: transform 0.2s ease;
+}
+
+.view-parts-link:hover svg {
+  transform: translateX(4px);
+}
+
+/* ===== NO BRANDS FOUND ===== */
+.no-brands-found {
+  text-align: center;
+  padding: 64px 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.no-brands-found h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.no-brands-found p {
+  color: var(--gray-500);
+  font-size: 14.5px;
+  margin-bottom: 24px;
+}
+
+.inquiry-btn {
+  display: inline-block;
+  background: var(--green);
+  color: var(--white);
+  padding: 12px 30px;
+  border-radius: var(--radius-xl);
+  font-weight: 600;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.inquiry-btn:hover {
+  background: #20ba5a;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ===== CTA BANNER ===== */
+.brands-cta-section {
+  padding: 48px 0 64px;
+  background: var(--white);
+}
+
+.brands-cta-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 20px;
+  background: linear-gradient(135deg, var(--black-soft) 0%, var(--black) 100%);
+  border-radius: var(--radius-lg);
+  color: var(--white);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.brands-cta-card h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.brands-cta-card p {
+  font-size: 15px;
+  color: var(--gray-300);
+  max-width: 650px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+
+.whatsapp-cta-btn {
+  display: inline-block;
+  background: var(--green);
+  color: var(--white);
+  padding: 14px 32px;
+  border-radius: var(--radius-xl);
+  font-size: 14.5px;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.whatsapp-cta-btn:hover {
+  background: var(--green-dark);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .highlights-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .brands-cta-card {
+    padding: 36px 16px;
+    border-radius: 0;
+  }
+  
+  .brands-cta-card h2 {
+    font-size: 22px;
+  }
+}
