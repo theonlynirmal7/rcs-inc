@@ -10,6 +10,7 @@ import Brands from './pages/Brands';
 import CarBrands from './pages/CarBrands';
 import Admin from './pages/Admin';
 import Cart from './pages/Cart';
+import Education from './pages/Education';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -21,10 +22,41 @@ function ScrollToTop() {
   return null;
 }
 
+function ScrollRevealManager() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const revealElements = document.querySelectorAll('.reveal');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.05,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      revealElements.forEach(el => observer.observe(el));
+
+      return () => observer.disconnect();
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <ScrollRevealManager />
       <div className="app">
         <Navbar />
         <main>
@@ -35,6 +67,7 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/brands" element={<Brands />} />
             <Route path="/car-brands" element={<CarBrands />} />
+            <Route path="/education" element={<Education />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/cart" element={<Cart />} />
           </Routes>

@@ -4,7 +4,7 @@ import { brands } from '../data/products';
 import './Brands.css';
 
 const brandInfo = {
-  Mahle: {
+  'Mahle Filter': {
     desc: 'Leading international supplier of premium auto parts, thermal systems, and engine components.',
     origin: 'Germany',
     specialty: 'Cabin Filters, Thermostats, Thermal Components',
@@ -13,6 +13,26 @@ const brandInfo = {
     desc: 'Joint venture division of MAHLE, specializing in advanced climate control and cooling technologies.',
     origin: 'Germany',
     specialty: 'HVAC Modules, Radiators, Evaporators',
+  },
+  Fujikoki: {
+    desc: 'Japanese precision manufacturer of advanced control components, expansion valves, and switches for automotive climate systems.',
+    origin: 'Japan',
+    specialty: 'Expansion Valves, Pressure Switches, Control Valves',
+  },
+  Danfoss: {
+    desc: 'Danish multinational manufacturer specializing in highly efficient climate and energy control systems and valves.',
+    origin: 'Denmark',
+    specialty: 'Expansion Valves, Solenoid Valves, Pressure Regulators',
+  },
+  'Behr Hella Service': {
+    desc: 'Premium German joint venture specializing in automotive thermal management, cooling, and air conditioning solutions.',
+    origin: 'Germany',
+    specialty: 'Visco Clutches, Radiators, Condensers',
+  },
+  'Zip Filters': {
+    desc: 'High-performance filtration brand delivering premium cabin air filters and air filtration systems for vehicles.',
+    origin: 'India',
+    specialty: 'Cabin Air Filters, Air Filters',
   },
   Denso: {
     desc: 'Global leader in automotive thermal systems. Japanese precision engineering trusted by top automakers worldwide.',
@@ -142,8 +162,13 @@ const brandInfo = {
 };
 
 const brandLogos = {
-  'Mahle': '/manufacturer-logos/mahle.png',
+  'Mahle Filter': '/manufacturer-logos/mahle.png',
   'Mahle Behr': '/manufacturer-logos/mahle_behr.png',
+  'Fujikoki': '/manufacturer-logos/fujikoki.png',
+  'Danfoss': '/manufacturer-logos/danfoss.png',
+  'Behr Hella Service': '/manufacturer-logos/behr_hella.png',
+  'Zip Filters': '/manufacturer-logos/zip_filters.png',
+  'Spintek': '/manufacturer-logos/spintek.png',
   'Denso': '/manufacturer-logos/denso.png',
   'Sanden': '/manufacturer-logos/sanden.png',
   'Hanon': '/manufacturer-logos/hanon.png',
@@ -164,6 +189,10 @@ const brandLogos = {
   'Subros': '/manufacturer-logos/subros.png',
   'Banco': '/manufacturer-logos/banco.png',
   'BPI': '/manufacturer-logos/bpi.png',
+  'Value': '/manufacturer-logos/value.png',
+  'Pasio': '/manufacturer-logos/pasio.png',
+  'Zilax': '/manufacturer-logos/zilax.png',
+  'Vika': '/manufacturer-logos/vika.png',
 };
 
 export default function Brands() {
@@ -194,7 +223,7 @@ export default function Brands() {
                       <div className="partner-brand-logo-fallback">{brand[0]}</div>
                     )}
                   </div>
-                  <div>
+                  <div className="brand-card-top-info">
                     <h3>{brand}</h3>
                     <span className="brand-origin">📍 {brandInfo[brand].origin}</span>
                   </div>

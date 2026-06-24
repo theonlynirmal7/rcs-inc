@@ -531,6 +531,15 @@ export function getProducts() {
     let products = JSON.parse(stored);
     let modified = false;
 
+    // Migrate brand 'Mahle' to 'Mahle Filter'
+    products = products.map(p => {
+      if (p.brand === 'Mahle') {
+        p.brand = 'Mahle Filter';
+        modified = true;
+      }
+      return p;
+    });
+
     // Filter out removed products: id 4 (Blower Motor - Heavy Duty), id 10 (AC Hose Kit - Truck), and id 25 (Radiator Fan Shroud & Fan)
     if (products.some(p => p.id === 4 || p.id === 10 || p.id === 25)) {
       products = products.filter(p => p.id !== 4 && p.id !== 10 && p.id !== 25);
@@ -1239,10 +1248,14 @@ export function deleteProduct(id) {
 
 export const categories = ['All', 'Car', 'Truck', 'Bus', 'Payload Vehicle', 'Construction Vehicle', 'Bulldozer'];
 export const brands = [
-  'Mahle',
+  'Mahle Filter',
   'Mahle Behr',
   'Denso',
   'Subros',
+  'Fujikoki',
+  'Danfoss',
+  'Behr Hella Service',
+  'Zip Filters',
   'Giladard',
   'Spal',
   'Spintek',

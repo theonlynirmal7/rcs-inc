@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -10,12 +10,13 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const linkRefs = useRef({});
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const [hoveredPath, setHoveredPath] = useState(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({ transform: 'translateX(0px)', width: '0px', opacity: 0 });
   const { cartCount } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
@@ -23,34 +24,41 @@ export default function Navbar() {
     setMobileOpen(false);
   }, [location]);
 
+  const updateIndicator = useCallback(() => {
+    const targetPath = hoveredPath || location.pathname;
+    const targetEl = linkRefs.current[targetPath];
+    if (targetEl && window.innerWidth > 900) {
+      setIndicatorStyle({
+        transform: `translateX(${targetEl.offsetLeft}px)`,
+        width: `${targetEl.offsetWidth}px`,
+        opacity: 1,
+      });
+    } else {
+      setIndicatorStyle(prev => ({ ...prev, opacity: 0 }));
+    }
+  }, [hoveredPath, location.pathname]);
+
+  // Immediate update on hover change
   useEffect(() => {
-    const updateIndicator = () => {
-      const activeLinkEl = linkRefs.current[location.pathname];
-      if (activeLinkEl && window.innerWidth > 900) {
-        setIndicatorStyle({
-          left: `${activeLinkEl.offsetLeft}px`,
-          width: `${activeLinkEl.offsetWidth}px`,
-          opacity: 1,
-        });
-      } else {
-        setIndicatorStyle({ left: 0, width: 0, opacity: 0 });
-      }
-    };
+    updateIndicator();
+  }, [updateIndicator]);
 
+  // Delayed update on route changes or window resizing to allow layout to settle
+  useEffect(() => {
     const timer = setTimeout(updateIndicator, 30);
-
     window.addEventListener('resize', updateIndicator);
     return () => {
       clearTimeout(timer);
       window.removeEventListener('resize', updateIndicator);
     };
-  }, [location.pathname]);
+  }, [location.pathname, updateIndicator]);
 
   const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/products', label: 'Products' },
     { to: '/brands', label: 'Brands' },
     { to: '/car-brands', label: 'Car Brands' },
+    { to: '/education', label: 'Parts Library' },
     { to: '/about', label: 'About Us' },
     { to: '/contact', label: 'Contact' },
   ];
@@ -64,7 +72,11 @@ export default function Navbar() {
         </Link>
 
         {/* CENTER NAV */}
-        <nav className={`nav-links ${mobileOpen ? 'open' : ''}`} id="nav-links">
+        <nav
+          className={`nav-links ${mobileOpen ? 'open' : ''}`}
+          id="nav-links"
+          onMouseLeave={() => setHoveredPath(null)}
+        >
           {navLinks.map(link => (
             <NavLink
               key={link.to}
@@ -72,6 +84,7 @@ export default function Navbar() {
               ref={el => { linkRefs.current[link.to] = el; }}
               className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               id={`nav-${link.label.toLowerCase()}`}
+              onMouseEnter={() => setHoveredPath(link.to)}
             >
               {link.label}
             </NavLink>

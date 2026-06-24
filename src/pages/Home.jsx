@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock } from 'lucide-react';
+import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock, Package, Tag } from 'lucide-react';
 import { getProducts, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import heroParts from '../assets/hero-parts.png';
@@ -22,6 +22,126 @@ const marqueeBrands = [
   { name: 'Kia', logoUrl: '/brand-logos/kia.png' }
 ];
 
+const faqCategories = [
+  {
+    id: "products",
+    name: "Products & Compatibility",
+    items: [
+      {
+        q: "How do I know if a part is compatible with my vehicle?",
+        a: "Search by vehicle brand and model or contact us with your vehicle details."
+      },
+      {
+        q: "Do you supply OEM and aftermarket parts?",
+        a: "Yes, we supply both OEM and quality-tested aftermarket AC components."
+      },
+      {
+        q: "Which vehicle types do you support?",
+        a: "Cars, SUVs, trucks, buses, commercial vehicles, and fleet vehicles."
+      },
+      {
+        q: "What AC components do you stock?",
+        a: "Compressors, condensers, evaporators, blower motors, expansion valves, receiver driers, cooling coils, and more."
+      }
+    ]
+  },
+  {
+    id: "orders",
+    name: "Orders & Distribution",
+    items: [
+      {
+        q: "Do you sell in bulk?",
+        a: "Yes, we specialize in wholesale and bulk orders for dealers and workshops."
+      },
+      {
+        q: "Can workshops and garages become regular customers?",
+        a: "Yes, we offer dedicated support for workshops, garages, and fleet operators."
+      },
+
+      {
+        q: "What is the minimum order quantity?",
+        a: "MOQ depends on the product category and brand."
+      }
+    ]
+  },
+  {
+    id: "shipping",
+    name: "Shipping & Support",
+    items: [
+      {
+        q: "Do you deliver across India?",
+        a: "Yes, we ship to customers nationwide through trusted logistics partners."
+      },
+      {
+        q: "How quickly are orders delivered?",
+        a: "We deliver orders as quickly as possible based on your location, product availability, and shipping distance. Our team works to ensure fast and reliable delivery across India."
+      },
+      {
+        q: "How can I get a quote?",
+        a: "Contact us through WhatsApp or the enquiry form for pricing and availability."
+      },
+      {
+        q: "Do you provide technical assistance?",
+        a: "Yes, our team can help identify the correct component for your application."
+      }
+    ]
+  },
+  {
+    id: "trust",
+    name: "Trust & Quality",
+    items: [
+      {
+        q: "Are your products genuine?",
+        a: "We source products from trusted manufacturers and authorized suppliers."
+      },
+      {
+        q: "Which brands do you distribute?",
+        a: "We work with leading automotive cooling brands including OEM and aftermarket manufacturers."
+      },
+      {
+        q: "Do your parts come with warranty support?",
+        a: "Warranty availability depends on the manufacturer and product category."
+      }
+    ]
+  }
+];
+
+function Counter({ target, duration = 2500, animate = false }) {
+  const [count, setCount] = useState(0);
+  const animatedRef = useRef(false);
+
+  useEffect(() => {
+    if (animate && !animatedRef.current) {
+      animatedRef.current = true;
+      const end = parseInt(target, 10);
+      if (isNaN(end)) return;
+      
+      const startTime = performance.now();
+
+      const runAnimate = (currentTime) => {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const easeProgress = progress * (2 - progress); // easeOutQuad
+        
+        const currentCount = Math.floor(easeProgress * end);
+        setCount(currentCount);
+
+        if (progress < 1) {
+          requestAnimationFrame(runAnimate);
+        } else {
+          setCount(end);
+        }
+      };
+
+      requestAnimationFrame(runAnimate);
+    }
+  }, [animate, target, duration]);
+
+  const suffix = target.replace(/[0-9]/g, '');
+
+  return <span>{count}{suffix}</span>;
+}
+
 export default function Home() {
   const products = getProducts();
   const featured = products.slice(0, 4);
@@ -32,6 +152,8 @@ export default function Home() {
   const [catOpen, setCatOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [voiceListening, setVoiceListening] = useState(false);
+  const [activeFaq, setActiveFaq] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('products');
 
   const categoryRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -84,6 +206,32 @@ export default function Home() {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const [animateStats, setAnimateStats] = useState(false);
+  const statsSectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setAnimateStats(true);
+        observer.unobserve(entry.target);
+      }
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    const targetEl = statsSectionRef.current;
+    if (targetEl) {
+      observer.observe(targetEl);
+    }
+
+    return () => {
+      if (targetEl) {
+        observer.unobserve(targetEl);
+      }
+    };
   }, []);
 
   const handleSearchChange = (e) => {
@@ -189,10 +337,11 @@ export default function Home() {
   ];
 
   const features = [
-    { icon: <Truck size={28} />, title: 'Fast Delivery', desc: 'Quick dispatch across India with reliable logistics partners.' },
-    { icon: <Shield size={28} />, title: 'Genuine Parts', desc: 'Only OEM and quality-tested aftermarket components.' },
-    { icon: <Headphones size={28} />, title: '24/7 Support', desc: 'Expert technical assistance via WhatsApp anytime.' },
-    { icon: <Zap size={28} />, title: 'Instant Quotes', desc: 'Get pricing and availability details instantly via WhatsApp.' },
+    { icon: <Shield size={28} />, title: 'Genuine OEM & Aftermarket Parts', desc: 'Only original manufacturer and quality-tested replacement parts.' },
+    { icon: <Package size={28} />, title: '500+ SKUs Ready to Dispatch', desc: 'A massive wholesale inventory of AC compressors, condensers, blowers, and valves.' },
+    { icon: <Truck size={28} />, title: 'Same-Day Shipping', desc: 'Quick dispatch and fast transit across India to minimize vehicle downtime.' },
+    { icon: <Headphones size={28} />, title: 'Technical Support', desc: 'Get expert guidance and parts compatibility identification via WhatsApp.' },
+    { icon: <Tag size={28} />, title: 'Bulk Order Pricing', desc: 'Competitive wholesale rates and volume discounts tailored for workshops.' },
   ];
 
   const vehicleTypes = [
@@ -214,8 +363,7 @@ export default function Home() {
               AC Spare Parts Available <span className="dot"></span>
             </div>
             <h1 className="hero-title">
-              <span className="hero-line">COOLING <span className="highlight">ENGINEERED</span></span>
-              <span className="hero-line">FOR EVERY ROAD.</span>
+              The part you need. <br />In stock. <span className="highlight">Today.</span>
             </h1>
             <p className="hero-subtitle">
               Get your AC parts for every vehicle — cars, trucks, SUVs, and 
@@ -233,7 +381,6 @@ export default function Home() {
         <div className="hero-scroll">
           <div className="scroll-indicator">
             <div className="scroll-dot"></div>
-            <ChevronDown size={16} className="scroll-chevron" />
           </div>
           <span>Scroll Down</span>
         </div>
@@ -242,7 +389,7 @@ export default function Home() {
       {/* B2B SEARCH EXPERIENCE */}
       <section className="b2b-search-section">
         <div className="container">
-          <div className="search-experience-wrapper">
+          <div className="search-experience-wrapper reveal">
             <div className="search-card">
               <div className="search-header-row">
                 <span className="search-pill">Intelligent B2B Search</span>
@@ -423,11 +570,11 @@ export default function Home() {
       </section>
 
       {/* STATS BAR */}
-      <section className="stats-bar" id="stats-section">
+      <section className="stats-bar" id="stats-section" ref={statsSectionRef}>
         <div className="container stats-grid">
           {stats.map((stat, i) => (
-            <div key={i} className="stat-item">
-              <span className="stat-value">{stat.value}</span>
+            <div key={i} className={`stat-item reveal delay-${i * 100}`}>
+              <span className="stat-value"><Counter target={stat.value} animate={animateStats} /></span>
               <span className="stat-label">{stat.label}</span>
             </div>
           ))}
@@ -473,11 +620,11 @@ export default function Home() {
             Parts for <span className="highlight">Every</span> Vehicle Type
           </h2>
           <div className="vehicle-grid">
-            {vehicleTypes.map((type) => (
+            {vehicleTypes.map((type, i) => (
               <Link
                 to={`/products?category=${type.name}`}
                 key={type.name}
-                className="vehicle-card"
+                className={`vehicle-card reveal delay-${(i % 3) * 100}`}
                 id={`vehicle-${type.name.toLowerCase()}`}
               >
                 <span className="vehicle-emoji">{type.emoji}</span>
@@ -506,8 +653,10 @@ export default function Home() {
             </Link>
           </div>
           <div className="products-grid">
-            {featured.map(product => (
-              <ProductCard key={product.id} product={product} />
+            {featured.map((product, i) => (
+              <div key={product.id} className={`reveal delay-${(i % 4) * 100}`} style={{ display: 'flex', flexDirection: 'column' }}>
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         </div>
@@ -516,13 +665,13 @@ export default function Home() {
       {/* WHY CHOOSE US */}
       <section className="features-section" id="features-section">
         <div className="container">
-          <div className="section-label">Why Choose RCS <span className="dot"></span></div>
+          <div className="section-label">Why Workshops Choose RCS <span className="dot"></span></div>
           <h2 className="section-title">
-            Your Trusted <span className="highlight">Partner</span>
+            Why Workshops <span className="highlight">Choose RCS</span>
           </h2>
           <div className="features-grid">
             {features.map((feat, i) => (
-              <div key={i} className="feature-card">
+              <div key={i} className={`feature-card reveal delay-${i * 100}`}>
                 <div className="feature-icon">{feat.icon}</div>
                 <h3>{feat.title}</h3>
                 <p>{feat.desc}</p>
@@ -532,10 +681,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ SECTION */}
+      <section className="faq-section" id="faq-section">
+        <div className="container">
+          <div className="section-label" style={{ textAlign: 'center', margin: '0 auto 12px', display: 'block', width: 'fit-content' }}>Common Queries <span className="dot"></span></div>
+          <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '16px' }}>
+            Frequently Asked <span className="highlight">Questions</span>
+          </h2>
+          <p className="section-subtitle-compact" style={{ textAlign: 'center', marginBottom: '48px', maxWidth: '640px', marginLeft: 'auto', marginRight: 'auto' }}>
+            Find answers to common questions about parts compatibility, shipping, wholesale accounts, and order support.
+          </p>
+
+          {/* FAQ Category Tabs */}
+          <div className="faq-categories-tabs">
+            {faqCategories.map(cat => (
+              <button
+                key={cat.id}
+                className={`faq-tab-btn ${activeCategory === cat.id ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveCategory(cat.id);
+                  setActiveFaq(null); // Reset active accordion item
+                }}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+
+          <div className="faq-accordion">
+            {faqCategories.find(cat => cat.id === activeCategory).items.map((faq, index) => {
+              const isOpen = activeFaq === index;
+              return (
+                <div 
+                  key={index} 
+                  className={`faq-item ${isOpen ? 'open' : ''}`}
+                  onClick={() => setActiveFaq(isOpen ? null : index)}
+                >
+                  <div className="faq-question">
+                    <h3>{faq.q}</h3>
+                    <span className="faq-toggle-icon"></span>
+                  </div>
+                  <div className="faq-answer">
+                    <p>{faq.a}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* CTA BANNER */}
       <section className="cta-section" id="cta-section">
         <div className="container">
-          <div className="cta-card">
+          <div className="cta-card reveal scale-up">
             <h2>Ready to <span className="highlight">Order?</span></h2>
             <p>Browse our complete catalog or reach out via WhatsApp for instant quotes and availability.</p>
             <div className="cta-buttons">
