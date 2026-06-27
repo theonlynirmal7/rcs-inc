@@ -2029,5 +2029,15 @@
   .vehicle-title {
     font-size: 17px;
   }
+  
+  /* Stacking the image and list in VIN locations guide */
+  .vin-guide-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .vin-guide-img {
+    max-width: 280px;
+    margin: 0 auto;
+  }
 }
 
