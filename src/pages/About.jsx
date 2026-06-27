@@ -35,7 +35,7 @@ export default function About() {
               industry, serving thousands of customers nationwide.
             </p>
             <p>
-              We stock parts from leading global manufacturers including Denso, Sanden, Valeo, Behr, and Bitzer. 
+              We stock parts from leading global manufacturers including Denso, Sanden, Valeo, Behr, and Danfoss. 
               Whether you need a compressor for a sedan, a condenser for a truck, or a complete AC kit for a 
               fleet of buses — RCS has you covered.
             </p>

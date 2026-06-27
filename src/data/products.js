@@ -32,9 +32,9 @@ const defaultProducts = [
   },
   {
     id: 5,
-    name: 'Truck AC Compressor – Bitzer',
+    name: 'Truck AC Compressor – Sanden',
     category: 'Truck',
-    brand: 'Bitzer',
+    brand: 'Sanden',
     price: 15000,
     image: '/truck-compressor.png',
     description: 'Industrial-grade AC compressor for heavy trucks and trailers. Built for extreme conditions.',
@@ -94,7 +94,7 @@ const defaultProducts = [
     id: 12,
     name: 'Bus Blower Assembly',
     category: 'Bus',
-    brand: 'Bitzer',
+    brand: 'Sanden',
     price: 9500,
     image: '/bus-blower-assembly.png',
     description: 'Complete blower assembly for bus HVAC systems. Multi-speed with high airflow rating.',
@@ -485,7 +485,7 @@ const defaultProducts = [
     id: 57,
     name: 'Bulldozer Heavy Compressor',
     category: 'Bulldozer',
-    brand: 'Bitzer',
+    brand: 'Sanden',
     price: 28000,
     image: '/truck-compressor.png',
     description: 'Rugged B2B wholesale bulldozer AC compressor. Built to operate continuously under extreme heat and high vibrations.',
@@ -1050,12 +1050,23 @@ export function getProducts() {
       modified = true;
     }
 
-    // Migrate Truck AC Compressor – Bitzer image if using old placeholder URL
+    // Migrate Truck AC Compressor – Sanden image if using old placeholder URL
     const truckCompIndex = products.findIndex(p => p.id === 5);
     if (truckCompIndex !== -1 && products[truckCompIndex].image !== '/truck-compressor.png') {
       products[truckCompIndex].image = '/truck-compressor.png';
       modified = true;
     }
+
+    // Migrate any products that still use the 'Bitzer' brand to 'Sanden'
+    products.forEach(p => {
+      if (p.brand === 'Bitzer') {
+        p.brand = 'Sanden';
+        if (p.name.includes('Bitzer')) {
+          p.name = p.name.replace('Bitzer', 'Sanden');
+        }
+        modified = true;
+      }
+    });
 
     // Migrate Expansion Valve – Bus image if using old placeholder URL
     const busExpIndex = products.findIndex(p => p.id === 7);
@@ -1162,7 +1173,7 @@ export function getProducts() {
           id: 57,
           name: 'Bulldozer Heavy Compressor',
           category: 'Bulldozer',
-          brand: 'Bitzer',
+          brand: 'Sanden',
           price: 28000,
           image: '/truck-compressor.png',
           description: 'Rugged B2B wholesale bulldozer AC compressor. Built to operate continuously under extreme heat and high vibrations.',
@@ -1278,5 +1289,8 @@ export const brands = [
   'NSK',
   'Delphi',
   'Banco',
-  'Bitzer'
+  'Tata',
+  'Taco International',
+  'Lucas TVS',
+  'TCCI'
 ];

@@ -154,10 +154,25 @@ const brandInfo = {
     origin: 'India',
     specialty: 'Radiators, Intercoolers, Oil Coolers',
   },
-  Bitzer: {
-    desc: 'World-renowned for heavy-duty compressors built for extreme conditions in commercial vehicles.',
-    origin: 'Germany',
-    specialty: 'Industrial Compressors, Bus AC Systems',
+  Tata: {
+    desc: 'Genuine OEM replacement parts engineered to Tata Motors\' precise standards, ensuring perfect fit and optimal climate control.',
+    origin: 'India',
+    specialty: 'Genuine OEM AC Components & Spare Parts',
+  },
+  'Taco International': {
+    desc: 'Tata AutoComp Systems (TACO) manufactures and supplies high-quality automotive components and cooling systems to global and domestic markets.',
+    origin: 'India',
+    specialty: 'Condensers, Radiators, HVAC Modules',
+  },
+  'Lucas TVS': {
+    desc: 'Leading Indian manufacturer of automotive electrical systems, alternators, and specialized auto electrical components.',
+    origin: 'India',
+    specialty: 'Starter Motors, Alternators, Wiper Motors, Auto Electricals',
+  },
+  'TCCI': {
+    desc: 'Global leader in heavy-duty and electric vehicle compressor technology, delivering premium cooling solutions for commercial fleets.',
+    origin: 'USA',
+    specialty: 'Heavy-Duty Compressors, EV Climate Control Systems',
   },
 };
 
@@ -181,7 +196,6 @@ const brandLogos = {
   'MGP (Maruti Genuine Parts)': '/manufacturer-logos/mgp__maruti_genuine_parts_.png',
   'NSK': '/manufacturer-logos/nsk.svg',
   'Delphi': '/manufacturer-logos/delphi.svg',
-  'Bitzer': '/manufacturer-logos/bitzer.svg',
   'Giladard': '/manufacturer-logos/giladard.png',
   'Spal': '/manufacturer-logos/spal.png',
   'Estra': '/manufacturer-logos/estra.png',
@@ -193,6 +207,9 @@ const brandLogos = {
   'Pasio': '/manufacturer-logos/pasio.png',
   'Zilax': '/manufacturer-logos/zilax.png',
   'Vika': '/manufacturer-logos/vika.png',
+  'Tata': '/brand-logos/tata.png',
+  'Lucas TVS': '/manufacturer-logos/lucas_tvs.png',
+  'TCCI': '/manufacturer-logos/tcci.png',
 };
 
 export default function Brands() {

@@ -52,7 +52,7 @@ export function CartProvider({ children }) {
   const generateWhatsAppMessage = () => {
     if (cart.length === 0) return '';
     
-    let message = '🔧 *RCS AC Spare Parts — New Order*\n\n';
+    let message = '🔧 *RCS AC Spare Parts — New Enquiry*\n\n';
     message += '━━━━━━━━━━━━━━━━━━━\n';
     
     cart.forEach((item, index) => {

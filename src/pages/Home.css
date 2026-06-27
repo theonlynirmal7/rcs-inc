@@ -70,6 +70,47 @@
   box-shadow: 0 8px 24px rgba(212, 32, 39, 0.35);
 }
 
+.hero-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #FFFFFF;
+  color: var(--red);
+  border: 2px solid var(--red);
+  padding: 13px 30px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 4px 18px 4px 18px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  height: 49px;
+}
+
+.hero-whatsapp-btn:hover {
+  background: #25D366;
+  color: #FFFFFF;
+  border-color: #25D366;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.25);
+}
+
+.hero-whatsapp-btn .whatsapp-icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.hero-whatsapp-btn:hover .whatsapp-icon {
+  transform: scale(1.15);
+}
+
 /* Hero image — NO background, floating on white */
 .hero-image {
   display: flex;
@@ -651,6 +692,8 @@
 
 /* ===== B2B SEARCH EXPERIENCE ===== */
 .b2b-search-section {
+  position: relative;
+  z-index: 10;
   background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%);
   padding: 60px 0 80px;
   border-top: 1px solid #F1F3F5;
@@ -699,6 +742,519 @@
   font-size: 22px;
   font-weight: 800;
   color: var(--black);
+}
+
+/* VIN Lookup & Tabs Styling */
+.search-tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1.5px solid #F1F3F5;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.search-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-500);
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
+}
+
+.search-tab-btn:hover {
+  color: var(--black);
+}
+
+.search-tab-btn.active {
+  color: var(--red);
+}
+
+.search-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -9.5px;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: var(--red);
+  border-radius: 100px;
+}
+
+.vin-search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vin-search-description {
+  font-size: 13.5px;
+  color: var(--gray-600);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+
+.vin-help-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.where-is-vin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: var(--transition);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.where-is-vin-btn:hover {
+  color: var(--red-dark);
+}
+
+.vin-guide-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.vin-guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #F1F3F5;
+  padding-bottom: 10px;
+}
+
+.vin-guide-header h5 {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--black);
+  margin: 0;
+}
+
+.close-guide-btn {
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  border-radius: 4px;
+}
+
+.close-guide-btn:hover {
+  background: #F3F4F6;
+  color: var(--black);
+}
+
+.vin-guide-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.vin-guide-img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #F1F3F5;
+}
+
+.vin-guide-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vin-guide-text p {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--black);
+  margin: 0;
+}
+
+.vin-guide-text ol {
+  padding-left: 20px;
+  font-size: 12.5px;
+  color: var(--gray-600);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.4;
+}
+
+.vin-tips-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #FFF9DB;
+  border: 1px solid #FFE066;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: #8C6200;
+  line-height: 1.4;
+}
+
+.vin-tips-box svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.vin-loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  background: #FAFAFA;
+  border: 1px dashed #D1D5DB;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.vin-loading-indicator .spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(212, 32, 39, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--red);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.unified-search-bar.vin-bar {
+  border-color: #E5E7EB;
+}
+
+.vin-search-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFF5F5;
+  border: 1px solid #FFE3E3;
+  color: #E53E3E;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.vin-samples-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.samples-label {
+  font-weight: 600;
+  color: var(--gray-500);
+}
+
+.samples-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sample-chip {
+  padding: 6px 12px;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sample-chip:hover {
+  background: var(--black);
+  color: #FFFFFF;
+  border-color: var(--black);
+}
+
+/* Decoded VIN Result Styling */
+.vin-result-card {
+  background: #FAFAFA;
+  border: 1px dashed #D1D5DB;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 10px;
+}
+
+.vin-result-header {
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.success-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #E6F4EA;
+  color: #137333;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.vehicle-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--black);
+}
+
+.vin-specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.vin-specs-column {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.specs-col-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: var(--gray-700);
+  border-bottom: 1.5px solid #F1F3F5;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.specs-list-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.specs-list-items li {
+  font-size: 13px;
+  color: var(--gray-600);
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #FAFAFA;
+  padding-bottom: 4px;
+}
+
+.specs-list-items li strong {
+  color: var(--gray-800);
+  font-weight: 500;
+}
+
+.chassis-code {
+  background: #F3F4F6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--black);
+  border: 1px solid #E5E7EB;
+}
+
+/* Compatible Parts Section */
+.compatible-parts-section {
+  border-top: 1px solid #E5E7EB;
+  padding-top: 20px;
+}
+
+.compatible-title {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 16px;
+}
+
+.compatible-parts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.compact-part-card {
+  display: flex;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.compact-part-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-color: #D1D5DB;
+}
+
+.compact-part-image-wrapper {
+  width: 90px;
+  height: 90px;
+  background: #FFFFFF;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #F1F3F5;
+  flex-shrink: 0;
+}
+
+.compact-part-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.compact-part-info {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.compact-part-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.compact-brand {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--red);
+  letter-spacing: 0.5px;
+}
+
+.compact-category-tag {
+  font-size: 9px;
+  font-weight: 600;
+  background: #F3F4F6;
+  color: var(--gray-600);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.compact-part-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.compact-part-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.compact-whatsapp-link {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red);
+  text-decoration: none;
+  padding: 3px 8px;
+  border: 1px solid var(--red);
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.compact-whatsapp-link:hover {
+  background: var(--red);
+  color: #FFFFFF;
+}
+
+.whatsapp-inquiry-box {
+  background: #E8F5E9;
+  border: 1px solid #C8E6C9;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.whatsapp-inquiry-box p {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #2E7D32;
+  margin: 0;
+}
+
+.bulk-whatsapp-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #2E7D32;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.bulk-whatsapp-btn:hover {
+  background: #1B5E20;
 }
 
 .unified-search-bar {
@@ -1413,6 +1969,27 @@
   
   .faq-question h3 {
     font-size: 15px;
+  }
+}
+
+/* Responsive adjustments for VIN search */
+@media (max-width: 768px) {
+  .vin-specs-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .compatible-parts-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .vin-result-card {
+    padding: 16px;
+  }
+  .success-badge {
+    margin-bottom: 8px;
+  }
+  .vehicle-title {
+    font-size: 17px;
   }
 }
 

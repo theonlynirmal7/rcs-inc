@@ -68,7 +68,7 @@ export default function Contact() {
           </div>
 
           <form className="contact-form" onSubmit={handleSubmit} id="contact-form">
-            <h2>Send a Message</h2>
+            <h2>Send us a WhatsApp message</h2>
             <div className="cform-group">
               <label htmlFor="contact-name">Your Name</label>
               <input type="text" id="contact-name" name="name" required placeholder="Enter your name" />

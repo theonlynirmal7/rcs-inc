@@ -127,12 +127,12 @@ export default function Education() {
       {/* HERO */}
       <section className="edu-hero">
         <div className="container">
-          <div className="section-label">Education Library <span className="dot"></span></div>
+          <div className="section-label">AC Systems Guide <span className="dot"></span></div>
           <h1 className="section-title">
             How Automotive <span className="highlight">AC Systems Work</span>
           </h1>
           <p className="edu-hero-desc">
-            A comprehensive parts library explaining the core components of vehicle climate control.
+            A comprehensive AC Systems Guide explaining the core components of vehicle climate control.
             Understand how they operate, identify symptoms of failure, and learn essential maintenance tips.
           </p>
         </div>

@@ -58,7 +58,7 @@ export default function Navbar() {
     { to: '/products', label: 'Products' },
     { to: '/brands', label: 'Brands' },
     { to: '/car-brands', label: 'Car Brands' },
-    { to: '/education', label: 'Parts Library' },
+    { to: '/education', label: 'AC Systems Guide' },
     { to: '/about', label: 'About Us' },
     { to: '/contact', label: 'Contact' },
   ];
@@ -68,7 +68,9 @@ export default function Navbar() {
       <div className="navbar-inner container">
         {/* LOGO */}
         <Link to="/" className="nav-logo" id="nav-logo">
-          <img src={rcsLogo} alt="RCS Logo" className="logo-img" />
+          <div className="logo-wrapper">
+            <img src={rcsLogo} alt="RCS Logo" className="logo-img" />
+          </div>
         </Link>
 
         {/* CENTER NAV */}
@@ -105,7 +107,7 @@ export default function Navbar() {
 
         {/* RIGHT ACTIONS */}
         <div className="nav-actions">
-          <Link to="/cart" className="nav-cart" id="nav-cart" aria-label="View Cart">
+          <Link to="/cart" className="nav-cart" id="nav-cart" aria-label="View Enquiry Basket">
             <ShoppingBag size={20} />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </Link>
