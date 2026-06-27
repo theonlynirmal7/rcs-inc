@@ -989,7 +989,7 @@ export default function Admin() {
           <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--admin-text-dark)' }}>
             Bulk Management
           </span>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="admin-bulk-actions-wrapper">
             <button className="admin-btn" onClick={() => csvInputRef.current?.click()}>
               <Upload size={14} /> Import CSV
             </button>
@@ -1075,18 +1075,7 @@ export default function Admin() {
                           <div>
                             <span className="admin-table-name">{p.name}</span>
                             {p.featured && (
-                              <span
-                                style={{
-                                  fontSize: '10px',
-                                  background: 'var(--admin-red-light)',
-                                  color: 'var(--admin-red)',
-                                  padding: '1px 6px',
-                                  borderRadius: '100px',
-                                  marginLeft: '8px',
-                                  fontWeight: 800,
-                                  textTransform: 'uppercase'
-                                }}
-                              >
+                              <span className="admin-featured-badge">
                                 Featured
                               </span>
                             )}
@@ -1216,7 +1205,7 @@ export default function Admin() {
               {modalMode === 'view' ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                   {/* View Details Layout */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+                  <div className="admin-view-grid">
                     <div>
                       {/* Image Viewer */}
                       <img

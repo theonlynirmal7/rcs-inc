@@ -910,6 +910,32 @@
   }
 }
 
+/* Custom responsive helper classes */
+.admin-view-grid {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+  gap: 24px;
+}
+
+.admin-bulk-actions-wrapper {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-featured-badge {
+  font-size: 10px;
+  background: var(--admin-red-light);
+  color: var(--admin-red);
+  padding: 2px 8px;
+  border-radius: 100px;
+  margin-left: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* ===== RESPONSIVE MOBILE SUPPORT ===== */
 @media (max-width: 1024px) {
   .admin-overview-grid {
@@ -958,10 +984,80 @@
   .admin-image-previews-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .admin-view-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .admin-bulk-actions-wrapper {
+    width: 100%;
+  }
+  
+  .admin-bulk-actions-wrapper .admin-btn {
+    flex-grow: 1;
+    justify-content: center;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  
+  .admin-table-product {
+    gap: 8px;
+  }
+  
+  .admin-table-img {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .admin-modal-card {
+    max-height: 95vh;
+  }
+  
+  .admin-modal-header {
+    padding: 16px 20px;
+  }
+  
+  .admin-modal-body {
+    padding: 16px 20px;
+  }
+  
+  .admin-modal-footer {
+    padding: 12px 20px;
+  }
+
+  .admin-title-area h1 {
+    font-size: 22px;
+  }
+  
+  .admin-stat-card {
+    padding: 16px;
+  }
+  
+  .admin-stat-num {
+    font-size: 22px;
+  }
 }
 
 @media (max-width: 480px) {
   .admin-image-previews-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .admin-login-card {
+    padding: 24px 16px;
+  }
+  
+  .admin-login-card h2 {
+    font-size: 20px;
+  }
+  
+  .admin-page {
+    padding-top: 80px;
+    padding-bottom: 40px;
   }
 }

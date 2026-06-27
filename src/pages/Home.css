@@ -503,6 +503,10 @@
     margin: 0 auto;
   }
 
+  .hero-buttons {
+    justify-content: center;
+  }
+
   .hero-image img {
     max-height: 320px;
   }
@@ -536,6 +540,10 @@
     grid-template-columns: 1fr;
   }
 
+  .search-card {
+    padding: 20px 16px;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -546,6 +554,36 @@
 
   .hero-line:last-child {
     font-size: 40px;
+  }
+
+  /* Search Tabs & VIN styling on Mobile */
+  .search-tabs {
+    width: 100%;
+    gap: 0;
+  }
+  
+  .search-tab-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 4px;
+    font-size: 11.5px;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .search-tab-btn.active::after {
+    bottom: -9.5px;
+  }
+
+  .vin-help-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .vin-search-description {
+    width: 100%;
+    flex: none;
   }
 }
 
