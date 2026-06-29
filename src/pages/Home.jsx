@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock, Package, Tag, Car, ShieldCheck, AlertTriangle, HelpCircle } from 'lucide-react';
+import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock, Package, Tag, Car, ShieldCheck, AlertTriangle, HelpCircle, Camera, Upload } from 'lucide-react';
 import { getProducts, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import heroParts from '../assets/hero-parts.png';
+import { dbService } from '../supabase';
 import './Home.css';
 
 const marqueeBrands = [
@@ -147,7 +148,7 @@ export default function Home() {
   const featured = products.slice(0, 4);
 
   const navigate = useNavigate();
-  const [searchMode, setSearchMode] = useState('parts'); // 'parts' or 'vin'
+  const [searchMode, setSearchMode] = useState('parts'); // 'parts', 'vin', or 'image'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [catOpen, setCatOpen] = useState(false);
@@ -160,6 +161,15 @@ export default function Home() {
   const [vinResult, setVinResult] = useState(null);
   const [vinError, setVinError] = useState(null);
   const [showVinGuide, setShowVinGuide] = useState(false);
+
+  // Visual part upload states
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+  const [imageDesc, setImageDesc] = useState('');
+  const [isImageUploading, setIsImageUploading] = useState(false);
+  const [imageUploadErr, setImageUploadErr] = useState('');
+  const [imageDragActive, setImageDragActive] = useState(false);
+  const imageInputRef = useRef(null);
 
   const categoryRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -435,8 +445,97 @@ export default function Home() {
       chassis: cleanVin,
       region: 'WMI Decoded Region',
       specs,
-      compatiblePartIds: compatIds
     });
+  };
+
+  // Handle Visual Part Upload logic
+  const handleImageDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setImageDragActive(true);
+    } else if (e.type === "dragleave") {
+      setImageDragActive(false);
+    }
+  };
+
+  const handleImageDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setImageDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleSelectedImageFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleImageFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleSelectedImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleSelectedImageFile = (file) => {
+    if (!file.type.startsWith('image/')) {
+      setImageUploadErr('Only image files are supported.');
+      return;
+    }
+    
+    // Max 10MB limit
+    if (file.size > 10 * 1024 * 1024) {
+      setImageUploadErr('Image size should be less than 10MB.');
+      return;
+    }
+
+    setImageUploadErr('');
+    setImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreviewUrl(previewUrl);
+  };
+
+  const clearSelectedImage = () => {
+    setImageFile(null);
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+    setImagePreviewUrl('');
+    setImageUploadErr('');
+  };
+
+  const handleSendImageEnquiry = async () => {
+    if (!imageFile) return;
+    
+    setIsImageUploading(true);
+    setImageUploadErr('');
+    
+    try {
+      // 1. Upload the image (dbService handles client-side WebP conversion automatically)
+      const uploadRes = await dbService.uploadImage(imageFile, 'Product Enquiry');
+      
+      if (!uploadRes || !uploadRes.image_url) {
+        throw new Error('Upload failed to return a valid URL.');
+      }
+      
+      // 2. Generate WhatsApp message containing the uploaded image URL and user description
+      const phoneNumber = '919962173870';
+      const textMessage = `Hi RCS, I am looking for this AC part.
+      
+📸 Photo: ${uploadRes.image_url}
+📝 Details: ${imageDesc.trim() || 'No description provided.'}`;
+
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(textMessage)}`;
+      
+      // 3. Open WhatsApp enquiry
+      window.open(whatsappUrl, '_blank');
+      
+      // 4. Success state clear
+      clearSelectedImage();
+      setImageDesc('');
+    } catch (err) {
+      console.error('Error uploading enquiry photo:', err);
+      setImageUploadErr('Failed to upload image. Please try opening WhatsApp and sending it directly.');
+    } finally {
+      setIsImageUploading(false);
+    }
   };
 
   const categoriesList = [
@@ -707,6 +806,14 @@ export default function Home() {
                   <Car size={15} strokeWidth={2.2} />
                   <span>VIN / Chassis Lookup</span>
                 </button>
+                <button
+                  className={`search-tab-btn ${searchMode === 'image' ? 'active' : ''}`}
+                  onClick={() => { setSearchMode('image'); }}
+                  id="tab-search-image"
+                >
+                  <Camera size={15} />
+                  <span>Upload Part Image</span>
+                </button>
               </div>
 
               {searchMode === 'parts' ? (
@@ -829,7 +936,7 @@ export default function Home() {
                     </div>
                   </div>
                 </>
-              ) : (
+              ) : searchMode === 'vin' ? (
                 /* VIN / CHASSIS LOOKUP UI */
                 <div className="vin-search-container">
                   <div className="vin-help-header">
@@ -1016,6 +1123,94 @@ export default function Home() {
                           </a>
                         </div>
                       </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* UPLOAD PART IMAGE UI */
+                <div className="image-search-container">
+                  {!imagePreviewUrl ? (
+                    <div
+                      className={`image-upload-panel ${imageDragActive ? 'active' : ''}`}
+                      onDragEnter={handleImageDrag}
+                      onDragOver={handleImageDrag}
+                      onDragLeave={handleImageDrag}
+                      onDrop={handleImageDrop}
+                      onClick={() => imageInputRef.current?.click()}
+                    >
+                      <div className="image-upload-icon-container">
+                        <Upload size={24} />
+                      </div>
+                      <div className="image-upload-text">
+                        <h4>📷 Upload a Photo of your AC Part</h4>
+                        <p>Drag & Drop or click to choose an image (PNG, JPG, WebP)</p>
+                      </div>
+                      <input
+                        type="file"
+                        ref={imageInputRef}
+                        onChange={handleImageFileChange}
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="image-preview-wrapper animate-fade-in-up">
+                      <div className="image-preview-container">
+                        <div className="image-preview-box">
+                          <img src={imagePreviewUrl} alt="Selected AC part" />
+                        </div>
+                        <div className="image-preview-info">
+                          <h6 className="image-preview-name">{imageFile?.name || 'ac_part_photo.png'}</h6>
+                          <span className="image-preview-size">
+                            {imageFile ? `${(imageFile.size / 1024 / 1024).toFixed(2)} MB` : ''}
+                          </span>
+                        </div>
+                        <button 
+                          className="image-preview-clear" 
+                          onClick={clearSelectedImage}
+                          title="Remove Image"
+                          type="button"
+                        >
+                          <X size={18} />
+                        </button>
+                      </div>
+
+                      <textarea
+                        className="image-enquiry-textarea"
+                        placeholder="Describe your vehicle or what AC part you need (e.g. Compressor for Swift 2018)..."
+                        value={imageDesc}
+                        onChange={(e) => setImageDesc(e.target.value)}
+                        rows={3}
+                        disabled={isImageUploading}
+                      />
+
+                      {imageUploadErr && (
+                        <div className="image-upload-error">
+                          <AlertTriangle size={16} />
+                          <span>{imageUploadErr}</span>
+                        </div>
+                      )}
+
+                      <button
+                        className="image-submit-btn"
+                        onClick={handleSendImageEnquiry}
+                        disabled={isImageUploading}
+                        type="button"
+                      >
+                        {isImageUploading ? (
+                          <>
+                            <div className="admin-preview-spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.2)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                            <span>Uploading and compressing...</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+                              <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                            </svg>
+                            <span>Send Photo Enquiry via WhatsApp</span>
+                          </>
+                        )}
+                      </button>
                     </div>
                   )}
                 </div>

@@ -12,7 +12,7 @@ export const supabase = isSupabaseConfigured
 // IndexedDB Helper for fallback offline database
 const openIndexedDB = () => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('rcs_local_db', 1);
+    const request = indexedDB.open('rcs_local_db', 2);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains('products')) {
@@ -20,6 +20,9 @@ const openIndexedDB = () => {
       }
       if (!db.objectStoreNames.contains('product_images')) {
         db.createObjectStore('product_images', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('site_visits')) {
+        db.createObjectStore('site_visits', { keyPath: 'id', autoIncrement: true });
       }
     };
     request.onsuccess = (e) => resolve(e.target.result);
@@ -416,5 +419,80 @@ export const dbService = {
 
   triggerSync() {
     return syncLocalCache();
+  },
+
+  async recordVisit(pagePath) {
+    const visitRecord = {
+      created_at: new Date().toISOString(),
+      page_path: pagePath || '/'
+    };
+    
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase
+          .from('site_visits')
+          .insert([visitRecord]);
+        if (error) throw error;
+      } catch (err) {
+        console.error('Error inserting visit to Supabase, falling back to local store:', err);
+        await saveLocalData('site_visits', visitRecord);
+      }
+    } else {
+      await saveLocalData('site_visits', visitRecord);
+    }
+  },
+
+  async getVisitStats() {
+    let visits = [];
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase
+          .from('site_visits')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        visits = data || [];
+      } catch (err) {
+        console.error('Error getting stats from Supabase, loading from local store:', err);
+        visits = await getLocalData('site_visits');
+      }
+    } else {
+      visits = await getLocalData('site_visits');
+    }
+    
+    // Sort visits by created_at descending
+    visits.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    // Calculate metrics
+    const totalVisits = visits.length;
+    
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const visitsToday = visits.filter(v => v.created_at && v.created_at.slice(0, 10) === todayStr).length;
+
+    // Last 7 days chart data YYYY-MM-DD
+    const chartData = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10);
+      
+      const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const count = visits.filter(v => v.created_at && v.created_at.slice(0, 10) === dateStr).length;
+      chartData.push({ date: dateStr, label, count });
+    }
+
+    // Get 10 most recent visits
+    const recentVisits = visits.slice(0, 10).map(v => ({
+      id: v.id,
+      created_at: v.created_at,
+      page_path: v.page_path || '/'
+    }));
+
+    return {
+      totalVisits,
+      visitsToday,
+      chartData,
+      recentVisits
+    };
   }
 };

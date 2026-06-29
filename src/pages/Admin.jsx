@@ -116,10 +116,20 @@ export default function Admin() {
   const zipInputRef = useRef(null);
   const csvInputRef = useRef(null);
 
-  // Fetch products on load/auth
+  // Analytics state
+  const [visitStats, setVisitStats] = useState({
+    totalVisits: 0,
+    visitsToday: 0,
+    chartData: [],
+    recentVisits: []
+  });
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  // Fetch products and stats on load/auth
   useEffect(() => {
     if (isAuthenticated) {
       loadProducts();
+      loadStats();
     }
   }, [isAuthenticated]);
 
@@ -133,6 +143,18 @@ export default function Admin() {
       addToast('Failed to load products from database.', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadStats = async () => {
+    setLoadingStats(true);
+    try {
+      const data = await dbService.getVisitStats();
+      setVisitStats(data);
+    } catch (err) {
+      console.error('Failed to load website visit stats:', err);
+    } finally {
+      setLoadingStats(false);
     }
   };
 
@@ -912,6 +934,97 @@ export default function Admin() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* WEBSITE VISITOR TRAFFIC ANALYTICS */}
+        <div className="admin-analytics-section">
+          {/* 7-DAY TRAFFIC CHART */}
+          <div className="admin-analytics-card">
+            <h3>Website Traffic (Last 7 Days)</h3>
+            <p>Unique visitor sessions logged per day</p>
+            {loadingStats ? (
+              <div style={{ height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="admin-preview-spinner" />
+              </div>
+            ) : (
+              <div className="admin-chart-container">
+                {(() => {
+                  const maxCount = Math.max(...visitStats.chartData.map(d => d.count), 1);
+                  return visitStats.chartData.map((day) => {
+                    const barHeight = (day.count / maxCount) * 100;
+                    return (
+                      <div key={day.date} className="admin-chart-bar-col">
+                        <div 
+                          className="admin-chart-bar-wrap" 
+                          data-count={day.count}
+                        >
+                          <div 
+                            className="admin-chart-bar" 
+                            style={{ height: `${barHeight}%` }} 
+                          />
+                        </div>
+                        <span className="admin-chart-label">{day.label}</span>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            )}
+          </div>
+
+          {/* TRAFFIC SUMMARY & RECENT LOGS */}
+          <div className="admin-analytics-card">
+            <h3>Traffic Metrics & Logs</h3>
+            <p>Summary of unique sessions</p>
+            
+            {loadingStats ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                <div className="admin-preview-spinner" />
+              </div>
+            ) : (
+              <>
+                <div className="admin-anal-stats-grid">
+                  <div className="admin-anal-stat-box">
+                    <span className="admin-anal-stat-label">Total Visits</span>
+                    <span className="admin-anal-stat-val">{visitStats.totalVisits}</span>
+                  </div>
+                  <div className="admin-anal-stat-box">
+                    <span className="admin-anal-stat-label">Visits Today</span>
+                    <span className="admin-anal-stat-val">{visitStats.visitsToday}</span>
+                  </div>
+                </div>
+
+                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--admin-text-dark)', marginBottom: '8px', display: 'block' }}>
+                  Recent Sessions
+                </span>
+                <div className="admin-log-list">
+                  {visitStats.recentVisits.map((v, idx) => {
+                    const timeStr = v.created_at
+                      ? new Date(v.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+                      : '--:--';
+                    const dateLabel = v.created_at
+                      ? new Date(v.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                      : '';
+                    return (
+                      <div key={v.id || idx} className="admin-log-item">
+                        <span className="admin-log-path" title={v.page_path}>
+                          {v.page_path}
+                        </span>
+                        <span className="admin-log-time">
+                          {dateLabel} {timeStr}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  {visitStats.recentVisits.length === 0 && (
+                    <div style={{ textAlign: 'center', color: 'var(--admin-text-muted)', fontSize: '12px', padding: '20px 0' }}>
+                      No sessions logged yet.
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
 

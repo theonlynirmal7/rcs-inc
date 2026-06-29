@@ -52,7 +52,20 @@ function ScrollRevealManager() {
   return null;
 }
 
+import { dbService } from './supabase';
+
 export default function App() {
+  useEffect(() => {
+    // Record visit once per session
+    if (!sessionStorage.getItem('rcs_session_recorded')) {
+      dbService.recordVisit(window.location.pathname)
+        .then(() => {
+          sessionStorage.setItem('rcs_session_recorded', 'true');
+        })
+        .catch(console.error);
+    }
+  }, []);
+
   return (
     <Router>
       <ScrollToTop />
