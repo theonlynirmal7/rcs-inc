@@ -177,6 +177,133 @@
   }
 }
 
+/* ===== HOW IT WORKS ===== */
+.how-it-works-section {
+  padding: 96px 0;
+  background: #FAFAFA;
+  border-top: 1px solid var(--gray-200);
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  margin-top: 64px;
+  position: relative;
+}
+
+@keyframes flowLine {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 16px 0; /* Exactly matches the background-size width (16px) for a seamless 100% loop */
+  }
+}
+
+/* Horizontal connector line on desktop */
+.steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 22px; /* Center of the 44px step circle */
+  left: 16%;
+  right: 16%;
+  height: 2px;
+  background-image: linear-gradient(to right, var(--gray-300) 60%, transparent 60%);
+  background-size: 16px 2px;
+  background-repeat: repeat-x;
+  animation: flowLine 1.2s linear infinite;
+  z-index: 0;
+  transition: background-image 0.4s ease;
+}
+
+/* Hovering over any card turns the connector line red and speeds up the flow */
+.steps-grid:has(.step-card:hover)::before {
+  background-image: linear-gradient(to right, var(--red) 60%, transparent 60%);
+  animation-duration: 0.4s;
+}
+
+.step-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.step-number-container {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-number {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--black);
+  transition: all 0.3s ease;
+}
+
+.step-card:hover .step-number-container {
+  transform: scale(1.12);
+  border-color: var(--red);
+  box-shadow: 0 4px 14px rgba(212, 32, 39, 0.15);
+}
+
+.step-card:hover .step-number {
+  color: var(--red);
+}
+
+.step-content {
+  flex-grow: 1;
+}
+
+.step-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--black);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+  transition: all 0.3s ease;
+}
+
+.step-card:hover .step-title {
+  color: var(--red);
+}
+
+.step-desc {
+  font-size: 14.5px;
+  color: var(--gray-600);
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* Responsive columns for steps */
+@media (max-width: 900px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  /* Hide horizontal line on mobile stack */
+  .steps-grid::before {
+    display: none;
+  }
+}
+
 /* ===== STATS BAR ===== */
 .stats-bar {
   background: #FFFFFF;
@@ -321,14 +448,14 @@
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin-top: 40px;
 }
 
 @media (max-width: 1200px) {
   .features-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -833,6 +960,126 @@
   height: 2.5px;
   background: var(--red);
   border-radius: 100px;
+}
+
+/* ===== VEHICLE WIZARD PANEL ===== */
+.vehicle-search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeInUp 0.4s ease;
+}
+
+.vehicle-search-description {
+  font-size: 14.5px;
+  color: var(--gray-600);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.vehicle-wizard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.wizard-dropdown-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wizard-dropdown-group label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.wizard-select {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--black);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23737373' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 14px) center;
+  background-size: 18px;
+  padding-right: 36px;
+  transition: var(--transition);
+}
+
+.wizard-select:hover:not(:disabled) {
+  border-color: var(--gray-300);
+  background-color: var(--gray-100);
+}
+
+.wizard-select:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(212, 32, 39, 0.12);
+  outline: none;
+  background-color: var(--white);
+}
+
+.wizard-select:disabled {
+  background: var(--gray-100);
+  color: var(--gray-400);
+  border-color: var(--gray-200);
+  cursor: not-allowed;
+}
+
+.wizard-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.wizard-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--black);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.wizard-submit-btn:hover:not(:disabled) {
+  background: var(--red);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 32, 39, 0.2);
+}
+
+.wizard-submit-btn:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .vehicle-wizard-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .wizard-submit-btn {
+    width: 100%;
+  }
 }
 
 .vin-search-container {

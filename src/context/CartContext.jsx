@@ -20,7 +20,7 @@ export function CartProvider({ children }) {
       if (existing) {
         return prev.map(item =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + qty }
+            ? { ...item, quantity: qty }
             : item
         );
       }

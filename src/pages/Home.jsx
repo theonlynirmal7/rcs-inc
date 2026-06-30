@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock, Package, Tag, Car, ShieldCheck, AlertTriangle, HelpCircle, Camera, Upload } from 'lucide-react';
+import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock, Package, Tag, Car, ShieldCheck, AlertTriangle, HelpCircle, Camera, Upload, Sliders } from 'lucide-react';
 import { getProducts, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import heroParts from '../assets/hero-parts.png';
@@ -148,7 +148,27 @@ export default function Home() {
   const featured = products.slice(0, 4);
 
   const navigate = useNavigate();
-  const [searchMode, setSearchMode] = useState('parts'); // 'parts', 'vin', or 'image'
+  const [searchMode, setSearchMode] = useState('parts'); // 'parts', 'vin', 'image', or 'vehicle'
+  const [selectedMake, setSelectedMake] = useState('');
+  const [selectedModel, setSelectedModel] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+
+  const vehicleData = {
+    'Maruti Suzuki': ['Swift', 'WagonR', 'Dzire', 'Baleno', 'Brezza', 'Ertiga', 'Alto'],
+    'Hyundai': ['i10', 'i20', 'Creta', 'Verna', 'Venue', 'Santro'],
+    'Honda': ['City', 'Amaze', 'Civic', 'Jazz', 'WR-V'],
+    'Tata Motors': ['Nexon', 'Tiago', 'Harrier', 'Safari', 'Altroz', 'Punch'],
+    'Mahindra': ['Scorpio', 'XUV700', 'Thar', 'Bolero', 'XUV300'],
+    'Toyota': ['Innova', 'Fortuner', 'Glanza', 'Urban Cruiser', 'Corolla']
+  };
+
+  const vehicleYears = ['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010'];
+
+  const handleVehicleSearch = () => {
+    if (selectedModel) {
+      navigate(`/products?search=${encodeURIComponent(selectedModel)}`);
+    }
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [catOpen, setCatOpen] = useState(false);
@@ -721,7 +741,6 @@ export default function Home() {
     { icon: <Package size={28} />, title: '500+ SKUs Ready to Dispatch', desc: 'A massive wholesale inventory of AC compressors, condensers, blowers, and valves.' },
     { icon: <Truck size={28} />, title: 'Same-Day Shipping', desc: 'Quick dispatch and fast transit across India to minimize vehicle downtime.' },
     { icon: <Headphones size={28} />, title: 'Technical Support', desc: 'Get expert guidance and parts compatibility identification via WhatsApp.' },
-    { icon: <Tag size={28} />, title: 'Bulk Order Pricing', desc: 'Competitive wholesale rates and volume discounts tailored for workshops.' },
   ];
 
   const vehicleTypes = [
@@ -797,6 +816,14 @@ export default function Home() {
                 >
                   <Search size={15} />
                   <span>Search Parts / OEM</span>
+                </button>
+                <button
+                  className={`search-tab-btn ${searchMode === 'vehicle' ? 'active' : ''}`}
+                  onClick={() => { setSearchMode('vehicle'); }}
+                  id="tab-search-vehicle"
+                >
+                  <Sliders size={15} />
+                  <span>Find by Vehicle</span>
                 </button>
                 <button
                   className={`search-tab-btn ${searchMode === 'vin' ? 'active' : ''}`}
@@ -936,6 +963,87 @@ export default function Home() {
                     </div>
                   </div>
                 </>
+              ) : searchMode === 'vehicle' ? (
+                /* VEHICLE FINDER WIZARD PANEL */
+                <div className="vehicle-search-container">
+                  <p className="vehicle-search-description">
+                    Select your vehicle's manufacturer make, model, and year to instantly search matching AC compressors, condensers, and other spare parts.
+                  </p>
+
+                  <div className="vehicle-wizard-grid">
+                    <div className="wizard-dropdown-group">
+                      <label htmlFor="wizard-make">Vehicle Make</label>
+                      <div className="select-wrapper">
+                        <select
+                          id="wizard-make"
+                          value={selectedMake}
+                          onChange={(e) => {
+                            setSelectedMake(e.target.value);
+                            setSelectedModel('');
+                            setSelectedYear('');
+                          }}
+                          className="wizard-select"
+                        >
+                          <option value="">Select Manufacturer</option>
+                          {Object.keys(vehicleData).map(make => (
+                            <option key={make} value={make}>{make}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="wizard-dropdown-group">
+                      <label htmlFor="wizard-model">Vehicle Model</label>
+                      <div className="select-wrapper">
+                        <select
+                          id="wizard-model"
+                          value={selectedModel}
+                          disabled={!selectedMake}
+                          onChange={(e) => {
+                            setSelectedModel(e.target.value);
+                            setSelectedYear('');
+                          }}
+                          className="wizard-select"
+                        >
+                          <option value="">Select Model</option>
+                          {selectedMake && vehicleData[selectedMake].map(model => (
+                            <option key={model} value={model}>{model}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="wizard-dropdown-group">
+                      <label htmlFor="wizard-year">Manufacturing Year</label>
+                      <div className="select-wrapper">
+                        <select
+                          id="wizard-year"
+                          value={selectedYear}
+                          disabled={!selectedModel}
+                          onChange={(e) => setSelectedYear(e.target.value)}
+                          className="wizard-select"
+                        >
+                          <option value="">Select Year</option>
+                          {vehicleYears.map(year => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="wizard-actions-row">
+                    <button
+                      className="wizard-submit-btn"
+                      onClick={handleVehicleSearch}
+                      disabled={!selectedMake || !selectedModel || !selectedYear}
+                      type="button"
+                    >
+                      <Search size={16} />
+                      <span>Find Compatible Parts</span>
+                    </button>
+                  </div>
+                </div>
               ) : searchMode === 'vin' ? (
                 /* VIN / CHASSIS LOOKUP UI */
                 <div className="vin-search-container">
@@ -1267,6 +1375,52 @@ export default function Home() {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW ORDERING WORKS */}
+      <section className="how-it-works-section" id="how-it-works">
+        <div className="container">
+          <div className="section-label">How Ordering Works <span className="dot"></span></div>
+          <h2 className="section-title">Three steps to your parts</h2>
+          
+          <div className="steps-grid">
+            <div className="step-card animate-fade-in-up">
+              <div className="step-number-container">
+                <span className="step-number">1</span>
+              </div>
+              <div className="step-content">
+                <h4 className="step-title">Browse and Add to Basket</h4>
+                <p className="step-desc">
+                  Find the parts you need by category, brand, or vehicle. Add them to your Enquiry Basket — no registration required.
+                </p>
+              </div>
+            </div>
+            
+            <div className="step-card animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <div className="step-number-container">
+                <span className="step-number">2</span>
+              </div>
+              <div className="step-content">
+                <h4 className="step-title">Send your list via WhatsApp</h4>
+                <p className="step-desc">
+                  Tap "Send Enquiry via WhatsApp" — your selected parts list is pre-filled. We respond with availability and pricing within the hour.
+                </p>
+              </div>
+            </div>
+            
+            <div className="step-card animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="step-number-container">
+                <span className="step-number">3</span>
+              </div>
+              <div className="step-content">
+                <h4 className="step-title">Confirm and we dispatch</h4>
+                <p className="step-desc">
+                  Approve the quote on WhatsApp. We dispatch same day or next day to anywhere in India via our logistics network.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

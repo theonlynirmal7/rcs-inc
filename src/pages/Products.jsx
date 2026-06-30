@@ -33,7 +33,9 @@ export default function Products() {
     .filter(p => brand === 'All' || p.brand === brand)
     .filter(p =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.toLowerCase())
+      p.description.toLowerCase().includes(search.toLowerCase()) ||
+      (p.compatible_vehicles && p.compatible_vehicles.toLowerCase().includes(search.toLowerCase())) ||
+      (p.vehicle_type && p.vehicle_type.toLowerCase().includes(search.toLowerCase()))
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 

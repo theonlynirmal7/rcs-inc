@@ -92,7 +92,6 @@ export default function Admin() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterBrand, setFilterBrand] = useState('All');
   const [filterCategory, setFilterCategory] = useState('All');
-  const [filterStock, setFilterStock] = useState('All');
   const [filterVehicleType, setFilterVehicleType] = useState('All');
 
   // Pagination state
@@ -213,17 +212,16 @@ export default function Admin() {
 
       const brandFilter = filterBrand === 'All' || p.brand === filterBrand;
       const catFilter = filterCategory === 'All' || p.category === filterCategory;
-      const stockFilter = filterStock === 'All' || p.stock_status === filterStock;
       const typeFilter = filterVehicleType === 'All' || p.vehicle_type === filterVehicleType;
 
-      return queryMatch && brandFilter && catFilter && stockFilter && typeFilter;
+      return queryMatch && brandFilter && catFilter && typeFilter;
     });
-  }, [products, searchQuery, filterBrand, filterCategory, filterStock, filterVehicleType]);
+  }, [products, searchQuery, filterBrand, filterCategory, filterVehicleType]);
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, filterBrand, filterCategory, filterStock, filterVehicleType]);
+  }, [searchQuery, filterBrand, filterCategory, filterVehicleType]);
 
   // Paginated products
   const paginatedProducts = useMemo(() => {
@@ -1080,17 +1078,6 @@ export default function Admin() {
                 </option>
               ))}
             </select>
-
-            <select
-              className="admin-filter-select"
-              value={filterStock}
-              onChange={(e) => setFilterStock(e.target.value)}
-            >
-              <option value="All">All Stock Status</option>
-              <option value="In Stock">In Stock</option>
-              <option value="Out of Stock">Out of Stock</option>
-              <option value="Low Stock">Low Stock</option>
-            </select>
           </div>
         </div>
 
@@ -1141,7 +1128,6 @@ export default function Admin() {
                   <th>OEM Number</th>
                   <th>Brand</th>
                   <th>Category</th>
-                  <th>Stock Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -1163,9 +1149,6 @@ export default function Admin() {
                       </td>
                       <td>
                         <div className="admin-skeleton-line badge" />
-                      </td>
-                      <td>
-                        <div className="admin-skeleton-line" style={{ width: '70px' }} />
                       </td>
                       <td>
                         <div className="admin-skeleton-line actions" />
@@ -1202,20 +1185,6 @@ export default function Admin() {
                       <td>
                         <span className={`admin-badge ${p.category.toLowerCase().replace(/\s+/g, '-')}`}>
                           {p.category}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`admin-stock ${
-                            p.stock_status === 'In Stock'
-                              ? 'in'
-                              : p.stock_status === 'Low Stock'
-                              ? 'low'
-                              : 'out'
-                          }`}
-                        >
-                          <span className="admin-stock-dot" />
-                          {p.stock_status || 'In Stock'}
                         </span>
                       </td>
                       <td>
@@ -1406,19 +1375,6 @@ export default function Admin() {
                         <span style={{ background: 'var(--admin-bg)', padding: '4px 10px', fontSize: '11px', borderRadius: '100px', fontWeight: 700 }}>
                           Vehicle: {selectedProduct?.vehicle_type || 'N/A'}
                         </span>
-                        <span
-                          className={`admin-stock ${
-                            selectedProduct?.stock_status === 'In Stock'
-                              ? 'in'
-                              : selectedProduct?.stock_status === 'Low Stock'
-                              ? 'low'
-                              : 'out'
-                          }`}
-                          style={{ marginLeft: '12px' }}
-                        >
-                          <span className="admin-stock-dot" />
-                          {selectedProduct?.stock_status || 'In Stock'}
-                        </span>
                       </div>
 
                       <div style={{ borderTop: '1px solid var(--admin-border)', paddingTop: '14px' }}>
@@ -1525,20 +1481,7 @@ export default function Admin() {
                       />
                     </div>
 
-                    <div className="admin-form-group">
-                      <label htmlFor="form-stock">Stock Status</label>
-                      <select
-                        id="form-stock"
-                        name="stock_status"
-                        value={formState.stock_status}
-                        onChange={handleFormChange}
-                        className="admin-form-select"
-                      >
-                        <option value="In Stock">In Stock</option>
-                        <option value="Out of Stock">Out of Stock</option>
-                        <option value="Low Stock">Low Stock</option>
-                      </select>
-                    </div>
+
 
                     <div className="admin-form-group full">
                       <label htmlFor="form-desc">Description</label>

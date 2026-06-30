@@ -6,13 +6,33 @@ import './ProductCard.css';
 
 export default function ProductCard({ product }) {
   const [selectedBrand, setSelectedBrand] = useState(product.brand);
-  const { addToCart } = useCart();
-  const [added, setAdded] = useState(false);
+  const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
+  const [showAddedFeedback, setShowAddedFeedback] = useState(false);
 
-  const handleAddToCart = () => {
+  const cartItem = cart.find(item => item.id === product.id);
+
+  const handleInitialAdd = () => {
     addToCart({ ...product, brand: selectedBrand }, 1);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    setShowAddedFeedback(true);
+    setTimeout(() => {
+      setShowAddedFeedback(false);
+    }, 1000);
+  };
+
+  const handleIncrement = () => {
+    if (cartItem) {
+      updateQuantity(product.id, cartItem.quantity + 1);
+    }
+  };
+
+  const handleDecrement = () => {
+    if (cartItem) {
+      if (cartItem.quantity <= 1) {
+        removeFromCart(product.id);
+      } else {
+        updateQuantity(product.id, cartItem.quantity - 1);
+      }
+    }
   };
 
   return (
@@ -53,16 +73,29 @@ export default function ProductCard({ product }) {
         </div>
 
         <div className="product-card-footer">
-          <button
-            className={`add-to-cart-btn ${added ? 'added' : ''}`}
-            onClick={handleAddToCart}
-            id={`add-to-cart-${product.id}`}
-          >
-            <ShoppingBag size={15} />
-            {added ? 'Added ✓' : 'Add to Basket'}
-          </button>
+          {cartItem && !showAddedFeedback ? (
+            <div className="product-qty-selector blinkit animate-fade-in">
+              <button className="qty-btn" onClick={handleDecrement} type="button">—</button>
+              <span className="qty-value">{cartItem.quantity}</span>
+              <button className="qty-btn" onClick={handleIncrement} type="button">+</button>
+            </div>
+          ) : (
+            <button
+              className={`blinkit-add-btn ${showAddedFeedback ? 'added-success' : ''}`}
+              onClick={handleInitialAdd}
+              id={`add-to-cart-${product.id}`}
+              disabled={showAddedFeedback}
+              type="button"
+            >
+              <span>{showAddedFeedback ? 'Added ✓' : 'Add to Basket'}</span>
+              <span className="plus-icon">{showAddedFeedback ? '✓' : '+'}</span>
+            </button>
+          )}
+
           <a
-            href={`https://wa.me/919962173870?text=${encodeURIComponent(`Hello! I'm interested in inquiring about the following product:\n\n*Product:* ${product.name}\n*Brand:* ${selectedBrand}\n*Category:* ${product.category}`)}`}
+            href={`https://wa.me/919962173870?text=${encodeURIComponent(
+              `Hello! I'm interested in enquiring about the following product:\n\n*Product:* ${product.name}\n*Brand:* ${selectedBrand}\n*Category:* ${product.category}\n*Quantity:* ${cartItem ? cartItem.quantity : 1}\n\nPlease share pricing and availability.`
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
             className="whatsapp-order-btn"
