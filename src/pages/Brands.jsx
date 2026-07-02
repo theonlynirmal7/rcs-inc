@@ -174,6 +174,11 @@ const brandInfo = {
     origin: 'USA',
     specialty: 'Heavy-Duty Compressors, EV Climate Control Systems',
   },
+  'Formula': {
+    desc: 'Renowned brand producing high-purity refrigerants, AC system flush chemicals, and premium PAG/POE compressor oils.',
+    origin: 'Global',
+    specialty: 'Refrigerant Gases, Compressor Oils, Flush Solvents',
+  },
 };
 
 const brandLogos = {
@@ -210,6 +215,7 @@ const brandLogos = {
   'Tata': '/brand-logos/tata.png',
   'Lucas TVS': '/manufacturer-logos/lucas_tvs.png',
   'TCCI': '/manufacturer-logos/tcci.png',
+  'Formula': '/manufacturer-logos/formula.png',
 };
 
 export default function Brands() {

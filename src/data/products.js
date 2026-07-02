@@ -1292,5 +1292,6 @@ export const brands = [
   'Tata',
   'Taco International',
   'Lucas TVS',
-  'TCCI'
+  'TCCI',
+  'Formula'
 ];
