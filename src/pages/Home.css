@@ -685,31 +685,42 @@
 
   /* Search Tabs & VIN styling on Mobile */
   .search-tabs {
-    overflow-x: auto;
-    white-space: nowrap;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     width: 100%;
-    padding-bottom: 6px;
-    margin-bottom: 12px;
-    border-bottom: 1.5px solid #F1F3F5;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Hide standard scrollbar for Firefox */
-  }
-  
-  .search-tabs::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome/Safari */
+    padding-bottom: 0;
+    margin-bottom: 16px;
+    border-bottom: none;
   }
   
   .search-tab-btn {
-    flex: 0 0 auto;
-    padding: 8px 12px;
-    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 6px;
+    padding: 10px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-600);
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    text-align: center;
+    transition: var(--transition);
+    width: 100%;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .search-tab-btn.active {
+    background: var(--red);
+    color: var(--white);
+    border-color: var(--red);
   }
 
   .search-tab-btn.active::after {
-    bottom: -7.5px;
+    display: none !important;
   }
 
   .vin-help-header {
