@@ -683,49 +683,7 @@
     font-size: 40px;
   }
 
-  /* Search Tabs & VIN styling on Mobile */
-  .search-tabs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    width: 100%;
-    margin-bottom: 16px;
-    border-bottom: none;
-    overflow-x: visible;
-    white-space: normal;
-  }
-  
-  .search-tab-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px 8px;
-    font-size: 12.5px;
-    font-weight: 700;
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-md);
-    color: var(--gray-600);
-    position: relative;
-    transition: var(--transition);
-  }
 
-  .search-tab-btn:hover {
-    color: var(--black);
-    background: var(--gray-100);
-  }
-
-  .search-tab-btn.active {
-    background: #FFFFFF;
-    border-color: var(--red);
-    color: var(--red);
-    box-shadow: 0 4px 12px rgba(212, 32, 39, 0.08);
-  }
-
-  .search-tab-btn.active::after {
-    display: none !important;
-  }
 
   .vin-help-header {
     flex-direction: column;
@@ -937,6 +895,7 @@
 /* VIN Lookup & Tabs Styling */
 .search-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   border-bottom: 1.5px solid #F1F3F5;
   padding-bottom: 8px;
@@ -2505,6 +2464,51 @@
   .vin-guide-img {
     max-width: 280px;
     margin: 0 auto;
+  }
+}
+
+@media (max-width: 800px) {
+  .search-tabs {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .search-tab-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 10px 8px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    background: var(--gray-50) !important;
+    border: 1px solid var(--gray-200) !important;
+    border-radius: var(--radius-md) !important;
+    color: var(--gray-600) !important;
+    position: relative !important;
+    transition: var(--transition) !important;
+    flex: none !important;
+  }
+
+  .search-tab-btn:hover {
+    color: var(--black) !important;
+    background: var(--gray-100) !important;
+  }
+
+  .search-tab-btn.active {
+    background: #FFFFFF !important;
+    border-color: var(--red) !important;
+    color: var(--red) !important;
+    box-shadow: 0 4px 12px rgba(212, 32, 39, 0.08) !important;
+  }
+
+  .search-tab-btn.active::after {
+    display: none !important;
   }
 }
 
