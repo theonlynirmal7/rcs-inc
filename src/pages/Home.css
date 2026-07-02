@@ -689,9 +689,10 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     width: 100%;
-    padding-bottom: 0;
     margin-bottom: 16px;
     border-bottom: none;
+    overflow-x: visible;
+    white-space: normal;
   }
   
   .search-tab-btn {
@@ -700,23 +701,26 @@
     justify-content: center;
     gap: 6px;
     padding: 10px 8px;
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 700;
-    color: var(--gray-600);
     background: var(--gray-50);
     border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    text-align: center;
+    border-radius: var(--radius-md);
+    color: var(--gray-600);
+    position: relative;
     transition: var(--transition);
-    width: 100%;
-    white-space: normal;
-    line-height: 1.2;
+  }
+
+  .search-tab-btn:hover {
+    color: var(--black);
+    background: var(--gray-100);
   }
 
   .search-tab-btn.active {
-    background: var(--red);
-    color: var(--white);
+    background: #FFFFFF;
     border-color: var(--red);
+    color: var(--red);
+    box-shadow: 0 4px 12px rgba(212, 32, 39, 0.08);
   }
 
   .search-tab-btn.active::after {
