@@ -249,4 +249,18 @@
   .toolbar-actions {
     justify-content: space-between;
   }
+
+  .filters-bar.open {
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-chips {
+    gap: 6px;
+  }
 }
