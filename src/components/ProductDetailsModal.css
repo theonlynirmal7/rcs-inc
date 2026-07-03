@@ -1,0 +1,498 @@
+/* ===== PRODUCT DETAILS MODAL ===== */
+.pd-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: pdOverlayFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pd-modal-card {
+  background: var(--white);
+  border: 2px solid var(--black);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 950px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-xl);
+  animation: pdModalScaleIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pd-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-600);
+  cursor: pointer;
+  z-index: 10;
+  transition: var(--transition);
+}
+
+.pd-modal-close:hover {
+  background: var(--gray-50);
+  border-color: var(--black);
+  color: var(--black);
+}
+
+.pd-modal-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+  padding: 32px;
+}
+
+/* ===== LEFT SIDE: PRODUCT INFO ===== */
+.pd-product-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-badge {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  color: var(--black);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.pd-title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--black);
+  line-height: 1.2;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.pd-brand-label {
+  font-size: 13.5px;
+  color: var(--gray-500);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.pd-image-wrapper {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.pd-image-wrapper img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.pd-image-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+.pd-pricing-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.pd-stock-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #15803d;
+}
+
+.stock-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 1.8s infinite;
+}
+
+.pd-description {
+  font-size: 14.5px;
+  color: var(--gray-600);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.pd-brand-selector-wrapper {
+  margin-bottom: 28px;
+}
+
+.pd-brand-selector-wrapper label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.pd-brand-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--black);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--black);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pd-actions-row {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  align-items: center;
+}
+
+.pd-qty-selector.blinkit {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--black);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 48px;
+  background: var(--white);
+}
+
+.pd-qty-btn {
+  width: 44px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--black);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.pd-qty-btn:hover {
+  background: var(--gray-50);
+  color: var(--red);
+}
+
+.pd-qty-value {
+  padding: 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--black);
+  min-width: 32px;
+  text-align: center;
+}
+
+.pd-add-btn {
+  flex: 1;
+  height: 48px;
+  background: var(--white);
+  color: var(--black);
+  border: 1.5px solid var(--black);
+  border-radius: var(--radius-sm);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pd-add-btn:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+.pd-add-btn.success {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: var(--white);
+  cursor: default;
+}
+
+.pd-whatsapp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 20px;
+  height: 48px;
+  background: var(--green);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.pd-whatsapp-btn:hover {
+  background: var(--green-dark);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+}
+
+/* ===== RIGHT SIDE: INTERACTIVE DIAGRAM ===== */
+.pd-diagram-section {
+  display: flex;
+  flex-direction: column;
+  background: var(--gray-50);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.pd-diagram-title {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--black);
+  margin-bottom: 2px;
+}
+
+.pd-diagram-desc {
+  font-size: 12.5px;
+  color: var(--gray-500);
+  margin-bottom: 16px;
+}
+
+.pd-diagram-wrapper {
+  background: #FFFFFF;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+  margin-bottom: 16px;
+}
+
+.ac-loop-svg {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+}
+
+/* ===== SVG DIAGRAM STYLING ===== */
+.diag-group {
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+/* Dim non-highlighted groups slightly to draw emphasis */
+.ac-loop-svg:hover .diag-group {
+  opacity: 0.45;
+}
+
+/* Hover and active overrides */
+.ac-loop-svg:hover .diag-group:hover,
+.diag-group.active {
+  opacity: 1 !important;
+}
+
+.diag-group rect, 
+.diag-group circle,
+.diag-group path,
+.diag-group text {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Glow/Highlight effect on Active/Hovered elements */
+.diag-group.active rect,
+.diag-group:hover rect {
+  stroke: var(--red) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 6px rgba(212, 32, 39, 0.6));
+}
+
+.diag-group.active circle,
+.diag-group:hover circle {
+  stroke: var(--red) !important;
+  stroke-width: 3px !important;
+}
+
+/* Pulsing effect for active part */
+.diag-group.active {
+  animation: svgPulse 2s infinite ease-in-out;
+}
+
+@keyframes svgPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(212, 32, 39, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(212, 32, 39, 0.9));
+  }
+}
+
+/* spinning fan micro-animation */
+.spinning-fan {
+  transform-origin: center;
+  animation: spin 3s linear infinite;
+  transition: filter 0.3s ease;
+}
+
+.diag-group.active .spinning-fan,
+.diag-group:hover .spinning-fan {
+  filter: drop-shadow(0 0 5px rgba(212, 32, 39, 0.7));
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pdOverlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
+}
+
+@keyframes pdModalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ===== INFORMATION BOX ===== */
+.pd-info-box {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  margin-top: auto;
+}
+
+.pd-info-box-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.pd-info-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+.pd-info-box h4 {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--black);
+}
+
+.pd-info-desc {
+  font-size: 13px;
+  color: var(--gray-600);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.pd-info-pos {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-bottom: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .pd-modal-card {
+    max-width: 650px;
+    max-height: 95vh;
+  }
+
+  .pd-modal-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .pd-image-wrapper {
+    height: 200px;
+  }
+}
+
+@media (max-width: 500px) {
+  .pd-modal-card {
+    border-radius: 0;
+    border: none;
+    max-height: 100vh;
+  }
+  
+  .pd-modal-overlay {
+    padding: 0;
+  }
+
+  .pd-modal-grid {
+    padding: 20px 16px;
+    gap: 20px;
+  }
+
+  .pd-title {
+    font-size: 22px;
+  }
+
+  .pd-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pd-qty-selector.blinkit {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .pd-diagram-section {
+    padding: 16px;
+  }
+}
