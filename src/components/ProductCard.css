@@ -103,12 +103,6 @@
   color: var(--black);
   line-height: 1.3;
   margin-bottom: 8px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.product-name:hover {
-  color: var(--red);
 }
 
 .product-desc {

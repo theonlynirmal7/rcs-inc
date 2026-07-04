@@ -12,7 +12,7 @@ export const supabase = isSupabaseConfigured
 // IndexedDB Helper for fallback offline database
 const openIndexedDB = () => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('rcs_local_db', 2);
+    const request = indexedDB.open('rcs_local_db', 3);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains('products')) {
@@ -23,6 +23,9 @@ const openIndexedDB = () => {
       }
       if (!db.objectStoreNames.contains('site_visits')) {
         db.createObjectStore('site_visits', { keyPath: 'id', autoIncrement: true });
+      }
+      if (!db.objectStoreNames.contains('diagrams')) {
+        db.createObjectStore('diagrams', { keyPath: 'id' });
       }
     };
     request.onsuccess = (e) => resolve(e.target.result);
@@ -97,6 +100,28 @@ const initializeLocalDataIfEmpty = async () => {
         });
       }
     }
+  }
+
+  const dbDiagrams = await getLocalData('diagrams');
+  if (dbDiagrams.length === 0) {
+    await saveLocalData('diagrams', {
+      id: 'hvac-exploded-car',
+      name: 'Car AC Exploded Parts Catalog',
+      image_url: '/hvac-exploded-view.png',
+      hotspots: [
+        { id: 1, component: 'Compressor', x: 18, y: 65, oem: '95200-68LA1', stock: 'In Stock', description: 'Compresses low-pressure refrigerant gas into high-pressure gas.' },
+        { id: 2, component: 'Condenser', x: 35, y: 42, oem: '95310-68LA0', stock: 'In Stock', description: 'Dissipates heat from the refrigerant gas, converting it to liquid.' },
+        { id: 3, component: 'Evaporator', x: 62, y: 50, oem: '95411-68LA0', stock: 'In Stock', description: 'Absorbs heat from the cabin, cooling the incoming air.' },
+        { id: 4, component: 'Expansion Valve', x: 52, y: 58, oem: '95431-68LA0', stock: 'In Stock', description: 'Regulates flow of liquid refrigerant into the evaporator.' },
+        { id: 5, component: 'Blower Motor', x: 78, y: 45, oem: '74250-68LA1', stock: 'In Stock', description: 'Forces ambient or cabin air through the cooling/heating coils.' },
+        { id: 6, component: 'Receiver Drier', x: 48, y: 30, oem: '95330-68LA1', stock: 'In Stock', description: 'Filters moisture and debris from the liquid refrigerant.' },
+        { id: 7, component: 'Hoses', x: 28, y: 50, oem: '95720-68LA2', stock: 'In Stock', description: 'High and low pressure lines connecting system components.' },
+        { id: 8, component: 'Cooling Fan', x: 40, y: 72, oem: '17120-68LA0', stock: 'In Stock', description: 'Draws airflow through the condenser to improve heat exchange.' },
+        { id: 9, component: 'Cabin Filter', x: 72, y: 28, oem: '95861-68LA0', stock: 'In Stock', description: 'Cleans air flowing into the cabin, removing dust and pollen.' },
+        { id: 10, component: 'Pressure Switch', x: 50, y: 20, oem: '95361-68LA0', stock: 'In Stock', description: 'Monitors refrigerant pressure to protect the compressor.' },
+        { id: 11, component: 'HVAC Unit', x: 82, y: 70, oem: '74100-68LA0', stock: 'In Stock', description: 'Climate control chamber housing evaporator, core, and doors.' }
+      ]
+    });
   }
 };
 
@@ -495,4 +520,22 @@ export const dbService = {
       recentVisits
     };
   }
+};
+
+export const getDiagram = async (id) => {
+  try {
+    if (isSupabaseConfigured) {
+      const { data, error } = await supabase
+        .from('diagrams')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (!error && data) return data;
+    }
+  } catch (err) {
+    console.error('Supabase diagram fetch error, falling back:', err);
+  }
+  // Local fallback
+  const list = await getLocalData('diagrams');
+  return list.find(d => d.id === id) || null;
 };

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock, Package, Tag, Car, ShieldCheck, AlertTriangle, HelpCircle, Camera, Upload, Sliders } from 'lucide-react';
 import { getProducts, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import ExplodedDiagram from '../components/ExplodedDiagram';
 import heroParts from '../assets/hero-parts.png';
 import { dbService } from '../supabase';
 import './Home.css';
@@ -1177,6 +1178,21 @@ export default function Home() {
                             <li><strong>Cabin Pollen Filter:</strong> {vinResult.specs.pollenFilter}</li>
                           </ul>
                         </div>
+                      </div>
+
+                      {/* Interactive exploded AC diagram */}
+                      <div className="interactive-catalog-section" style={{ padding: '0 24px', marginBottom: '16px' }}>
+                        <h5 className="specs-col-title" style={{ marginTop: '24px', marginBottom: '8px', color: 'var(--red)', fontSize: '14.5px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Interactive AC System Exploded Diagram Catalog
+                        </h5>
+                        <ExplodedDiagram
+                          diagramId="hvac-exploded-car"
+                          compatiblePartIds={vinResult.compatiblePartIds}
+                          vin={vinResult.chassis}
+                          make={vinResult.make}
+                          model={vinResult.model}
+                          year={vinResult.year}
+                        />
                       </div>
 
                       <div className="compatible-parts-section">

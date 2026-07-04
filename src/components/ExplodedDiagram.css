@@ -1,0 +1,414 @@
+/* ===== INTERACTIVE EXPLODED DIAGRAM MODULE ===== */
+
+.exploded-catalog-container {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 24px;
+  margin-top: 32px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+/* Viewport Area */
+.diagram-viewport-wrapper {
+  position: relative;
+  background: #111111;
+  border-right: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+}
+
+.diagram-viewport-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #222;
+  background: #161616;
+}
+
+.diagram-viewport-header h4 {
+  margin: 0;
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.diagram-helper-hint {
+  font-size: 11px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.diagram-viewport {
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  position: relative;
+  cursor: grab;
+  user-select: none;
+}
+
+.diagram-viewport.dragging {
+  cursor: grabbing;
+}
+
+.diagram-stage {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagram-bg-img {
+  max-width: 95%;
+  max-height: 95%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Hotspots */
+.hotspot-marker {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid var(--white);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+.hotspot-marker:hover {
+  background: var(--red);
+  border-color: var(--white);
+  transform: translate(-50%, -50%) scale(1.18);
+  box-shadow: 0 0 15px rgba(212, 32, 39, 0.8);
+  z-index: 20;
+}
+
+.hotspot-marker.active {
+  background: var(--red);
+  border-color: var(--white);
+  transform: translate(-50%, -50%) scale(1.2);
+  box-shadow: 0 0 20px rgba(212, 32, 39, 0.9);
+  z-index: 20;
+}
+
+.hotspot-marker.active::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--red);
+  animation: hotspotPulse 1.8s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes hotspotPulse {
+  0% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* Viewport Controls */
+.diagram-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 50;
+}
+
+.control-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: rgba(22, 22, 22, 0.9);
+  border: 1px solid #333;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.control-btn:hover {
+  background: var(--red);
+  border-color: var(--red);
+  transform: translateY(-2px);
+}
+
+/* Side Panel Area */
+.diagram-side-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 540px;
+  overflow-y: auto;
+}
+
+.panel-placeholder-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  color: var(--gray-400);
+  padding: 0 16px;
+}
+
+.panel-placeholder-icon {
+  margin-bottom: 16px;
+  color: var(--gray-300);
+}
+
+.panel-placeholder-wrapper h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.panel-placeholder-wrapper p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Selected Component Card */
+.component-details-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.component-details-header {
+  border-bottom: 1px solid var(--gray-100);
+  padding-bottom: 16px;
+}
+
+.component-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.hotspot-id-badge {
+  background: #111;
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.stock-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.stock-status-badge.in-stock {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+}
+
+.stock-status-badge.out-of-stock {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.component-name-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--black);
+  line-height: 1.2;
+}
+
+.component-oem-row {
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--gray-600);
+}
+
+.oem-code {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--black);
+  background: var(--gray-50);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  border: 1px solid var(--gray-100);
+}
+
+.component-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+/* Compatible Catalog Products Section */
+.catalog-matches-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+}
+
+.catalog-matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.catalog-match-card {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  align-items: center;
+}
+
+.match-img-box {
+  width: 48px;
+  height: 48px;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+.match-img-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.match-info-box {
+  flex: 1;
+  min-width: 0;
+}
+
+.match-brand-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray-400);
+  text-transform: uppercase;
+}
+
+.match-title {
+  margin: 2px 0 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.match-no-products {
+  font-size: 13px;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px dashed var(--gray-200);
+}
+
+/* WhatsApp Enquiry Button */
+.panel-whatsapp-btn {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  background: #25d366;
+  color: var(--white);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+  transition: var(--transition);
+}
+
+.panel-whatsapp-btn:hover {
+  background: #20ba5a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(37, 211, 102, 0.35);
+}
+
+.panel-whatsapp-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 990px) {
+  .exploded-catalog-container {
+    grid-template-columns: 1fr;
+  }
+
+  .diagram-viewport-wrapper {
+    border-right: none;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .diagram-viewport {
+    height: 380px;
+  }
+
+  .diagram-side-panel {
+    height: auto;
+    max-height: 480px;
+  }
+}

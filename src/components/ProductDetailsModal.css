@@ -20,7 +20,7 @@
   border: 2px solid var(--black);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 950px;
+  max-width: 620px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
@@ -53,13 +53,13 @@
 }
 
 .pd-modal-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   padding: 32px;
 }
 
-/* ===== LEFT SIDE: PRODUCT INFO ===== */
+/* ===== PRODUCT INFO ===== */
 .pd-product-info {
   display: flex;
   flex-direction: column;
@@ -101,7 +101,7 @@
   border: 1px solid var(--gray-100);
   border-radius: var(--radius-md);
   padding: 24px;
-  height: 240px;
+  height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -269,116 +269,6 @@
   box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
 }
 
-/* ===== RIGHT SIDE: INTERACTIVE DIAGRAM ===== */
-.pd-diagram-section {
-  display: flex;
-  flex-direction: column;
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-200);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-}
-
-.pd-diagram-title {
-  font-family: var(--font-heading);
-  font-size: 17px;
-  font-weight: 800;
-  color: var(--black);
-  margin-bottom: 2px;
-}
-
-.pd-diagram-desc {
-  font-size: 12.5px;
-  color: var(--gray-500);
-  margin-bottom: 16px;
-}
-
-.pd-diagram-wrapper {
-  background: #FFFFFF;
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
-  margin-bottom: 16px;
-}
-
-.ac-loop-svg {
-  width: 100%;
-  height: auto;
-  max-height: 250px;
-}
-
-/* ===== SVG DIAGRAM STYLING ===== */
-.diag-group {
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-/* Dim non-highlighted groups slightly to draw emphasis */
-.ac-loop-svg:hover .diag-group {
-  opacity: 0.45;
-}
-
-/* Hover and active overrides */
-.ac-loop-svg:hover .diag-group:hover,
-.diag-group.active {
-  opacity: 1 !important;
-}
-
-.diag-group rect, 
-.diag-group circle,
-.diag-group path,
-.diag-group text {
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* Glow/Highlight effect on Active/Hovered elements */
-.diag-group.active rect,
-.diag-group:hover rect {
-  stroke: var(--red) !important;
-  stroke-width: 3px !important;
-  filter: drop-shadow(0 0 6px rgba(212, 32, 39, 0.6));
-}
-
-.diag-group.active circle,
-.diag-group:hover circle {
-  stroke: var(--red) !important;
-  stroke-width: 3px !important;
-}
-
-/* Pulsing effect for active part */
-.diag-group.active {
-  animation: svgPulse 2s infinite ease-in-out;
-}
-
-@keyframes svgPulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 4px rgba(212, 32, 39, 0.4));
-  }
-  50% {
-    filter: drop-shadow(0 0 12px rgba(212, 32, 39, 0.9));
-  }
-}
-
-/* spinning fan micro-animation */
-.spinning-fan {
-  transform-origin: center;
-  animation: spin 3s linear infinite;
-  transition: filter 0.3s ease;
-}
-
-.diag-group.active .spinning-fan,
-.diag-group:hover .spinning-fan {
-  filter: drop-shadow(0 0 5px rgba(212, 32, 39, 0.7));
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 @keyframes pdOverlayFadeIn {
   from {
     opacity: 0;
@@ -401,64 +291,11 @@
   }
 }
 
-/* ===== INFORMATION BOX ===== */
-.pd-info-box {
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
-  margin-top: auto;
-}
-
-.pd-info-box-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.pd-info-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--red);
-}
-
-.pd-info-box h4 {
-  font-size: 14.5px;
-  font-weight: 800;
-  color: var(--black);
-}
-
-.pd-info-desc {
-  font-size: 13px;
-  color: var(--gray-600);
-  line-height: 1.5;
-  margin-bottom: 8px;
-}
-
-.pd-info-pos {
-  font-size: 12px;
-  color: var(--gray-500);
-  margin-bottom: 0;
-}
-
 /* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
+@media (max-width: 650px) {
   .pd-modal-card {
-    max-width: 650px;
-    max-height: 95vh;
-  }
-
-  .pd-modal-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 24px;
-  }
-
-  .pd-image-wrapper {
-    height: 200px;
+    max-width: 100%;
+    margin: 16px;
   }
 }
 
@@ -467,6 +304,7 @@
     border-radius: 0;
     border: none;
     max-height: 100vh;
+    margin: 0;
   }
   
   .pd-modal-overlay {
@@ -482,6 +320,10 @@
     font-size: 22px;
   }
 
+  .pd-image-wrapper {
+    height: 200px;
+  }
+
   .pd-actions-row {
     flex-direction: column;
     align-items: stretch;
@@ -490,9 +332,5 @@
   .pd-qty-selector.blinkit {
     width: 100%;
     justify-content: center;
-  }
-  
-  .pd-diagram-section {
-    padding: 16px;
   }
 }
