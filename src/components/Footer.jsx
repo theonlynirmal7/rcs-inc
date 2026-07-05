@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, ShieldCheck, Truck, Lock } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, Truck, Lock, Clock } from 'lucide-react';
 import rcsLogo from '../assets/rcs-logo.png';
 import './Footer.css';
 
@@ -90,6 +90,10 @@ export default function Footer() {
               <li>
                 <span className="footer-icon-circle"><MapPin size={14} /></span>
                 <span><a href="https://maps.google.com/?q=Rameswar+Cool+Spares+T.+Nagar+Chennai" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>Rameswar Cool Spares, 2/3, N Usman Rd, T. Nagar, Chennai 600017</a></span>
+              </li>
+              <li>
+                <span className="footer-icon-circle"><Clock size={14} /></span>
+                <span><strong>Business Hours:</strong> Mon-Sat 09:30 to 20:30 | Sunday Closed</span>
               </li>
             </ul>
 

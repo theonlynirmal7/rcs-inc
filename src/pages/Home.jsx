@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, ChevronDown, Truck, Shield, Headphones, Zap, Search, Mic, MicOff, X, Sparkles, Clock, Package, Tag, Car, ShieldCheck, AlertTriangle, HelpCircle, Camera, Upload, Sliders } from 'lucide-react';
 import { getProducts, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
-import ExplodedDiagram from '../components/ExplodedDiagram';
 import heroParts from '../assets/hero-parts.png';
 import { dbService } from '../supabase';
 import './Home.css';
@@ -203,6 +202,13 @@ export default function Home() {
       return;
     }
 
+    const cleanVin = vin.replace(/[^A-HJ-NPR-Z0-9]/gi, '');
+    if (cleanVin.length < 5) {
+      setVinError('Invalid Chassis format. Please enter a valid VIN / Chassis Number.');
+      setVinResult(null);
+      return;
+    }
+
     setVinError(null);
     setVinResult('loading'); // Show spinner
 
@@ -222,7 +228,7 @@ export default function Home() {
           belt: '6PK1150',
           pollenFilter: '210 x 200 x 29 mm'
         },
-        compatiblePartIds: [1, 2, 6, 11]
+        compatiblePartIds: [1, 2, 6, 9]
       },
       'MALCN81CPKM109482': {
         make: 'Hyundai',
@@ -277,15 +283,8 @@ export default function Home() {
       }
     };
 
-    if (samples[vin]) {
-      setVinResult(samples[vin]);
-      return;
-    }
-
-    const cleanVin = vin.replace(/[^A-HJ-NPR-Z0-9]/gi, '');
-    if (cleanVin.length < 5) {
-      setVinError('Invalid Chassis format. Please enter a valid VIN / Chassis Number.');
-      setVinResult(null);
+    if (samples[cleanVin]) {
+      setVinResult(samples[cleanVin]);
       return;
     }
 
@@ -305,13 +304,11 @@ export default function Home() {
         let region = info.PlantCountry ? info.PlantCountry.trim() : '';
         let fuel = info.FuelTypePrimary ? info.FuelTypePrimary.trim() : '';
 
-        // Fallback if WMI is unrecognized by NHTSA
         if (!make || make === 'INVALID VIN' || make.toLowerCase().includes('error')) {
           decodeFallback(cleanVin);
           return;
         }
 
-        // Format casing
         make = make.charAt(0).toUpperCase() + make.slice(1).toLowerCase();
         if (model) {
           model = model.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
@@ -344,7 +341,6 @@ export default function Home() {
           pollenFilter: '215 x 190 x 25 mm'
         };
 
-        // Standardize fuel output
         let normalizedFuel = 'Petrol';
         if (fuel.toLowerCase().includes('diesel')) {
           normalizedFuel = 'Diesel';
@@ -450,7 +446,6 @@ export default function Home() {
       pollenFilter: '215 x 190 x 25 mm'
     };
 
-    // Smart heuristic for fuel
     let fuel = isHeavy ? 'Diesel' : 'Petrol';
     const upperVin = cleanVin.toUpperCase();
     if (upperVin.includes('DIESEL') || upperVin.includes('DSL') || make === 'Toyota' || make === 'Mahindra') {
@@ -466,6 +461,7 @@ export default function Home() {
       chassis: cleanVin,
       region: 'WMI Decoded Region',
       specs,
+      compatiblePartIds: compatIds
     });
   };
 
@@ -812,7 +808,7 @@ export default function Home() {
               <div className="search-tabs">
                 <button
                   className={`search-tab-btn ${searchMode === 'parts' ? 'active' : ''}`}
-                  onClick={() => { setSearchMode('parts'); setVinResult(null); }}
+                  onClick={() => { setSearchMode('parts'); }}
                   id="tab-search-parts"
                 >
                   <Search size={15} />
@@ -1138,114 +1134,230 @@ export default function Home() {
                   </div>
 
                   {vinResult === 'loading' && (
-                    <div className="vin-loading-indicator">
-                      <div className="spinner"></div>
-                      <span>Connecting to secure global database to decode VIN...</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0', gap: '16px' }}>
+                      <div className="admin-preview-spinner" style={{ width: '32px', height: '32px', border: '3px solid var(--gray-200)', borderTopColor: 'var(--red)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                      <span style={{ fontSize: '13px', color: 'var(--gray-500)' }}>Decoding VIN specs...</span>
                     </div>
                   )}
 
                   {vinResult && vinResult !== 'loading' && (
-                    <div className="vin-result-card reveal active">
-                      <div className="vin-result-header">
-                        <div className="success-badge">
-                          <ShieldCheck size={16} />
-                          <span>VEHICLE IDENTIFIED</span>
+                    <div className="vin-results-wrapper animate-fade-in-up" style={{
+                      marginTop: '32px',
+                      textAlign: 'left',
+                      background: 'var(--white)',
+                      border: '1px solid var(--gray-200)',
+                      borderRadius: '12px',
+                      padding: '32px',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
+                    }}>
+                      {/* Success Alert */}
+                      <div style={{ marginBottom: '24px' }}>
+                        <div style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: '#E8F5E9',
+                          color: '#2E7D32',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          marginBottom: '12px'
+                        }}>
+                          <ShieldCheck size={14} />
+                          <span>Vehicle Identified</span>
                         </div>
-                        <h4 className="vehicle-title">{vinResult.make} {vinResult.model} ({vinResult.year})</h4>
+                        <h2 style={{
+                          fontSize: '24px',
+                          fontWeight: 800,
+                          color: 'var(--black)',
+                          margin: 0,
+                          fontFamily: 'inherit'
+                        }}>
+                          {vinResult.make} {vinResult.model} ({vinResult.year})
+                        </h2>
                       </div>
 
-                      <div className="vin-specs-grid">
-                        <div className="vin-specs-column">
-                          <h5 className="specs-col-title">Vehicle Information</h5>
-                          <ul className="specs-list-items">
-                            <li><strong>Manufacturer:</strong> {vinResult.make}</li>
-                            <li><strong>Model Range:</strong> {vinResult.model}</li>
-                            <li><strong>Model Year:</strong> {vinResult.year}</li>
-                            <li><strong>Fuel Type:</strong> {vinResult.fuelType}</li>
-                            <li><strong>Engine:</strong> {vinResult.engine}</li>
-                            <li><strong>Chassis ID:</strong> <code className="chassis-code">{vinResult.chassis}</code></li>
-                            <li><strong>Manufacturing:</strong> {vinResult.region}</li>
-                          </ul>
+                      <hr style={{ border: 0, borderBottom: '1px solid var(--gray-200)', margin: '0 0 24px 0' }} />
+
+                      {/* Info Cards Grid */}
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '24px',
+                        marginBottom: '32px'
+                      }}>
+                        {/* Card 1: Vehicle Information */}
+                        <div style={{
+                          background: 'var(--white)',
+                          border: '1px solid var(--gray-200)',
+                          borderRadius: '8px',
+                          padding: '24px'
+                        }}>
+                          <h3 style={{
+                            fontSize: '13px',
+                            fontWeight: 800,
+                            color: 'var(--gray-700)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                            margin: '0 0 20px 0'
+                          }}>
+                            Vehicle Information
+                          </h3>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Manufacturer:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.make}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Model Range:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.model}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Model Year:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.year}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Fuel Type:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.fuelType}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Engine:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.engine}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Chassis ID:</span>
+                              <span style={{
+                                fontWeight: 600,
+                                color: 'var(--gray-800)',
+                                background: 'var(--gray-50)',
+                                border: '1px solid var(--gray-200)',
+                                padding: '3px 8px',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                fontFamily: 'monospace'
+                              }}>{vinResult.chassis}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Manufacturing:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.region}</span>
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="vin-specs-column">
-                          <h5 className="specs-col-title">AC System Technical Data</h5>
-                          <ul className="specs-list-items">
-                            <li><strong>OEM Compressor:</strong> {vinResult.specs.compressor}</li>
-                            <li><strong>Refrigerant Charge:</strong> {vinResult.specs.refrigerant}</li>
-                            <li><strong>Lubricant Oil:</strong> {vinResult.specs.oil}</li>
-                            <li><strong>AC Drive Belt Type:</strong> {vinResult.specs.belt}</li>
-                            <li><strong>Cabin Pollen Filter:</strong> {vinResult.specs.pollenFilter}</li>
-                          </ul>
+                        {/* Card 2: AC System Technical Data */}
+                        <div style={{
+                          background: 'var(--white)',
+                          border: '1px solid var(--gray-200)',
+                          borderRadius: '8px',
+                          padding: '24px'
+                        }}>
+                          <h3 style={{
+                            fontSize: '13px',
+                            fontWeight: 800,
+                            color: 'var(--gray-700)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                            margin: '0 0 20px 0'
+                          }}>
+                            AC System Technical Data
+                          </h3>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>OEM Compressor:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.specs.compressor}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Refrigerant Charge:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.refrigerant}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Lubricant Oil:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.specs.oil}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>AC Drive Belt Type:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.belt}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                              <span style={{ color: 'var(--gray-500)' }}>Cabin Pollen Filter:</span>
+                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.pollenFilter}</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Interactive exploded AC diagram */}
-                      <div className="interactive-catalog-section" style={{ padding: '0 24px', marginBottom: '16px' }}>
-                        <h5 className="specs-col-title" style={{ marginTop: '24px', marginBottom: '8px', color: 'var(--red)', fontSize: '14.5px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Interactive AC System Exploded Diagram Catalog
-                        </h5>
-                        <ExplodedDiagram
-                          diagramId="hvac-exploded-car"
-                          compatiblePartIds={vinResult.compatiblePartIds}
-                          vin={vinResult.chassis}
-                          make={vinResult.make}
-                          model={vinResult.model}
-                          year={vinResult.year}
-                        />
-                      </div>
-
+                      {/* Compatible Spare Parts */}
                       <div className="compatible-parts-section">
-                        <h5 className="compatible-title">Compatible AC spare parts in our stock</h5>
-                        <div className="compatible-parts-grid">
-                          {products
-                            .filter(p => vinResult.compatiblePartIds.includes(p.id))
-                            .map(part => {
-                              const whatsappText = `Hi RCS, I am enquiring about the ${part.name} (Brand: ${part.brand}, Category: ${part.category}) compatible with my vehicle: ${vinResult.make} ${vinResult.model} (${vinResult.year}) having VIN: ${vinResult.chassis}. Please let me know price and delivery timeline.`;
-                              const whatsappUrl = `https://wa.me/919962173870?text=${encodeURIComponent(whatsappText)}`;
-
-                              return (
-                                <div key={part.id} className="compact-part-card">
-                                  <div className="compact-part-image-wrapper">
-                                    <img src={part.image} alt={part.name} className="compact-part-image" />
+                        <h4 style={{ fontSize: '15px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gray-500)', marginBottom: '16px', letterSpacing: '0.5px' }}>Compatible AC Spare Parts In Our Stock</h4>
+                        <div className="compatible-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
+                          {getProducts()
+                            .filter(product => vinResult.compatiblePartIds.includes(product.id))
+                            .map(product => (
+                              <Link
+                                key={product.id}
+                                to={`/products?search=${encodeURIComponent(product.name)}`}
+                                className="catalog-match-card-link"
+                                style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                              >
+                                <div 
+                                  className="catalog-match-card clickable-match-card" 
+                                  style={{
+                                    display: 'flex',
+                                    gap: '12px',
+                                    padding: '12px',
+                                    background: 'var(--gray-50)',
+                                    border: '1px solid var(--gray-200)',
+                                    borderRadius: '8px',
+                                    alignItems: 'center',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                >
+                                  <div className="match-img-box" style={{ width: '48px', height: '48px', background: 'var(--white)', border: '1px solid var(--gray-100)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', flexShrink: 0 }}>
+                                    <img src={product.image} alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.src = 'https://placehold.co/50x50?text=Part'; }} />
                                   </div>
-                                  <div className="compact-part-info">
-                                    <div className="compact-part-meta">
-                                      <span className="compact-brand">{part.brand}</span>
-                                      <span className="compact-category-tag">{part.category}</span>
-                                    </div>
-                                    <h6 className="compact-part-name">{part.name}</h6>
-                                    <div className="compact-part-footer">
-                                      <a
-                                        href={whatsappUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="compact-whatsapp-link"
-                                      >
-                                        Enquire
-                                      </a>
-                                    </div>
+                                  <div className="match-info-box" style={{ flex: 1, minWidth: 0 }}>
+                                    <span className="match-brand-tag" style={{ fontSize: '9px', fontWeight: 800, color: 'var(--gray-400)', textTransform: 'uppercase' }}>{product.brand}</span>
+                                    <h6 className="match-title" style={{ margin: '2px 0 0 0', fontSize: '13px', fontWeight: 700, color: 'var(--black)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</h6>
                                   </div>
                                 </div>
-                              );
-                            })}
+                              </Link>
+                            ))}
                         </div>
-                        <div className="whatsapp-inquiry-box">
-                          <p>Need custom support or checking other components for this chassis?</p>
-                          <a
-                            href={`https://wa.me/919962173870?text=${encodeURIComponent(
-                              `Hi RCS, I have decoded my vehicle (VIN: ${vinResult.chassis}, ${vinResult.make} ${vinResult.model}) and want to enquire about technical assistance for the AC system.`
-                            )}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bulk-whatsapp-btn"
-                          >
-                            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
-                              <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                            </svg>
-                            <span>Ask Specialist via WhatsApp</span>
-                          </a>
-                        </div>
+                      </div>
+
+                      {/* WhatsApp Enquiry Button */}
+                      <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
+                        <a
+                          href={`https://wa.me/919962173870?text=${encodeURIComponent(
+                            `Hi RCS, I would like to enquire about compatible AC spare parts for my vehicle:\n\n*Vehicle:* ${vinResult.make} ${vinResult.model} (${vinResult.year})\n*Chassis ID/VIN:* ${vinResult.chassis}\n*Engine:* ${vinResult.engine}\n\nPlease check availability and pricing for stock components.`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-primary"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            background: '#25D366',
+                            color: 'var(--white)',
+                            textDecoration: 'none',
+                            padding: '14px 28px',
+                            borderRadius: '8px',
+                            fontWeight: 700,
+                            boxShadow: '0 4px 14px rgba(37, 211, 102, 0.25)',
+                            transition: 'all 0.2s ease',
+                            fontSize: '15px'
+                          }}
+                        >
+                          <svg style={{ width: '20px', height: '20px', fill: 'currentColor' }} viewBox="0 0 16 16">
+                            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                          </svg>
+                          <span style={{ marginLeft: '10px' }}>Enquire via WhatsApp</span>
+                        </a>
                       </div>
                     </div>
                   )}
