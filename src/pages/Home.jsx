@@ -5,6 +5,7 @@ import { getProducts, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import heroParts from '../assets/hero-parts.png';
 import { dbService } from '../supabase';
+import ExplodedDiagram from '../components/ExplodedDiagram';
 import './Home.css';
 
 const marqueeBrands = [
@@ -20,7 +21,8 @@ const marqueeBrands = [
   { name: 'Volkswagen', logoUrl: '/brand-logos/volkswagen.png' },
   { name: 'Ford', logoUrl: '/brand-logos/ford.png' },
   { name: 'Chevrolet', logoUrl: '/brand-logos/chevrolet.png' },
-  { name: 'Kia', logoUrl: '/brand-logos/kia.png' }
+  { name: 'Kia', logoUrl: '/brand-logos/kia.png' },
+  { name: 'J.K. Automotive', logoUrl: '/brand-logos/jk_automotive.png' }
 ];
 
 const faqCategories = [
@@ -154,21 +156,358 @@ export default function Home() {
   const [selectedYear, setSelectedYear] = useState('');
 
   const vehicleData = {
-    'Maruti Suzuki': ['Swift', 'WagonR', 'Dzire', 'Baleno', 'Brezza', 'Ertiga', 'Alto'],
-    'Hyundai': ['i10', 'i20', 'Creta', 'Verna', 'Venue', 'Santro'],
-    'Honda': ['City', 'Amaze', 'Civic', 'Jazz', 'WR-V'],
-    'Tata Motors': ['Nexon', 'Tiago', 'Harrier', 'Safari', 'Altroz', 'Punch'],
-    'Mahindra': ['Scorpio', 'XUV700', 'Thar', 'Bolero', 'XUV300'],
-    'Toyota': ['Innova', 'Fortuner', 'Glanza', 'Urban Cruiser', 'Corolla']
+    'Maruti Suzuki': ['Swift', 'WagonR', 'Dzire', 'Baleno', 'Brezza', 'Ertiga', 'Alto', 'Grand Vitara', 'Fronx', 'Jimny', 'Celerio', 'Ignis', 'S-Presso', 'Eeco', 'XL6', 'Ciaz', 'Invicto'],
+    'Hyundai': ['Grand i10', 'i20', 'Aura', 'Verna', 'Venue', 'Exter', 'Creta', 'Alcazar', 'Tucson', 'Ioniq 5', 'Santro'],
+    'Honda': ['City', 'Amaze', 'Elevate', 'Civic', 'Jazz', 'WR-V'],
+    'Tata Motors': ['Tiago', 'Tigor', 'Altroz', 'Punch', 'Nexon', 'Curvv', 'Harrier', 'Safari', 'Hexa'],
+    'Mahindra': ['Thar', 'Thar ROXX', 'Scorpio Classic', 'Scorpio-N', 'XUV300', 'XUV 3XO', 'XUV700', 'Bolero', 'Bolero Neo'],
+    'Toyota': ['Innova', 'Innova Crysta', 'Innova Hycross', 'Fortuner', 'Legender', 'Glanza', 'Urban Cruiser', 'Hilux', 'Camry', 'Vellfire', 'Land Cruiser', 'Corolla'],
+    'MG Motor': ['Hector', 'Astor', 'ZS EV', 'Gloster', 'Comet EV'],
+    'Kia': ['Sonet', 'Seltos', 'Carens', 'Carnival', 'EV6', 'EV9'],
+    'Skoda': ['Kushaq', 'Slavia', 'Octavia', 'Superb', 'Kodiaq'],
+    'Volkswagen': ['Polo', 'Vento', 'Virtus', 'Taigun', 'Tiguan', 'Jetta', 'Passat'],
+    'BMW': ['2 Series', '3 Series', '5 Series', '6 Series GT', '7 Series', 'X1', 'X3', 'X4', 'X5', 'X7', 'Z4', 'i4', 'iX'],
+    'Audi': ['A3', 'A4', 'A6', 'A8 L', 'Q3', 'Q5', 'Q7', 'Q8', 'e-tron'],
+    'Mercedes-Benz': ['A-Class', 'C-Class', 'E-Class', 'S-Class', 'GLA', 'GLC', 'GLE', 'GLS', 'G-Class', 'EQS'],
+    'Jaguar': ['XE', 'XF', 'XJ', 'F-Pace', 'I-Pace', 'F-Type'],
+    'Land Rover': ['Range Rover', 'Range Rover Sport', 'Range Rover Velar', 'Range Rover Evoque', 'Defender', 'Discovery', 'Discovery Sport'],
+    'Ford': ['Figo', 'EcoSport', 'Endeavour', 'Mustang'],
+    'Renault': ['Kwid', 'Triber', 'Kiger', 'Duster'],
+    'Nissan': ['Micra', 'Sunny', 'Terrano', 'Magnite', 'X-Trail'],
+    'Chevrolet': ['Spark', 'Beat', 'Sail', 'Cruze', 'Tavera', 'Enjoy', 'Captiva'],
+    'Jeep': ['Compass', 'Meridian', 'Wrangler', 'Grand Cherokee'],
+    'Volvo Cars': ['S60', 'S90', 'XC40', 'XC60', 'XC90', 'C40 Recharge'],
+    'Isuzu': ['D-Max', 'V-Cross', 'MU-X'],
+    'Aston Martin': ['Vantage', 'DB11', 'DBS', 'DBX'],
+    'Bentley': ['Continental GT', 'Flying Spur', 'Bentayga'],
+    'Citroen': ['C3', 'C3 Aircross', 'C5 Aircross', 'eC3'],
+    'Ferrari': ['Roma', '296 GTB', 'F8 Tributo', 'Purosangue'],
+    'Lamborghini': ['Huracan', 'Urus', 'Revuelto'],
+    'Lexus': ['ES', 'NX', 'RX', 'LX', 'LS'],
+    'Maserati': ['Ghibli', 'Quattroporte', 'Levante', 'Grecale'],
+    'Mini': ['Cooper', 'Countryman', 'Clubman'],
+    'Mitsubishi': ['Pajero', 'Lancer', 'Outlander'],
+    'Porsche': ['911', 'Cayenne', 'Macan', 'Panamera', 'Taycan'],
+    'Rolls Royce': ['Ghost', 'Phantom', 'Cullinan', 'Spectre'],
+    'Tata Commercial': ['Prima (Heavy Truck)', 'Signa (Cargo Truck)', 'Ultra (Light Truck)', 'Starbus (Bus)', 'Ace (Mini Truck)'],
+    'Ashok Leyland': ['Dost (Mini Truck)', 'Bada Dost (Light Truck)', 'U-Truck (Heavy Cargo)', 'Oyster (Staff Bus)', 'Viking (Passenger Bus)'],
+    'BharatBenz': ['BharatBenz 2823C (Tipper)', 'BharatBenz 1917R (Cargo)', 'BharatBenz 5528TT (Tractor)'],
+    'Force Motors': ['Traveller (Passenger Van)', 'Gurkha (Off-roader)', 'Citiline (MUV)'],
+    'Volvo Buses': ['Volvo 9400 (Intercity Bus)', 'Volvo 9600 (Luxury Sleeper)']
   };
 
   const vehicleYears = ['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010'];
 
-  const handleVehicleSearch = () => {
-    if (selectedModel) {
-      navigate(`/products?search=${encodeURIComponent(selectedModel)}`);
+  const resolveVehicleSpecs = (makeName, modelName) => {
+    const make = makeName.toLowerCase();
+    const model = modelName.toLowerCase();
+
+    // Default presets
+    let specs = {
+      compressor: 'Denso / Sanden OEM Spec Compressor',
+      refrigerant: 'R-134a (550 ± 25g)',
+      oil: 'PAG 46 (100 ml)',
+      belt: '6PK1120',
+      pollenFilter: '220 x 190 x 25 mm'
+    };
+    
+    let fuelType = 'Petrol';
+    let engine = '2.0L Fuel-Injected Engine';
+
+    // Specific model checks for Maruti Suzuki
+    if (make.includes('suzuki')) {
+      engine = '1.2L K-Series Petrol';
+      if (model.includes('alto')) {
+        specs = {
+          compressor: 'Subros C80 / KB Compressor',
+          refrigerant: 'R-134a (320 ± 15g)',
+          oil: 'PAG 46 (60 ml)',
+          belt: '4PK810',
+          pollenFilter: '200 x 180 x 20 mm'
+        };
+        engine = '1.0L K10C Petrol';
+      } else if (model.includes('ertiga') || model.includes('xl6')) {
+        specs = {
+          compressor: 'Denso 10S13C Dual AC',
+          refrigerant: 'R-134a (530 ± 25g)',
+          oil: 'PAG 46 (120 ml)',
+          belt: '6PK1210',
+          pollenFilter: '215 x 200 x 30 mm'
+        };
+        engine = '1.5L K15C Smart Hybrid';
+      } else if (model.includes('brezza') || model.includes('grand vitara') || model.includes('fronx') || model.includes('jimny')) {
+        specs = {
+          compressor: 'Denso 10S13C / Subros C120',
+          refrigerant: 'R-134a (410 ± 20g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1185',
+          pollenFilter: '215 x 200 x 30 mm'
+        };
+        engine = '1.5L K15B Petrol';
+      } else if (model.includes('celerio') || model.includes('ignis') || model.includes('s-presso')) {
+        specs = {
+          compressor: 'Subros C80 / KB Compressor',
+          refrigerant: 'R-134a (340 ± 15g)',
+          oil: 'PAG 46 (70 ml)',
+          belt: '5PK910',
+          pollenFilter: '200 x 180 x 20 mm'
+        };
+        engine = '1.0L - 1.2L K-Series Petrol';
+      } else if (model.includes('eeco')) {
+        specs = {
+          compressor: 'Subros C100 Compressor',
+          refrigerant: 'R-134a (400 ± 20g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '5PK970',
+          pollenFilter: '210 x 185 x 25 mm'
+        };
+        engine = '1.2L G12B Petrol';
+      } else if (model.includes('ciaz')) {
+        specs = {
+          compressor: 'Denso 10S11C Compressor',
+          refrigerant: 'R-134a (390 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1130',
+          pollenFilter: '215 x 200 x 28 mm'
+        };
+        engine = '1.5L K15 Smart Hybrid';
+      } else if (model.includes('invicto')) {
+        specs = {
+          compressor: 'Denso Electric Compressor (ES18)',
+          refrigerant: 'R-134a (650 ± 25g)',
+          oil: 'ND-OIL 11 / PAG 46 (120 ml)',
+          belt: 'N/A (Electric Drive)',
+          pollenFilter: '215 x 190 x 28 mm'
+        };
+        engine = '2.0L Petrol Hybrid';
+        fuelType = 'Hybrid';
+      } else {
+        // Swift, Dzire, Baleno, WagonR
+        specs = {
+          compressor: 'Subros / Denso 10S11C',
+          refrigerant: 'R-134a (370 ± 20g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1150',
+          pollenFilter: '210 x 200 x 29 mm'
+        };
+      }
+    } 
+    // Hyundai & Kia
+    else if (make.includes('hyundai') || make.includes('kia')) {
+      specs = {
+        compressor: 'Hanon / Doowon DV16 (Variable)',
+        refrigerant: 'R-134a (450 ± 25g)',
+        oil: 'PAG 46 (100 ml)',
+        belt: '6PK1255',
+        pollenFilter: '225 x 195 x 25 mm'
+      };
+      engine = '1.5L CRDi Diesel';
+      fuelType = 'Diesel';
+
+      if (model.includes('i10') || model.includes('santro')) {
+        specs = {
+          compressor: 'Doowon DV11 / Hanon HS11',
+          refrigerant: 'R-134a (380 ± 15g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1190',
+          pollenFilter: '210 x 180 x 25 mm'
+        };
+        engine = '1.2L Kappa Petrol';
+        fuelType = 'Petrol';
+      } else if (model.includes('i20') || model.includes('sonet')) {
+        specs = {
+          compressor: 'Hanon DV13 / Doowon DV13',
+          refrigerant: 'R-134a (400 ± 20g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1215',
+          pollenFilter: '215 x 185 x 25 mm'
+        };
+        engine = '1.2L Kappa Petrol';
+        fuelType = 'Petrol';
+      } else if (model.includes('verna')) {
+        specs = {
+          compressor: 'Hanon DV15 / Doowon DV15',
+          refrigerant: 'R-134a (430 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1240',
+          pollenFilter: '225 x 195 x 25 mm'
+        };
+        engine = '1.5L MPi Petrol';
+        fuelType = 'Petrol';
+      }
+    } 
+    // Honda
+    else if (make.includes('honda')) {
+      specs = {
+        compressor: 'Sanden TRSE07 / TRF090',
+        refrigerant: 'R-134a (400 ± 20g)',
+        oil: 'SP-10 / PAG 46 (90 ml)',
+        belt: '5PK1140',
+        pollenFilter: '210 x 205 x 30 mm'
+      };
+      engine = '1.5L i-VTEC Petrol';
+      fuelType = 'Petrol';
+    } 
+    // Toyota
+    else if (make.includes('toyota')) {
+      specs = {
+        compressor: 'Denso 10S15C / 10S17C Dual AC',
+        refrigerant: 'R-134a (650 ± 30g)',
+        oil: 'PAG 46 (120 ml)',
+        belt: '7PK2050',
+        pollenFilter: '215 x 190 x 28 mm'
+      };
+      engine = '2.4L - 2.8L D-4D Diesel';
+      fuelType = 'Diesel';
+      if (model.includes('corolla') || model.includes('glanza')) {
+        specs = {
+          compressor: 'Denso TSE14C / 5SER09C',
+          refrigerant: 'R-134a (440 ± 20g)',
+          oil: 'ND-OIL 8 / PAG 46 (95 ml)',
+          belt: '6PK1220',
+          pollenFilter: '215 x 190 x 28 mm'
+        };
+        engine = '1.8L VVTi Petrol';
+        fuelType = 'Petrol';
+      }
+    } 
+    // Mahindra
+    else if (make.includes('mahindra')) {
+      specs = {
+        compressor: 'Hanon VS16 / VS14',
+        refrigerant: 'R-134a (560 ± 20g)',
+        oil: 'PAG 46 (110 ml)',
+        belt: '6PK1590',
+        pollenFilter: '220 x 195 x 30 mm'
+      };
+      engine = '2.2L mHawk Diesel';
+      fuelType = 'Diesel';
+      if (model.includes('thar')) {
+        specs = {
+          compressor: 'Hanon VS14 / Doowon DV14',
+          refrigerant: 'R-134a (480 ± 20g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1410',
+          pollenFilter: '215 x 185 x 28 mm'
+        };
+        engine = '2.2L mHawk Diesel';
+      }
+    } 
+    // Tata Motors
+    else if (make.includes('tata')) {
+      specs = {
+        compressor: 'Subros Sub-Compact Rotary',
+        refrigerant: 'R-134a (420 ± 15g)',
+        oil: 'PAG 46 (90 ml)',
+        belt: '5PK1030',
+        pollenFilter: '215 x 185 x 30 mm'
+      };
+      engine = '1.2L Revotron Turbo Petrol';
+      fuelType = 'Petrol';
+      if (model.includes('tiago')) {
+        specs = {
+          compressor: 'Subros Rotary C100',
+          refrigerant: 'R-134a (360 ± 15g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '5PK975',
+          pollenFilter: '200 x 180 x 25 mm'
+        };
+        engine = '1.2L Revotron Petrol';
+      } else if (model.includes('harrier') || model.includes('safari')) {
+        specs = {
+          compressor: 'Hanon VS16 / Denso 7SBU16C',
+          refrigerant: 'R-134a (550 ± 25g)',
+          oil: 'PAG 46 (120 ml)',
+          belt: '6PK1305',
+          pollenFilter: '230 x 210 x 30 mm'
+        };
+        engine = '2.0L Kryotec Diesel';
+        fuelType = 'Diesel';
+      }
+    } 
+    // Land Rover & Jaguar
+    else if (make.includes('land') || make.includes('jaguar')) {
+      specs = {
+        compressor: 'Denso 6SBU16C / Sanden PXE16',
+        refrigerant: 'R-134a (750 ± 20g)',
+        oil: 'PAG 46 (140 ml)',
+        belt: '6PK1320',
+        pollenFilter: '230 x 215 x 30 mm'
+      };
+      engine = '2.0L Ingenium Turbocharged';
+      fuelType = 'Petrol';
     }
+    // BMW, Mercedes, Audi
+    else if (make.includes('bmw') || make.includes('audi') || make.includes('mercedes')) {
+      specs = {
+        compressor: 'Denso 6SEU16C / 7SEU17C Variable',
+        refrigerant: 'R-134a (590 ± 20g)',
+        oil: 'PAG 46 (120 ml)',
+        belt: '6PK1020',
+        pollenFilter: '240 x 220 x 30 mm'
+      };
+      engine = '2.0L TwinPower Turbo';
+      fuelType = 'Petrol';
+    }
+    // Heavy Commercial / Volvo Bus
+    else if (make.includes('commercial') || model.includes('truck') || model.includes('bus') || make.includes('leyland') || make.includes('bharat') || make.includes('force')) {
+      specs = {
+        compressor: 'Sanden Heavy Duty Compressor',
+        refrigerant: 'R-134a (950 ± 50g)',
+        oil: 'PAG 100 (220 ml)',
+        belt: '8PK1540',
+        pollenFilter: '280 x 240 x 35 mm'
+      };
+      engine = 'Cummins Heavy Duty Diesel';
+      fuelType = 'Diesel';
+    }
+
+    return { specs, fuelType, engine };
   };
+
+  const handleVehicleSearch = () => {
+    if (!selectedMake || !selectedModel) return;
+
+    setSelectedHotspot(null);
+    setVinResult('loading');
+    
+    setTimeout(() => {
+      const resolved = resolveVehicleDetails(selectedMake, selectedModel);
+      const { specs, fuelType, engine } = resolveVehicleSpecs(selectedMake, selectedModel);
+      
+      let finalCompatIds = [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386];
+      if (resolved.diagramId === 'fortuner-hvac' || resolved.diagramId === 'bus-hvac' || resolved.diagramId === 'truck-hvac' || resolved.diagramId === 'dozer-hvac' || resolved.diagramId === 'lcv-hvac') {
+        finalCompatIds = [5, 7, 8, 12, 15, 16, 17];
+      }
+
+      setVinResult({
+        make: selectedMake,
+        model: selectedModel,
+        year: selectedYear || '2022',
+        engine,
+        fuelType,
+        chassis: 'N/A (Searched via Selector)',
+        region: 'Selected via Finder Wizard',
+        specs,
+        compatiblePartIds: finalCompatIds,
+        diagramId: resolved.diagramId,
+        vehicleImage: resolved.vehicleImage
+      });
+
+      // Scroll down to the results section smoothly
+      const resultsEl = document.getElementById('vehicle-wizard-results-anchor');
+      if (resultsEl) {
+        resultsEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 500);
+  };
+  // Banner configuration loaded dynamically
+  const isBannerVisible = localStorage.getItem('rcs_show_banner') !== 'false';
+  const customBannerTitle = localStorage.getItem('rcs_banner_title') || 'RCS Summer Sale is Live!';
+  const customBannerText = localStorage.getItem('rcs_banner_text') || 'Beat the heat this season! Get special pricing and up to 15% discount on bulk wholesale orders of high-performance AC Compressors, Condensers, Cooling Coils, and Blowers.';
+  const customBannerDiscount = localStorage.getItem('rcs_banner_discount') || '15%';
+  const customBannerImage = localStorage.getItem('rcs_banner_image') || '';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [catOpen, setCatOpen] = useState(false);
@@ -181,6 +520,7 @@ export default function Home() {
   const [vinResult, setVinResult] = useState(null);
   const [vinError, setVinError] = useState(null);
   const [showVinGuide, setShowVinGuide] = useState(false);
+  const [selectedHotspot, setSelectedHotspot] = useState(null);
 
   // Visual part upload states
   const [imageFile, setImageFile] = useState(null);
@@ -193,6 +533,605 @@ export default function Home() {
 
   const categoryRef = useRef(null);
   const suggestionsRef = useRef(null);
+
+  const resolveLocalFallback = (makeName, modelName) => {
+    const make = makeName.toLowerCase();
+    const model = modelName.toLowerCase();
+
+    // 1. Specific model overrides
+    if (model.includes('hector')) return '/vehicles/hector.png';
+    if (model.includes('carens')) return '/vehicles/carens.png';
+    if (model.includes('ertiga')) return '/vehicles/ertiga.png';
+    if (model.includes('scorpio')) return '/vehicles/scorpio.png';
+    if (model.includes('dzire')) return '/vehicles/dzire.png';
+    if (model.includes('wagonr')) return '/vehicles/wagonr.png';
+    if (model.includes('venue')) return '/vehicles/venue.png';
+    if (model.includes('baleno')) return '/vehicles/baleno.png';
+    if (model.includes('safari')) return '/vehicles/safari.png';
+    if (model.includes('kushaq')) return '/vehicles/kushaq.png';
+    if (model.includes('comet')) return '/vehicles/comet.png';
+    if (model.includes('verna')) return '/vehicles/verna.png';
+    if (model.includes('city') && !model.includes('intercity')) return '/vehicles/city.png';
+    if (model.includes('amaze')) return '/vehicles/amaze.png';
+    if (model.includes('harrier')) return '/vehicles/harrier.png';
+    if (model.includes('brezza')) return '/vehicles/brezza.png';
+    if (model.includes('seltos')) return '/vehicles/seltos.png';
+    if (model.includes('corolla')) return '/vehicles/corolla.png';
+    if (model.includes('kwid')) return '/vehicles/kwid.png';
+    if (model.includes('duster')) return '/vehicles/duster.png';
+    if (model.includes('i20')) return '/vehicles/i20.png';
+    if (model.includes('slavia')) return '/vehicles/slavia.png';
+    if (model.includes('virtus')) return '/vehicles/virtus.png';
+    if (model.includes('creta')) return '/vehicles/creta.png';
+    if (model.includes('fortuner')) return '/vehicles/fortuner.png';
+    if (model.includes('thar')) return '/vehicles/thar.png';
+    if (model.includes('nexon')) return '/vehicles/nexon.png';
+    if (model.includes('swift')) return '/vehicles/swift.png';
+    if (model.includes('innova')) return '/vehicles/innova.png';
+    if (model.includes('octavia')) return '/vehicles/octavia.jpg';
+    if (model.includes('superb')) return '/vehicles/superb.jpg';
+    if (model.includes('a3')) return '/vehicles/audi_a3.png';
+    if (model.includes('endeavour')) return '/vehicles/endeavour.png';
+    if (model.includes('bada dost')) return '/vehicles/bada_dost.png';
+    if (model.includes('dost') || model === 'ace' || model.startsWith('ace ') || model.endsWith(' ace')) return '/vehicles/dost.png';
+    if (model.includes('signa')) return '/vehicles/signa.png';
+    if (model.includes('ultra')) return '/vehicles/ultra.png';
+    if (model.includes('u-truck') || model.includes('u truck')) return '/vehicles/u_truck.png';
+    if (model.includes('prima')) return '/vehicles/prima.png';
+    if (model.includes('oyster')) return '/vehicles/oyster.png';
+    if (model.includes('viking')) return '/vehicles/viking.png';
+    if (model.includes('9400')) return '/vehicles/volvo_9400.png';
+    if (model.includes('9600')) return '/vehicles/volvo_9600.png';
+    if (model.includes('traveller')) return '/vehicles/traveller.png';
+    if (model.includes('gurkha')) return '/vehicles/gurkha.png';
+    if (model.includes('citiline')) return '/vehicles/citiline.png';
+
+    // 2. Class-based overrides & Brand-aware fallbacks
+    // If the model is a known heavy truck/bus/commercial, return commercial vehicles:
+    if (make.includes('commercial') || model.includes('truck') || model.includes('bus') || make.includes('leyland') || make.includes('bharat') || make.includes('force')) {
+      if (model.includes('dost')) return '/vehicles/dost.png';
+      if (model.includes('bada dost')) return '/vehicles/bada_dost.png';
+      if (model.includes('signa')) return '/vehicles/signa.png';
+      if (model.includes('ultra')) return '/vehicles/ultra.png';
+      if (model.includes('u-truck') || model.includes('u truck')) return '/vehicles/u_truck.png';
+      if (model.includes('prima')) return '/vehicles/prima.png';
+      if (model.includes('oyster')) return '/vehicles/oyster.png';
+      if (model.includes('viking')) return '/vehicles/viking.png';
+      if (model.includes('9400')) return '/vehicles/volvo_9400.png';
+      if (model.includes('9600')) return '/vehicles/volvo_9600.png';
+      if (model.includes('traveller')) return '/vehicles/traveller.png';
+      if (model.includes('gurkha')) return '/vehicles/gurkha.png';
+      if (model.includes('citiline')) return '/vehicles/citiline.png';
+      return '/vehicles/prima.png';
+    }
+
+    // Hatchbacks fallback
+    if (model.includes('swift') || model.includes('wagonr') || model.includes('alto') || model.includes('celerio') || model.includes('ignis') || model.includes('s-presso') || model.includes('i10') || model.includes('santro') || model.includes('jazz') || model.includes('tiago') || model.includes('altroz') || model.includes('glanza') || model.includes('comet') || model.includes('polo') || model.includes('micra') || model.includes('kwid') || model.includes('figo') || model.includes('beat') || model.includes('spark') || model.includes('hatchback')) {
+      if (make.includes('suzuki') || make.includes('maruti')) return '/vehicles/swift.png';
+      if (make.includes('hyundai')) return '/vehicles/i20.png';
+      return '/vehicles/hatchback.png';
+    }
+
+    // Sedans fallback
+    if (model.includes('dzire') || model.includes('ciaz') || model.includes('aura') || model.includes('verna') || model.includes('city') || model.includes('amaze') || model.includes('civic') || model.includes('tigor') || model.includes('corolla') || model.includes('camry') || model.includes('slavia') || model.includes('octavia') || model.includes('superb') || model.includes('vento') || model.includes('virtus') || model.includes('jetta') || model.includes('passat') || model.includes('series') || model.includes('a3') || model.includes('a4') || model.includes('a6') || model.includes('a8') || model.includes('c-class') || model.includes('e-class') || model.includes('s-class') || model.includes('xe') || model.includes('xf') || model.includes('xj') || model.includes('sunny') || model.includes('cruze') || model.includes('sail') || model.includes('s60') || model.includes('s90') || model.includes('sedan')) {
+      if (make.includes('audi')) return '/vehicles/audi_a4.png';
+      if (make.includes('bmw')) return '/vehicles/bmw_3series.png';
+      if (make.includes('mercedes')) return '/vehicles/mercedes_cclass.png';
+      if (make.includes('suzuki') || make.includes('maruti')) return '/vehicles/dzire.png';
+      return '/vehicles/sedan.png';
+    }
+
+    // Luxury Brands & Sports Cars fallback (supercars, luxury sedans, sports cars)
+    if (make.includes('ferrari') || make.includes('lamborghini') || make.includes('porsche') || make.includes('bugatti') || make.includes('aston') || make.includes('bentley') || make.includes('rolls') || make.includes('maserati') || make.includes('lexus') || model.includes('mustang') || model.includes('z4') || model.includes('cooper') || model.includes('f-type')) {
+      if (make.includes('ferrari') || make.includes('lamborghini') || make.includes('porsche') || make.includes('bugatti') || model.includes('z4') || model.includes('f-type')) {
+        return '/vehicles/bmw_3series.png'; // Premium sporty car fallback
+      }
+      return '/vehicles/sedan.png'; // Premium sedan fallback
+    }
+
+    // Brand-aware SUV fallbacks (if it's not a sedan/hatchback/commercial, it's an SUV/MPV)
+    if (make.includes('kia')) {
+      return '/vehicles/seltos.png';
+    }
+    if (make.includes('hyundai')) {
+      return '/vehicles/creta.png';
+    }
+    if (make.includes('suzuki') || make.includes('maruti')) {
+      return '/vehicles/brezza.png';
+    }
+    if (make.includes('tata')) {
+      return '/vehicles/nexon.png';
+    }
+    if (make.includes('mahindra')) {
+      return '/vehicles/scorpio_n.png';
+    }
+    if (make.includes('toyota')) {
+      return '/vehicles/fortuner.png';
+    }
+    if (make.includes('mg')) {
+      return '/vehicles/hector.png';
+    }
+    if (make.includes('audi')) {
+      return '/vehicles/audi_q5.png';
+    }
+    if (make.includes('bmw')) {
+      return '/vehicles/bmw_x3.png';
+    }
+    if (make.includes('mercedes')) {
+      return '/vehicles/mercedes_glc.png';
+    }
+    if (make.includes('skoda') || make.includes('volkswagen') || make.includes('vw')) {
+      return '/vehicles/kushaq.png';
+    }
+    if (make.includes('land') || make.includes('range')) {
+      return '/vehicles/range_rover_evoque.png';
+    }
+    if (make.includes('jeep')) {
+      return '/vehicles/jeep_compass.png';
+    }
+    if (make.includes('ford')) {
+      return '/vehicles/endeavour.png';
+    }
+
+    // Absolute fallback
+    return '/vehicles/creta.png';
+  };
+
+  const handleImageError = (e, make, model) => {
+    e.target.onerror = null;
+    e.target.src = resolveLocalFallback(make, model);
+  };
+
+  const resolveVehicleDetails = (makeName, modelName) => {
+    const make = makeName.toLowerCase();
+    const model = modelName.toLowerCase();
+    
+    let diagramId = 'ac-system-exploded';
+    let vehicleImage = '/vehicles/swift.png';
+    
+    // 1. Resolve Diagram ID
+    if (model.includes('dozer') || model.includes('bulldozer') || make.includes('dozer') || make.includes('bulldozer')) {
+      diagramId = 'dozer-hvac';
+    } else if (model.includes('bus') || model.includes('starbus') || model.includes('oyster') || model.includes('viking') || make.includes('volvo')) {
+      diagramId = 'bus-hvac';
+    } else if (model.includes('dost') || model.includes('bada dost') || model.includes('ace') || model.includes('supro') || model.includes('traveller') || model.includes('pikup') || model.includes('pik-up')) {
+      diagramId = 'lcv-hvac';
+    } else if (make.includes('commercial') || model.includes('truck') || model.includes('prima') || model.includes('signa') || model.includes('ultra') || make.includes('leyland') || make.includes('bharat') || make.includes('force')) {
+      diagramId = 'truck-hvac';
+    }
+    
+    if (model.includes('hector')) {
+      vehicleImage = '/vehicles/hector.png';
+    } else if (model.includes('carens')) {
+      vehicleImage = '/vehicles/carens.png';
+    } else if (model.includes('ertiga')) {
+      vehicleImage = '/vehicles/ertiga.png';
+    } else if (model.includes('scorpio-n')) {
+      vehicleImage = '/vehicles/scorpio_n.png';
+    } else if (model.includes('scorpio classic')) {
+      vehicleImage = '/vehicles/scorpio_classic.png';
+    } else if (model.includes('scorpio')) {
+      vehicleImage = '/vehicles/scorpio.png';
+    } else if (model.includes('dzire')) {
+      vehicleImage = '/vehicles/dzire.png';
+    } else if (model.includes('wagonr')) {
+      vehicleImage = '/vehicles/wagonr.png';
+    } else if (model.includes('venue')) {
+      vehicleImage = '/vehicles/venue.png';
+    } else if (model.includes('baleno')) {
+      vehicleImage = '/vehicles/baleno.png';
+    } else if (model.includes('safari')) {
+      vehicleImage = '/vehicles/safari.png';
+    } else if (model.includes('kushaq')) {
+      vehicleImage = '/vehicles/kushaq.png';
+    } else if (model.includes('comet')) {
+      vehicleImage = '/vehicles/comet.png';
+    } else if (model.includes('verna')) {
+      vehicleImage = '/vehicles/verna.png';
+    } else if (model.includes('city')) {
+      vehicleImage = '/vehicles/city.png';
+    } else if (model.includes('amaze')) {
+      vehicleImage = '/vehicles/amaze.png';
+    } else if (model.includes('harrier')) {
+      vehicleImage = '/vehicles/harrier.png';
+    } else if (model.includes('brezza')) {
+      vehicleImage = '/vehicles/brezza.png';
+    } else if (model.includes('seltos')) {
+      vehicleImage = '/vehicles/seltos.png';
+    } else if (model.includes('corolla')) {
+      vehicleImage = '/vehicles/corolla.png';
+    } else if (model.includes('kwid')) {
+      vehicleImage = '/vehicles/kwid.png';
+    } else if (model.includes('duster')) {
+      vehicleImage = '/vehicles/duster.png';
+    } else if (model.includes('i20')) {
+      vehicleImage = '/vehicles/i20.png';
+    } else if (model.includes('a3')) {
+      vehicleImage = '/vehicles/audi_a3.png';
+    } else if (model.includes('a4')) {
+      vehicleImage = '/vehicles/audi_a4.png';
+    } else if (model.includes('a6')) {
+      vehicleImage = '/vehicles/audi_a6.png';
+    } else if (model.includes('a8')) {
+      vehicleImage = '/vehicles/audi_a8l.png';
+    } else if (model.includes('q3')) {
+      vehicleImage = '/vehicles/audi_q3.png';
+    } else if (model.includes('q5')) {
+      vehicleImage = '/vehicles/audi_q5.png';
+    } else if (model.includes('q7')) {
+      vehicleImage = '/vehicles/audi_q7.png';
+    } else if (model.includes('q8')) {
+      vehicleImage = '/vehicles/audi_q8.png';
+    } else if (model.includes('e-tron') || model.includes('etron')) {
+      vehicleImage = '/vehicles/audi_etron.png';
+    } else if (model.includes('2 series')) {
+      vehicleImage = '/vehicles/bmw_2series.png';
+    } else if (model.includes('3 series')) {
+      vehicleImage = '/vehicles/bmw_3series.png';
+    } else if (model.includes('5 series')) {
+      vehicleImage = '/vehicles/bmw_5series.png';
+    } else if (model.includes('6 series')) {
+      vehicleImage = '/vehicles/bmw_6series_gt.png';
+    } else if (model.includes('7 series')) {
+      vehicleImage = '/vehicles/bmw_7series.png';
+    } else if (model.includes('x1')) {
+      vehicleImage = '/vehicles/bmw_x1.png';
+    } else if (model.includes('x3')) {
+      vehicleImage = '/vehicles/bmw_x3.png';
+    } else if (model.includes('x4')) {
+      vehicleImage = '/vehicles/bmw_x4.png';
+    } else if (model.includes('x5')) {
+      vehicleImage = '/vehicles/bmw_x5.png';
+    } else if (model.includes('x7')) {
+      vehicleImage = '/vehicles/bmw_x7.png';
+    } else if (model.includes('z4')) {
+      vehicleImage = '/vehicles/bmw_z4.png';
+    } else if (model.includes('ix')) {
+      vehicleImage = '/vehicles/bmw_ix.png';
+    } else if (model.includes('i4')) {
+      vehicleImage = '/vehicles/bmw_i4.png';
+    } else if (model.includes('a-class')) {
+      vehicleImage = '/vehicles/mercedes_aclass.png';
+    } else if (model.includes('c-class')) {
+      vehicleImage = '/vehicles/mercedes_cclass.png';
+    } else if (model.includes('e-class')) {
+      vehicleImage = '/vehicles/mercedes_eclass.png';
+    } else if (model.includes('s-class')) {
+      vehicleImage = '/vehicles/mercedes_sclass.png';
+    } else if (model === 'gla' || (model.includes('gla') && !model.includes('glanza'))) {
+      vehicleImage = '/vehicles/mercedes_gla.png';
+    } else if (model.includes('glc')) {
+      vehicleImage = '/vehicles/mercedes_glc.png';
+    } else if (model.includes('gle') && !model.includes('wrangler')) {
+      vehicleImage = '/vehicles/mercedes_gle.png';
+    } else if (model.includes('gls')) {
+      vehicleImage = '/vehicles/mercedes_gls.png';
+    } else if (model.includes('g-class') || model.includes('g class') || model === 'g') {
+      vehicleImage = '/vehicles/mercedes_gclass.png';
+    } else if (model.includes('eqs')) {
+      vehicleImage = '/vehicles/mercedes_eqs.png';
+    } else if (model.includes('evoque') || model.includes('range rover') || model.includes('defender') || model.includes('discovery')) {
+      vehicleImage = '/vehicles/range_rover_evoque.png';
+    } else if (model.includes('compass') || model.includes('meridian')) {
+      vehicleImage = '/vehicles/jeep_compass.png';
+    } else if (model.includes('celerio')) {
+      vehicleImage = '/vehicles/celerio.png';
+    } else if (model.includes('grand i10')) {
+      vehicleImage = '/vehicles/grand_i10.png';
+    } else if (model.includes('ciaz')) {
+      vehicleImage = '/vehicles/ciaz.png';
+    } else if (model.includes('sonet')) {
+      vehicleImage = '/vehicles/kia_sonet.png';
+    } else if (model.includes('xuv700')) {
+      vehicleImage = '/vehicles/xuv700.png';
+    } else if (model.includes('xuv300') || model.includes('xuv 3xo') || model.includes('3xo')) {
+      vehicleImage = '/vehicles/mahindra_xuv_3xo.png';
+    } else if (model.includes('bolero neo')) {
+      vehicleImage = '/vehicles/bolero_neo.png';
+    } else if (model.includes('bolero')) {
+      vehicleImage = '/vehicles/bolero.png';
+    } else if (model.includes('punch')) {
+      vehicleImage = '/vehicles/tata_punch.png';
+    } else if (model.includes('altroz')) {
+      vehicleImage = '/vehicles/tata_altroz.png';
+    } else if (model.includes('glanza')) {
+      vehicleImage = '/vehicles/toyota_glanza.png';
+    } else if (model.includes('taigun')) {
+      vehicleImage = '/vehicles/vw_taigun.png';
+    } else if (model.includes('exter')) {
+      vehicleImage = '/vehicles/hyundai_exter.png';
+    } else if (model.includes('fronx')) {
+      vehicleImage = '/vehicles/fronx.png';
+    } else if (model.includes('alto')) {
+      vehicleImage = '/vehicles/alto.png';
+    } else if (model.includes('grand vitara') || model.includes('vitara')) {
+      vehicleImage = '/vehicles/grand_vitara.png';
+    } else if (model.includes('jimny')) {
+      vehicleImage = '/vehicles/jimny.png';
+    } else if (model.includes('elevate')) {
+      vehicleImage = '/vehicles/honda_elevate.png';
+    } else if (model.includes('hyryder')) {
+      vehicleImage = '/vehicles/toyota_hyryder.png';
+    } else if (model.includes('tiago')) {
+      vehicleImage = '/vehicles/tata_tiago.png';
+    } else if (model.includes('tigor')) {
+      vehicleImage = '/vehicles/tata_tigor.png';
+    } else if (model.includes('curvv')) {
+      vehicleImage = '/vehicles/tata_curvv.png';
+    } else if (model.includes('aura')) {
+      vehicleImage = '/vehicles/hyundai_aura.png';
+    } else if (model.includes('ignis')) {
+      vehicleImage = '/vehicles/maruti_ignis.png';
+    } else if (model.includes('s-presso') || model.includes('spresso')) {
+      vehicleImage = '/vehicles/maruti_spresso.png';
+    } else if (model.includes('hexa')) {
+      vehicleImage = '/vehicles/tata_hexa.png';
+    } else if (model.includes('xl6')) {
+      vehicleImage = '/vehicles/maruti_xl6.png';
+    } else if (model.includes('eeco')) {
+      vehicleImage = '/vehicles/maruti_eeco.png';
+    } else if (model.includes('tucson')) {
+      vehicleImage = '/vehicles/hyundai_tucson.png';
+    } else if (model.includes('alcazar')) {
+      vehicleImage = '/vehicles/hyundai_alcazar.png';
+    } else if (model.includes('ioniq 5') || model.includes('ioniq5')) {
+      vehicleImage = '/vehicles/hyundai_ioniq5.png';
+    } else if (model.includes('santro')) {
+      vehicleImage = '/vehicles/hyundai_santro.png';
+    } else if (model.includes('invicto')) {
+      vehicleImage = '/vehicles/maruti_invicto.png';
+    } else if (model.includes('jazz')) {
+      vehicleImage = '/vehicles/honda_jazz.png';
+    } else if (model.includes('wr-v') || model.includes('wrv')) {
+      vehicleImage = '/vehicles/honda_wrv.png';
+    } else if (model.includes('ev6')) {
+      vehicleImage = '/vehicles/kia_ev6.png';
+    } else if (model.includes('ev9')) {
+      vehicleImage = '/vehicles/kia_ev9.png';
+    } else if (model.includes('hilux')) {
+      vehicleImage = '/vehicles/toyota_hilux.png';
+    } else if (model.includes('kodiaq')) {
+      vehicleImage = '/vehicles/skoda_kodiaq.png';
+    } else if (model.includes('legender')) {
+      vehicleImage = '/vehicles/toyota_legender.png';
+    } else if (model.includes('civic')) {
+      vehicleImage = '/vehicles/honda_civic.png';
+    } else if (model.includes('astor')) {
+      vehicleImage = '/vehicles/mg_astor.png';
+    } else if (model.includes('zs ev') || model.includes('zsev')) {
+      vehicleImage = '/vehicles/mg_zsev.png';
+    } else if (model.includes('gloster')) {
+      vehicleImage = '/vehicles/mg_gloster.png';
+    } else if (model.includes('carnival')) {
+      vehicleImage = '/vehicles/kia_carnival.png';
+    } else if (model.includes('polo')) {
+      vehicleImage = '/vehicles/vw_polo.png';
+    } else if (model.includes('vento')) {
+      vehicleImage = '/vehicles/vw_vento.png';
+    } else if (model.includes('jetta')) {
+      vehicleImage = '/vehicles/vw_jetta.png';
+    } else if (model.includes('tiguan')) {
+      vehicleImage = '/vehicles/vw_tiguan.png';
+    } else if (model.includes('passat')) {
+      vehicleImage = '/vehicles/vw_passat.png';
+    } else if (model.includes('sunny')) {
+      vehicleImage = '/vehicles/nissan_sunny.png';
+    } else if (model.includes('terrano')) {
+      vehicleImage = '/vehicles/nissan_terrano.png';
+    } else if (model.includes('magnite')) {
+      vehicleImage = '/vehicles/nissan_magnite.png';
+    } else if (model.includes('x-trail') || model.includes('xtrail')) {
+      vehicleImage = '/vehicles/nissan_xtrail.png';
+    } else if (model.includes('micra')) {
+      vehicleImage = '/vehicles/nissan_micra.png';
+    } else if (model.includes('vellfire')) {
+      vehicleImage = '/vehicles/toyota_vellfire.png';
+    } else if (model.includes('urban cruiser') || model.includes('urban_cruiser')) {
+      vehicleImage = '/vehicles/toyota_urban_cruiser.png';
+    } else if (model.includes('camry')) {
+      vehicleImage = '/vehicles/toyota_camry.png';
+    } else if (model.includes('land cruiser') || model.includes('land_cruiser')) {
+      vehicleImage = '/vehicles/toyota_land_cruiser.png';
+    } else if (model === 'xe' && make.includes('jaguar')) {
+      vehicleImage = '/vehicles/jaguar_xe.png';
+    } else if (model === 'xf' && make.includes('jaguar')) {
+      vehicleImage = '/vehicles/jaguar_xf.png';
+    } else if (model === 'xj' && make.includes('jaguar')) {
+      vehicleImage = '/vehicles/jaguar_xj.png';
+    } else if ((model.includes('f-type') || model.includes('ftype')) && make.includes('jaguar')) {
+      vehicleImage = '/vehicles/jaguar_ftype.png';
+    } else if (model.includes('f-pace') || model.includes('fpace')) {
+      vehicleImage = '/vehicles/jaguar_fpace.png';
+    } else if (model.includes('i-pace') || model.includes('ipace')) {
+      vehicleImage = '/vehicles/jaguar_ipace.png';
+    } else if (model.includes('endeavour')) {
+      vehicleImage = '/vehicles/endeavour.png';
+    } else if (model.includes('ecosport')) {
+      vehicleImage = '/vehicles/ford_ecosport.png';
+    } else if (model.includes('figo')) {
+      vehicleImage = '/vehicles/ford_figo.png';
+    } else if (model.includes('mustang')) {
+      vehicleImage = '/vehicles/ford_mustang.png';
+    } else if (model.includes('slavia')) {
+      vehicleImage = '/vehicles/slavia.png';
+    } else if (model.includes('virtus')) {
+      vehicleImage = '/vehicles/virtus.png';
+    } else if (model.includes('beat')) {
+      vehicleImage = '/vehicles/chevrolet_beat.png';
+    } else if (model.includes('spark')) {
+      vehicleImage = '/vehicles/chevrolet_spark.png';
+    } else if (model.includes('sail')) {
+      vehicleImage = '/vehicles/chevrolet_sail.png';
+    } else if (model.includes('cruze')) {
+      vehicleImage = '/vehicles/chevrolet_cruze.png';
+    } else if (model.includes('tavera')) {
+      vehicleImage = '/vehicles/chevrolet_tavera.png';
+    } else if (model.includes('enjoy')) {
+      vehicleImage = '/vehicles/chevrolet_enjoy.png';
+    } else if (model.includes('captiva')) {
+      vehicleImage = '/vehicles/chevrolet_captiva.png';
+    } else if (model.includes('es') && make.includes('lexus')) {
+      vehicleImage = '/vehicles/lexus_es.png';
+    } else if (model.includes('nx') && make.includes('lexus')) {
+      vehicleImage = '/vehicles/lexus_nx.png';
+    } else if (model.includes('rx') && make.includes('lexus')) {
+      vehicleImage = '/vehicles/lexus_rx.png';
+    } else if (model.includes('lx') && make.includes('lexus')) {
+      vehicleImage = '/vehicles/lexus_lx.png';
+    } else if (model.includes('ls') && make.includes('lexus')) {
+      vehicleImage = '/vehicles/lexus_ls.png';
+    } else if (model.includes('triber')) {
+      vehicleImage = '/vehicles/renault_triber.png';
+    } else if (model.includes('kiger')) {
+      vehicleImage = '/vehicles/renault_kiger.png';
+    } else if (model.includes('pajero')) {
+      vehicleImage = '/vehicles/mitsubishi_pajero.png';
+    } else if (model.includes('lancer')) {
+      vehicleImage = '/vehicles/mitsubishi_lancer.png';
+    } else if (model.includes('outlander')) {
+      vehicleImage = '/vehicles/mitsubishi_outlander.png';
+    } else if (model.includes('d-max') || model.includes('dmax')) {
+      vehicleImage = '/vehicles/isuzu_dmax.png';
+    } else if (model.includes('v-cross') || model.includes('vcross')) {
+      vehicleImage = '/vehicles/isuzu_vcross.png';
+    } else if (model.includes('mu-x') || model.includes('mux')) {
+      vehicleImage = '/vehicles/isuzu_mux.png';
+    } else if (model.includes('c5 aircross') || model.includes('c5_aircross')) {
+      vehicleImage = '/vehicles/citroen_c5_aircross.png';
+    } else if (model.includes('c3 aircross') || model.includes('c3_aircross')) {
+      vehicleImage = '/vehicles/citroen_c3_aircross.png';
+    } else if (model.includes('c3')) {
+      vehicleImage = '/vehicles/citroen_c3.png';
+    } else if (model.includes('creta')) {
+      vehicleImage = '/vehicles/creta.png';
+    } else if (model.includes('fortuner')) {
+      vehicleImage = '/vehicles/fortuner.png';
+    } else if (model.includes('thar roxx') || model.includes('roxx')) {
+      vehicleImage = '/vehicles/thar_roxx.png';
+    } else if (model.includes('thar')) {
+      vehicleImage = '/vehicles/thar.png';
+    } else if (model.includes('nexon')) {
+      vehicleImage = '/vehicles/nexon.png';
+    } else if (model.includes('swift')) {
+      vehicleImage = '/vehicles/swift.png';
+    } else if (model.includes('innova')) {
+      vehicleImage = '/vehicles/innova.png';
+    } else if (model.includes('octavia')) {
+      vehicleImage = '/vehicles/octavia.jpg';
+    } else if (model.includes('superb')) {
+      vehicleImage = '/vehicles/superb.jpg';
+    } else if (model.includes('bada dost')) {
+      vehicleImage = '/vehicles/bada_dost.png';
+    } else if (model.includes('dost') || model === 'ace' || model.startsWith('ace ') || model.endsWith(' ace')) {
+      vehicleImage = '/vehicles/dost.png';
+    } else if (model.includes('signa')) {
+      vehicleImage = '/vehicles/signa.png';
+    } else if (model.includes('ultra')) {
+      vehicleImage = '/vehicles/ultra.png';
+    } else if (model.includes('u-truck') || model.includes('u truck')) {
+      vehicleImage = '/vehicles/u_truck.png';
+    } else if (model.includes('2823c') || (make.includes('bharat') && model.includes('tipper'))) {
+      vehicleImage = '/vehicles/bharatbenz_tipper.png';
+    } else if (model.includes('1917r') || (make.includes('bharat') && model.includes('cargo'))) {
+      vehicleImage = '/vehicles/bharatbenz_cargo.png';
+    } else if (model.includes('5528tt') || (make.includes('bharat') && model.includes('tractor'))) {
+      vehicleImage = '/vehicles/bharatbenz_tractor.png';
+    } else if (model.includes('prima') || model.includes('truck') || make.includes('bharat') || make.includes('leyland') && (model.includes('tipper') || model.includes('cargo') || model.includes('tractor'))) {
+      vehicleImage = '/vehicles/prima.png';
+    } else if (model.includes('oyster')) {
+      vehicleImage = '/vehicles/oyster.png';
+    } else if (model.includes('viking')) {
+      vehicleImage = '/vehicles/viking.png';
+    } else if (model.includes('xc90') && make.includes('volvo')) {
+      vehicleImage = '/vehicles/volvo_xc90.png';
+    } else if (model.includes('xc60') && make.includes('volvo')) {
+      vehicleImage = '/vehicles/volvo_xc60.png';
+    } else if (model.includes('xc40') && make.includes('volvo')) {
+      vehicleImage = '/vehicles/volvo_xc40.png';
+    } else if (model.includes('c40') && make.includes('volvo')) {
+      vehicleImage = '/vehicles/volvo_c40.png';
+    } else if (model.includes('s60') && make.includes('volvo')) {
+      vehicleImage = '/vehicles/volvo_s60.png';
+    } else if (model.includes('s90') && make.includes('volvo')) {
+      vehicleImage = '/vehicles/volvo_s90.png';
+    } else if (model.includes('9400')) {
+      vehicleImage = '/vehicles/volvo_9400.png';
+    } else if (model.includes('9600')) {
+      vehicleImage = '/vehicles/volvo_9600.png';
+    } else if (model.includes('volvo') || model.includes('bus') || model.includes('starbus')) {
+      vehicleImage = '/vehicles/volvo_bus.png';
+    } else if (model.includes('traveller')) {
+      vehicleImage = '/vehicles/traveller.png';
+    } else if (model.includes('gurkha')) {
+      vehicleImage = '/vehicles/gurkha.png';
+    } else if (model.includes('citiline')) {
+      vehicleImage = '/vehicles/citiline.png';
+    } else if (model.includes('911') && make.includes('porsche')) {
+      vehicleImage = '/vehicles/porsche_911.png';
+    } else if (model.includes('cayenne') && make.includes('porsche')) {
+      vehicleImage = '/vehicles/porsche_cayenne.png';
+    } else if (model.includes('macan') && make.includes('porsche')) {
+      vehicleImage = '/vehicles/porsche_macan.png';
+    } else if (model.includes('panamera') && make.includes('porsche')) {
+      vehicleImage = '/vehicles/porsche_panamera.png';
+    } else if (model.includes('taycan') && make.includes('porsche')) {
+      vehicleImage = '/vehicles/porsche_taycan.png';
+    } else if (model.includes('ghost') && make.includes('rolls')) {
+      vehicleImage = '/vehicles/rolls_royce_ghost.png';
+    } else if (model.includes('phantom') && make.includes('rolls')) {
+      vehicleImage = '/vehicles/rolls_royce_phantom.png';
+    } else if (model.includes('cullinan') && make.includes('rolls')) {
+      vehicleImage = '/vehicles/rolls_royce_cullinan.png';
+    } else if (model.includes('spectre') && make.includes('rolls')) {
+      vehicleImage = '/vehicles/rolls_royce_spectre.png';
+    } else if (model.includes('roma') && make.includes('ferrari')) {
+      vehicleImage = '/vehicles/ferrari_roma.png';
+    } else if ((model.includes('296') || model.includes('gtb')) && make.includes('ferrari')) {
+      vehicleImage = '/vehicles/ferrari_296_gtb.png';
+    } else if ((model.includes('f8') || model.includes('tributo')) && make.includes('ferrari')) {
+      vehicleImage = '/vehicles/ferrari_f8_tributo.png';
+    } else if (model.includes('purosangue') && make.includes('ferrari')) {
+      vehicleImage = '/vehicles/ferrari_purosangue.png';
+    } else if (model.includes('huracan') && make.includes('lamborghini')) {
+      vehicleImage = '/vehicles/lamborghini_huracan.png';
+    } else if (model.includes('urus') && make.includes('lamborghini')) {
+      vehicleImage = '/vehicles/lamborghini_urus.png';
+    } else if (model.includes('revuelto') && make.includes('lamborghini')) {
+      vehicleImage = '/vehicles/lamborghini_revuelto.png';
+    } else if (model.includes('continental') && make.includes('bentley')) {
+      vehicleImage = '/vehicles/bentley_continental_gt.png';
+    } else if (model.includes('flying spur') && make.includes('bentley')) {
+      vehicleImage = '/vehicles/bentley_flying_spur.png';
+    } else if (model.includes('bentayga') && make.includes('bentley')) {
+      vehicleImage = '/vehicles/bentley_bentayga.png';
+    } else if (model.includes('vantage') && make.includes('aston')) {
+      vehicleImage = '/vehicles/aston_martin_vantage.png';
+    } else if (model.includes('db11') && make.includes('aston')) {
+      vehicleImage = '/vehicles/aston_martin_db11.png';
+    } else if (model.includes('dbs') && make.includes('aston')) {
+      vehicleImage = '/vehicles/aston_martin_dbs.png';
+    } else if (model.includes('dbx') && make.includes('aston')) {
+      vehicleImage = '/vehicles/aston_martin_dbx.png';
+    } else if (model.includes('cooper') && make.includes('mini')) {
+      vehicleImage = '/vehicles/mini_cooper.png';
+    } else if (model.includes('countryman') && make.includes('mini')) {
+      vehicleImage = '/vehicles/mini_countryman.png';
+    } else if (model.includes('clubman') && make.includes('mini')) {
+      vehicleImage = '/vehicles/mini_clubman.png';
+    } else if (model.includes('ghibli') && make.includes('maserati')) {
+      vehicleImage = '/vehicles/maserati_ghibli.png';
+    } else if (model.includes('quattroporte') && make.includes('maserati')) {
+      vehicleImage = '/vehicles/maserati_quattroporte.png';
+    } else if (model.includes('levante') && make.includes('maserati')) {
+      vehicleImage = '/vehicles/maserati_levante.png';
+    } else if (model.includes('grecale') && make.includes('maserati')) {
+      vehicleImage = '/vehicles/maserati_levante.png';
+    } else {
+      // Use local fallback category renders to ensure no carwow watermarks or external dependencies
+      vehicleImage = resolveLocalFallback(makeName, modelName);
+    }
+    return { diagramId, vehicleImage };
+  };
 
   const decodeVin = async (vinToDecode) => {
     const vin = (vinToDecode || vinQuery).trim().toUpperCase();
@@ -211,6 +1150,7 @@ export default function Home() {
 
     setVinError(null);
     setVinResult('loading'); // Show spinner
+    setSelectedHotspot(null); // Reset active hotspot selection
 
     const samples = {
       'MA3FDB91S00109283': {
@@ -228,7 +1168,9 @@ export default function Home() {
           belt: '6PK1150',
           pollenFilter: '210 x 200 x 29 mm'
         },
-        compatiblePartIds: [1, 2, 6, 9]
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/swift.png'
       },
       'MALCN81CPKM109482': {
         make: 'Hyundai',
@@ -245,7 +1187,9 @@ export default function Home() {
           belt: '6PK1255',
           pollenFilter: '225 x 195 x 25 mm'
         },
-        compatiblePartIds: [1, 2, 3, 6]
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/creta.png'
       },
       'MAT602148E0B09381': {
         make: 'Tata Motors',
@@ -262,7 +1206,9 @@ export default function Home() {
           belt: '5PK1030',
           pollenFilter: '215 x 185 x 30 mm'
         },
-        compatiblePartIds: [1, 2, 6]
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/nexon.png'
       },
       'MBJ111GB300189284': {
         make: 'Toyota',
@@ -279,7 +1225,9 @@ export default function Home() {
           belt: '7PK2050',
           pollenFilter: '215 x 190 x 28 mm'
         },
-        compatiblePartIds: [1, 2, 11]
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/fortuner.png'
       }
     };
 
@@ -352,6 +1300,13 @@ export default function Home() {
           normalizedFuel = fuel;
         }
 
+        const resolved = resolveVehicleDetails(make, model);
+        
+        let finalCompatIds = [...compatIds, 15, 16, 17];
+        if (resolved.diagramId === 'ac-system-exploded') {
+          finalCompatIds = [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386];
+        }
+
         setVinResult({
           make,
           model,
@@ -361,7 +1316,9 @@ export default function Home() {
           chassis: cleanVin,
           region: region || info.PlantState || 'International WMI',
           specs,
-          compatiblePartIds: compatIds
+          compatiblePartIds: finalCompatIds,
+          diagramId: resolved.diagramId,
+          vehicleImage: resolved.vehicleImage
         });
       } else {
         decodeFallback(cleanVin);
@@ -373,53 +1330,540 @@ export default function Home() {
   };
 
   const decodeFallback = (cleanVin) => {
+    const wmi = cleanVin.substring(0, 3).toUpperCase();
+    const vds = cleanVin.substring(3, 8).toUpperCase();
+    const upperVin = cleanVin.toUpperCase();
+
     let make = 'Generic Vehicle';
     let model = 'Universal Model';
+    let engine = '1.2L - 1.5L Fuel-Injected Engine';
     let compatIds = [1, 2, 6];
+    let modelDiagramId = 'swift-hvac';
+    let fuel = 'Petrol';
 
-    const wmi = cleanVin.substring(0, 3);
+    let specs = {
+      compressor: 'Denso / Subros Compact Rotary',
+      refrigerant: 'R-134a (430 ± 15g)',
+      oil: 'PAG 46 (90 ml)',
+      belt: '6PK1080',
+      pollenFilter: '215 x 190 x 25 mm'
+    };
+
+    // 1. Maruti Suzuki
     if (wmi.startsWith('MA3') || wmi.startsWith('MS1')) {
       make = 'Maruti Suzuki';
-      model = 'Swift / Baleno / Ertiga Series';
-      compatIds = [1, 2, 6, 11];
-    } else if (wmi.startsWith('MAL') || wmi.startsWith('KMH')) {
+      compatIds = [1, 2, 3, 6, 9, 15, 16, 17];
+      modelDiagramId = 'swift-hvac';
+      
+      if (upperVin.includes('FD') || upperVin.includes('FE')) {
+        model = 'Swift';
+        engine = '1.2L K12N DualJet Petrol';
+        specs = {
+          compressor: 'Subros / Denso 10S11C',
+          refrigerant: 'R-134a (370 ± 20g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1150',
+          pollenFilter: '210 x 200 x 29 mm'
+        };
+      } else if (upperVin.includes('ED') || upperVin.includes('EE')) {
+        model = 'Dzire';
+        engine = '1.2L K12M Petrol';
+        specs = {
+          compressor: 'Subros / Denso 10S11C',
+          refrigerant: 'R-134a (370 ± 20g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1150',
+          pollenFilter: '210 x 200 x 29 mm'
+        };
+      } else if (upperVin.includes('HA') || upperVin.includes('HB')) {
+        model = 'Ertiga';
+        engine = '1.5L K15C Smart Hybrid';
+        modelDiagramId = 'fortuner-hvac';
+        specs = {
+          compressor: 'Denso 10S13C Dual AC',
+          refrigerant: 'R-134a (530 ± 25g)',
+          oil: 'PAG 46 (120 ml)',
+          belt: '6PK1210',
+          pollenFilter: '215 x 200 x 30 mm'
+        };
+      } else if (upperVin.includes('YA') || upperVin.includes('YB')) {
+        model = 'Baleno';
+        engine = '1.2L DualJet Petrol';
+        specs = {
+          compressor: 'Subros C120',
+          refrigerant: 'R-134a (360 ± 15g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1130',
+          pollenFilter: '210 x 200 x 29 mm'
+        };
+      } else if (upperVin.includes('AA') || upperVin.includes('AB')) {
+        model = 'Alto 10';
+        engine = '1.0L K10C Petrol';
+        specs = {
+          compressor: 'Subros C80',
+          refrigerant: 'R-134a (320 ± 10g)',
+          oil: 'PAG 46 (60 ml)',
+          belt: '4PK810',
+          pollenFilter: '200 x 180 x 20 mm'
+        };
+      } else if (upperVin.includes('BA') || upperVin.includes('BB')) {
+        model = 'Brezza';
+        engine = '1.5L K15B Petrol';
+        specs = {
+          compressor: 'Denso 10S13C',
+          refrigerant: 'R-134a (410 ± 20g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1185',
+          pollenFilter: '215 x 200 x 30 mm'
+        };
+      } else {
+        model = 'Swift Series';
+        engine = '1.2L K-Series Petrol';
+      }
+    }
+    // 2. Hyundai
+    else if (wmi.startsWith('MAL') || wmi.startsWith('KMH')) {
       make = 'Hyundai';
-      model = 'Creta / i20 / Verna Series';
-      compatIds = [1, 2, 3, 6];
-    } else if (wmi.startsWith('MAT') || wmi.startsWith('TTR')) {
+      compatIds = [1, 2, 3, 6, 15, 16, 17];
+      modelDiagramId = 'creta-hvac';
+      fuel = 'Diesel'; // Many Hyundai lookups are diesel
+
+      if (upperVin.includes('CN') || upperVin.includes('CP')) {
+        model = 'Creta';
+        engine = '1.5L CRDi Turbo Diesel';
+        specs = {
+          compressor: 'Hanon/Doowon DV16',
+          refrigerant: 'R-134a (450 ± 25g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1255',
+          pollenFilter: '225 x 195 x 25 mm'
+        };
+      } else if (upperVin.includes('B1') || upperVin.includes('B2')) {
+        model = 'i20';
+        engine = '1.2L Kappa Petrol';
+        fuel = 'Petrol';
+        modelDiagramId = 'swift-hvac';
+        specs = {
+          compressor: 'Hanon DV13',
+          refrigerant: 'R-134a (400 ± 20g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1215',
+          pollenFilter: '215 x 185 x 25 mm'
+        };
+      } else if (upperVin.includes('A1') || upperVin.includes('A2')) {
+        model = 'Grand i10';
+        engine = '1.2L Kappa Petrol';
+        fuel = 'Petrol';
+        modelDiagramId = 'swift-hvac';
+        specs = {
+          compressor: 'Doowon DV11',
+          refrigerant: 'R-134a (380 ± 15g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1190',
+          pollenFilter: '210 x 180 x 25 mm'
+        };
+      } else if (upperVin.includes('S1') || upperVin.includes('S2')) {
+        model = 'Venue';
+        engine = '1.0L Turbo GDi Petrol';
+        fuel = 'Petrol';
+        specs = {
+          compressor: 'Hanon DV13',
+          refrigerant: 'R-134a (420 ± 20g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1230',
+          pollenFilter: '220 x 190 x 25 mm'
+        };
+      } else if (upperVin.includes('V1') || upperVin.includes('V2')) {
+        model = 'Verna';
+        engine = '1.5L MPi Petrol';
+        fuel = 'Petrol';
+        modelDiagramId = 'swift-hvac';
+        specs = {
+          compressor: 'Hanon DV15',
+          refrigerant: 'R-134a (430 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1240',
+          pollenFilter: '225 x 195 x 25 mm'
+        };
+      } else {
+        model = 'Creta SX';
+        engine = '1.5L Diesel';
+      }
+    }
+    // 3. Tata Motors
+    else if (wmi.startsWith('MAT') || wmi.startsWith('TTR')) {
       make = 'Tata Motors';
-      model = 'Nexon / Altroz / Safari Series';
-      compatIds = [1, 2, 6];
-    } else if (wmi.startsWith('MBJ') || wmi.startsWith('MHF') || wmi.startsWith('JTD')) {
+      compatIds = [1, 2, 3, 6, 15, 16, 17];
+      modelDiagramId = 'nexon-hvac';
+      
+      if (upperVin.includes('602') || upperVin.includes('NX')) {
+        model = 'Nexon';
+        engine = '1.2L Revotron Turbo Petrol';
+        specs = {
+          compressor: 'Subros Sub-Compact Rotary',
+          refrigerant: 'R-134a (420 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '5PK1030',
+          pollenFilter: '215 x 185 x 30 mm'
+        };
+      } else if (upperVin.includes('612') || upperVin.includes('AL')) {
+        model = 'Altroz';
+        engine = '1.2L Revotron Petrol';
+        modelDiagramId = 'swift-hvac';
+        specs = {
+          compressor: 'Subros Compact Rotary',
+          refrigerant: 'R-134a (400 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '5PK1015',
+          pollenFilter: '215 x 185 x 30 mm'
+        };
+      } else if (upperVin.includes('622') || upperVin.includes('PU')) {
+        model = 'Punch';
+        engine = '1.2L Revotron Petrol';
+        modelDiagramId = 'swift-hvac';
+        specs = {
+          compressor: 'Subros Compact Rotary',
+          refrigerant: 'R-134a (380 ± 15g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '5PK1010',
+          pollenFilter: '210 x 180 x 30 mm'
+        };
+      } else if (upperVin.includes('642') || upperVin.includes('HR') || upperVin.includes('SF')) {
+        model = 'Harrier';
+        engine = '2.0L Kryotec Diesel';
+        fuel = 'Diesel';
+        modelDiagramId = 'fortuner-hvac';
+        specs = {
+          compressor: 'Sanden SD7V16',
+          refrigerant: 'R-134a (550 ± 20g)',
+          oil: 'PAG 46 (120 ml)',
+          belt: '6PK1560',
+          pollenFilter: '230 x 205 x 30 mm'
+        };
+      } else {
+        model = 'Nexon Series';
+        engine = '1.2L Revotron Petrol';
+      }
+    }
+    // 4. Toyota
+    else if (wmi.startsWith('MBJ') || wmi.startsWith('MHF') || wmi.startsWith('JTD')) {
       make = 'Toyota';
-      model = 'Innova / Fortuner / Glanza Series';
-      compatIds = [1, 2, 11];
-    } else if (wmi.startsWith('MPH') || wmi.startsWith('MA1')) {
+      compatIds = [1, 2, 3, 11, 15, 16, 17];
+      modelDiagramId = 'fortuner-hvac';
+      fuel = 'Diesel';
+
+      if (upperVin.includes('111') || upperVin.includes('FT')) {
+        model = 'Fortuner';
+        engine = '2.8L 1GD-FTV Turbo Diesel';
+        specs = {
+          compressor: 'Denso 10S17C Dual AC System',
+          refrigerant: 'R-134a (650 ± 30g)',
+          oil: 'ND-OIL 8 / PAG 46 (120 ml)',
+          belt: '7PK2050',
+          pollenFilter: '215 x 190 x 28 mm'
+        };
+      } else if (upperVin.includes('121') || upperVin.includes('IN')) {
+        model = 'Innova Crysta';
+        engine = '2.4L 2GD-FTV Diesel';
+        specs = {
+          compressor: 'Denso 10S15C Dual AC System',
+          refrigerant: 'R-134a (600 ± 25g)',
+          oil: 'ND-OIL 8 / PAG 46 (120 ml)',
+          belt: '7PK1920',
+          pollenFilter: '215 x 190 x 28 mm'
+        };
+      } else if (upperVin.includes('131') || upperVin.includes('HR')) {
+        model = 'Urban Cruiser Hyryder';
+        engine = '1.5L NeoDrive Hybrid';
+        fuel = 'Hybrid';
+        modelDiagramId = 'creta-hvac';
+        specs = {
+          compressor: 'Denso Electric ES14',
+          refrigerant: 'R-134a (410 ± 15g)',
+          oil: 'ND-OIL 11 (100 ml)',
+          belt: 'Electric Drive',
+          pollenFilter: '210 x 185 x 28 mm'
+        };
+      } else if (upperVin.includes('141') || upperVin.includes('GL')) {
+        model = 'Glanza';
+        engine = '1.2L DualJet Petrol';
+        fuel = 'Petrol';
+        modelDiagramId = 'swift-hvac';
+        specs = {
+          compressor: 'Subros C120',
+          refrigerant: 'R-134a (360 ± 15g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1130',
+          pollenFilter: '210 x 200 x 29 mm'
+        };
+      } else {
+        model = 'Fortuner Sigma4';
+        engine = '2.8L Diesel';
+      }
+    }
+    // 5. Mahindra
+    else if (wmi.startsWith('MPH') || wmi.startsWith('MA1')) {
       make = 'Mahindra';
-      model = 'XUV700 / Scorpio-N / Thar Series';
-      compatIds = [1, 2, 6, 11];
-    } else if (wmi.startsWith('SHS') || wmi.startsWith('MRH')) {
+      compatIds = [1, 2, 3, 6, 15, 16, 17];
+      modelDiagramId = 'fortuner-hvac';
+      fuel = 'Diesel';
+
+      if (upperVin.includes('XUV') || upperVin.includes('700')) {
+        model = 'XUV700';
+        engine = '2.2L mHawk Turbo Diesel';
+        specs = {
+          compressor: 'Hanon VS16',
+          refrigerant: 'R-134a (580 ± 20g)',
+          oil: 'PAG 46 (110 ml)',
+          belt: '6PK1610',
+          pollenFilter: '225 x 195 x 30 mm'
+        };
+      } else if (upperVin.includes('SCO') || upperVin.includes('N')) {
+        model = 'Scorpio-N';
+        engine = '2.2L mHawk Turbo Diesel';
+        specs = {
+          compressor: 'Hanon VS16',
+          refrigerant: 'R-134a (560 ± 20g)',
+          oil: 'PAG 46 (110 ml)',
+          belt: '6PK1590',
+          pollenFilter: '220 x 195 x 30 mm'
+        };
+      } else if (upperVin.includes('THR') || upperVin.includes('TAR')) {
+        model = 'Thar';
+        engine = '2.2L mHawk Diesel';
+        modelDiagramId = 'creta-hvac';
+        specs = {
+          compressor: 'Hanon VS14',
+          refrigerant: 'R-134a (480 ± 20g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1410',
+          pollenFilter: '215 x 185 x 28 mm'
+        };
+      } else {
+        model = 'Thar AX';
+        engine = '2.2L Diesel';
+      }
+    }
+    // 6. Honda
+    else if (wmi.startsWith('SHS') || wmi.startsWith('MRH')) {
       make = 'Honda';
-      model = 'City / Amaze / Elevate Series';
-      compatIds = [1, 2, 3, 6];
-    } else if (wmi.startsWith('WVW') || wmi.startsWith('WVG')) {
-      make = 'Volkswagen';
-      model = 'Virtus / Taigun / Polo';
-      compatIds = [1, 2, 6];
-    } else if (wmi.startsWith('WBA') || wmi.startsWith('WBY')) {
-      make = 'BMW';
-      model = '3-Series / X3';
-      compatIds = [1, 2, 6, 11];
-    } else if (wmi.startsWith('WDD') || wmi.startsWith('W1K')) {
-      make = 'Mercedes-Benz';
-      model = 'C-Class / GLC';
-      compatIds = [1, 2, 6, 11];
-    } else if (wmi.startsWith('1FV') || wmi.startsWith('4UZ') || cleanVin.includes('TRUCK') || cleanVin.includes('BUS')) {
+      model = 'City';
+      compatIds = [1, 2, 3, 6, 15, 16, 17];
+      modelDiagramId = 'swift-hvac';
+      engine = '1.5L i-VTEC Petrol';
+      specs = {
+        compressor: 'Sanden TRSE07',
+        refrigerant: 'R-134a (380 ± 15g)',
+        oil: 'SP-10 (80 ml)',
+        belt: '5PK1140',
+        pollenFilter: '210 x 205 x 28 mm'
+      };
+    }
+    // 7. MG Motor
+    else if (wmi.startsWith('LSJ') || upperVin.includes('MG')) {
+      make = 'MG Motor';
+      compatIds = [1, 2, 3, 6, 15, 16, 17];
+      modelDiagramId = 'creta-hvac';
+      engine = '1.5L Turbo Petrol';
+      
+      if (upperVin.includes('HE') || upperVin.includes('HECTOR')) {
+        model = 'Hector';
+        specs = {
+          compressor: 'Hanon/Sanden Variable displacement',
+          refrigerant: 'R-134a (460 ± 15g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1220',
+          pollenFilter: '215 x 195 x 28 mm'
+        };
+      } else if (upperVin.includes('AS') || upperVin.includes('ASTOR')) {
+        model = 'Astor';
+        specs = {
+          compressor: 'Hanon VS14',
+          refrigerant: 'R-134a (420 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1210',
+          pollenFilter: '210 x 185 x 25 mm'
+        };
+      } else if (upperVin.includes('GL') || upperVin.includes('GLOSTER')) {
+        model = 'Gloster';
+        modelDiagramId = 'fortuner-hvac';
+        engine = '2.0L Twin-Turbo Diesel';
+        specs = {
+          compressor: 'Denso 10S17C Dual AC',
+          refrigerant: 'R-134a (650 ± 25g)',
+          oil: 'ND-OIL 8 (120 ml)',
+          belt: '7PK2010',
+          pollenFilter: '220 x 200 x 30 mm'
+        };
+      } else {
+        model = 'Hector';
+        specs = {
+          compressor: 'Hanon/Sanden Variable displacement',
+          refrigerant: 'R-134a (460 ± 15g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1220',
+          pollenFilter: '215 x 195 x 28 mm'
+        };
+      }
+    }
+    // 8. Kia Motors
+    else if (wmi.startsWith('KNA') || upperVin.includes('KIA') || upperVin.includes('SE') || upperVin.includes('SO')) {
+      make = 'Kia';
+      compatIds = [1, 2, 3, 6, 15, 16, 17];
+      modelDiagramId = 'creta-hvac';
+      engine = '1.5L CRDi Diesel';
+      
+      if (upperVin.includes('SE') || upperVin.includes('CN') || upperVin.includes('SELTOS')) {
+        model = 'Seltos';
+        specs = {
+          compressor: 'Hanon/Doowon DV16',
+          refrigerant: 'R-134a (450 ± 25g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1255',
+          pollenFilter: '225 x 195 x 25 mm'
+        };
+      } else if (upperVin.includes('SO') || upperVin.includes('B1') || upperVin.includes('SONET')) {
+        model = 'Sonet';
+        specs = {
+          compressor: 'Hanon DV13',
+          refrigerant: 'R-134a (400 ± 20g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1215',
+          pollenFilter: '215 x 185 x 25 mm'
+        };
+      } else {
+        model = 'Seltos';
+        specs = {
+          compressor: 'Hanon/Doowon DV16',
+          refrigerant: 'R-134a (450 ± 25g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1255',
+          pollenFilter: '225 x 195 x 25 mm'
+        };
+      }
+    }
+    // 9. Skoda / Volkswagen
+    else if (wmi.startsWith('WVW') || wmi.startsWith('WV2') || wmi.startsWith('TMB') || upperVin.includes('SL') || upperVin.includes('VI')) {
+      compatIds = [1, 2, 3, 10, 15, 16, 17];
+      modelDiagramId = 'swift-hvac';
+      engine = '1.0L TSI Petrol';
+      
+      if (upperVin.includes('SL') || upperVin.includes('KUS') || upperVin.includes('SLAVIA') || upperVin.includes('KUSHAQ')) {
+        make = 'Skoda';
+        model = (upperVin.includes('KUS') || upperVin.includes('KUSHAQ')) ? 'Kushaq' : 'Slavia';
+        if (model === 'Kushaq') modelDiagramId = 'creta-hvac';
+        specs = {
+          compressor: 'Sanden PXE14 / Denso 6SES14C',
+          refrigerant: 'R-1234yf / R-134a (420 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1020',
+          pollenFilter: '215 x 200 x 30 mm'
+        };
+      } else if (upperVin.includes('VI') || upperVin.includes('TAI') || upperVin.includes('VIRTUS') || upperVin.includes('TAIGUN')) {
+        make = 'Volkswagen';
+        model = (upperVin.includes('TAI') || upperVin.includes('TAIGUN')) ? 'Taigun' : 'Virtus';
+        if (model === 'Taigun') modelDiagramId = 'creta-hvac';
+        specs = {
+          compressor: 'Sanden PXE14 / Denso 6SES14C',
+          refrigerant: 'R-1234yf / R-134a (420 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1020',
+          pollenFilter: '215 x 200 x 30 mm'
+        };
+      } else {
+        make = 'Volkswagen';
+        model = 'Virtus';
+        specs = {
+          compressor: 'Sanden PXE14 / Denso 6SES14C',
+          refrigerant: 'R-1234yf / R-134a (420 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '6PK1020',
+          pollenFilter: '215 x 200 x 30 mm'
+        };
+      }
+    }
+    // 10. Light Commercial / Trucks & Buses / Force Motors / Ashok Leyland / BharatBenz / Volvo
+    else if (wmi.startsWith('MDF') || wmi.startsWith('MBN') || wmi.startsWith('YV1') || wmi.startsWith('MAF') || upperVin.includes('DST') || upperVin.includes('PRM') || upperVin.includes('BUS') || upperVin.includes('BBZ') || upperVin.includes('VOLVO') || selectedMake.toLowerCase().includes('leyland') || selectedMake.toLowerCase().includes('commercial') || selectedMake.toLowerCase().includes('bharat') || selectedMake.toLowerCase().includes('volvo') || selectedMake.toLowerCase().includes('force')) {
+      compatIds = [5, 7, 8, 12, 15, 16, 17];
+      modelDiagramId = 'fortuner-hvac';
+      fuel = 'Diesel';
+      
+      if (wmi.startsWith('MDF') || upperVin.includes('DST') || selectedModel.toLowerCase().includes('dost')) {
+        make = 'Ashok Leyland';
+        model = 'Dost (LCV)';
+        engine = '1.5L 3-Cylinder Diesel';
+        modelDiagramId = 'swift-hvac';
+        specs = {
+          compressor: 'Subros Compact Rotary',
+          refrigerant: 'R-134a (400 ± 20g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '5PK1010',
+          pollenFilter: '210 x 180 x 25 mm'
+        };
+      } else if (wmi.startsWith('MBN') || upperVin.includes('BBZ') || selectedModel.toLowerCase().includes('bharatbenz')) {
+        make = 'BharatBenz';
+        model = selectedModel.includes('(') ? selectedModel.split(' ')[1] : 'Heavy Truck Fleet';
+        engine = '6.7L BharatBenz Turbo Diesel';
+        specs = {
+          compressor: 'Heavy Duty Sanden SD7H15',
+          refrigerant: 'R-134a (850 ± 50g)',
+          oil: 'PAG 100 (180 ml)',
+          belt: '8PK1540',
+          pollenFilter: '260 x 220 x 35 mm'
+        };
+      } else if (wmi.startsWith('YV1') || upperVin.includes('VOLVO') || selectedModel.toLowerCase().includes('volvo')) {
+        make = 'Volvo';
+        model = 'Premium Bus Series';
+        engine = '8.0L Volvo D8K Diesel';
+        specs = {
+          compressor: 'Sanden Heavy Duty AC',
+          refrigerant: 'R-134a (1200g ± 100g)',
+          oil: 'PAG 100 (250 ml)',
+          belt: '8PK1620',
+          pollenFilter: '300 x 250 x 40 mm'
+        };
+      } else if (wmi.startsWith('MAF') || upperVin.includes('TRV') || selectedModel.toLowerCase().includes('traveller')) {
+        make = 'Force Motors';
+        model = 'Traveller';
+        engine = '2.6L FM 2.6 CR CD Diesel';
+        specs = {
+          compressor: 'Sanden SD7H15 Dual AC',
+          refrigerant: 'R-134a (800 ± 40g)',
+          oil: 'PAG 100 (150 ml)',
+          belt: '7PK1420',
+          pollenFilter: '240 x 200 x 30 mm'
+        };
+      } else {
+        make = 'Tata Commercial';
+        model = 'Prima Heavy Truck';
+        engine = 'Cummins ISBe 6.7L Diesel';
+        specs = {
+          compressor: 'Sanden Heavy Duty Compressor',
+          refrigerant: 'R-134a (950 ± 50g)',
+          oil: 'PAG 100 (220 ml)',
+          belt: '8PK1540',
+          pollenFilter: '280 x 240 x 35 mm'
+        };
+      }
+    }
+    // 11. Generic Heavy Commercial fallback
+    else if (wmi.startsWith('1FV') || wmi.startsWith('4UZ') || upperVin.includes('TRUCK') || upperVin.includes('BUS')) {
       make = 'Heavy Commercial';
-      model = 'Truck / Bus Fleet Carrier';
-      compatIds = [5, 7, 8, 12];
+      model = 'Volvo Truck Fleet';
+      compatIds = [5, 7, 8, 12, 15, 16, 17];
+      modelDiagramId = 'fortuner-hvac';
+      engine = '5.2L D5K Turbocharged Diesel';
+      fuel = 'Diesel';
+      specs = {
+        compressor: 'Sanden Heavy-Duty Compressor',
+        refrigerant: 'R-134a (950 ± 50g)',
+        oil: 'PAG 100 (220 ml)',
+        belt: '8PK1540',
+        pollenFilter: '280 x 240 x 35 mm'
+      };
     }
 
+    // Decode model year from 10th digit
     let year = '2022';
     if (cleanVin.length >= 10) {
       const yearChar = cleanVin.charAt(9);
@@ -431,37 +1875,25 @@ export default function Home() {
       year = yearMap[yearChar] || '2022';
     }
 
-    const isHeavy = compatIds.includes(5) || compatIds.includes(8);
-    const specs = isHeavy ? {
-      compressor: 'Sanden Heavy-Duty Compressor',
-      refrigerant: 'R-134a (950 ± 50g)',
-      oil: 'PAG 100 (220 ml)',
-      belt: '8PK1540',
-      pollenFilter: '280 x 240 x 35 mm'
-    } : {
-      compressor: 'Denso / Subros Compact Rotary',
-      refrigerant: 'R-134a (430 ± 15g)',
-      oil: 'PAG 46 (90 ml)',
-      belt: '6PK1080',
-      pollenFilter: '215 x 190 x 25 mm'
-    };
-
-    let fuel = isHeavy ? 'Diesel' : 'Petrol';
-    const upperVin = cleanVin.toUpperCase();
-    if (upperVin.includes('DIESEL') || upperVin.includes('DSL') || make === 'Toyota' || make === 'Mahindra') {
-      fuel = 'Diesel';
+    const resolved = resolveVehicleDetails(make, model);
+    
+    let finalCompatIds = compatIds;
+    if (resolved.diagramId === 'ac-system-exploded') {
+      finalCompatIds = [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386];
     }
 
     setVinResult({
       make,
-      model: `${model} (Auto-Decoded)`,
+      model: `${model} (Decoded Specs)`,
       year,
-      engine: isHeavy ? '5.2L Turbocharged Diesel' : '1.2L - 1.5L Fuel-Injected Engine',
+      engine,
       fuelType: fuel,
       chassis: cleanVin,
-      region: 'WMI Decoded Region',
+      region: 'India / ASIA Domestic WMI Decode',
       specs,
-      compatiblePartIds: compatIds
+      compatiblePartIds: finalCompatIds,
+      diagramId: resolved.diagramId,
+      vehicleImage: resolved.vehicleImage
     });
   };
 
@@ -727,7 +2159,7 @@ export default function Home() {
   });
 
   const stats = [
-    { value: '500+', label: 'Products Available' },
+    { value: '1000+', label: 'Products Available' },
     { value: '50+', label: 'OEM & Aftermarket Brands' },
     { value: '1000+', label: 'Dealers & Workshops Served' },
     { value: '20+', label: 'Years in Automotive Cooling Solutions' },
@@ -735,7 +2167,7 @@ export default function Home() {
 
   const features = [
     { icon: <Shield size={28} />, title: 'Genuine OEM & Aftermarket Parts', desc: 'Only original manufacturer and quality-tested replacement parts.' },
-    { icon: <Package size={28} />, title: '500+ SKUs Ready to Dispatch', desc: 'A massive wholesale inventory of AC compressors, condensers, blowers, and valves.' },
+    { icon: <Package size={28} />, title: '1000+ SKUs Ready to Dispatch', desc: 'A massive wholesale inventory of AC compressors, condensers, blowers, and valves.' },
     { icon: <Truck size={28} />, title: 'Same-Day Shipping', desc: 'Quick dispatch and fast transit across India to minimize vehicle downtime.' },
     { icon: <Headphones size={28} />, title: 'Technical Support', desc: 'Get expert guidance and parts compatibility identification via WhatsApp.' },
   ];
@@ -765,20 +2197,36 @@ export default function Home() {
               Supplying OEM and aftermarket AC components for cars, trucks, buses, SUVs, and commercial fleets. Trusted by workshops, dealers, and fleet operators across India.
             </p>
             <div className="hero-buttons">
-              <Link to="/products" className="hero-cta" id="hero-browse-btn">
-                BROWSE PARTS <ArrowRight size={16} strokeWidth={3} />
+              <Link to="/products" className="hero-cta premium-liquid-btn" id="hero-browse-btn">
+                <span className="btn-content">
+                  BROWSE PARTS <ArrowRight size={16} strokeWidth={3} />
+                </span>
+                <div className="liquid-bg">
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                    <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                  </svg>
+                </div>
               </Link>
               <a
                 href="https://wa.me/919962173870?text=Hello%21%20I%27m%20visiting%20your%20website%20and%20would%20like%20to%20inquire%20about%20automotive%20AC%20parts."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hero-whatsapp-btn"
+                className="hero-whatsapp-btn premium-liquid-btn btn-whatsapp"
                 id="hero-whatsapp-btn"
               >
-                <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" className="whatsapp-icon" style={{ marginRight: '8px' }}>
-                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                </svg>
-                <span>Chat on WhatsApp</span>
+                <span className="btn-content">
+                  <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" className="whatsapp-icon" style={{ marginRight: '8px' }}>
+                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                  </svg>
+                  <span>Chat on WhatsApp</span>
+                </span>
+                <div className="liquid-bg">
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                    <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                  </svg>
+                </div>
               </a>
             </div>
           </div>
@@ -794,6 +2242,28 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SUMMER SALE BANNER SECTION */}
+      {isBannerVisible && (
+        <section className="summer-sale-section reveal">
+          <div className="container">
+            <a
+              href="https://wa.me/919962173870?text=Hello%21%20I%27m%20interested%20in%20inquiring%20about%20your%20promotional%20sale%20offers."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="summer-sale-banner-link"
+            >
+              <div className="summer-sale-banner-wrapper">
+                <img 
+                  src={customBannerImage || "/summer-sale.png"} 
+                  alt="RCS Promotional Sale Banner" 
+                  className="summer-sale-banner-img" 
+                />
+              </div>
+            </a>
+          </div>
+        </section>
+      )}
+
       {/* B2B SEARCH EXPERIENCE */}
       <section className="b2b-search-section">
         <div className="container">
@@ -808,7 +2278,7 @@ export default function Home() {
               <div className="search-tabs">
                 <button
                   className={`search-tab-btn ${searchMode === 'parts' ? 'active' : ''}`}
-                  onClick={() => { setSearchMode('parts'); }}
+                  onClick={() => { setSearchMode('parts'); setVinResult(null); setSelectedHotspot(null); }}
                   id="tab-search-parts"
                 >
                   <Search size={15} />
@@ -816,7 +2286,7 @@ export default function Home() {
                 </button>
                 <button
                   className={`search-tab-btn ${searchMode === 'vehicle' ? 'active' : ''}`}
-                  onClick={() => { setSearchMode('vehicle'); }}
+                  onClick={() => { setSearchMode('vehicle'); setVinResult(null); setSelectedHotspot(null); }}
                   id="tab-search-vehicle"
                 >
                   <Sliders size={15} />
@@ -824,7 +2294,7 @@ export default function Home() {
                 </button>
                 <button
                   className={`search-tab-btn ${searchMode === 'vin' ? 'active' : ''}`}
-                  onClick={() => { setSearchMode('vin'); }}
+                  onClick={() => { setSearchMode('vin'); setVinResult(null); setSelectedHotspot(null); }}
                   id="tab-search-vin"
                 >
                   <Car size={15} strokeWidth={2.2} />
@@ -832,7 +2302,7 @@ export default function Home() {
                 </button>
                 <button
                   className={`search-tab-btn ${searchMode === 'image' ? 'active' : ''}`}
-                  onClick={() => { setSearchMode('image'); }}
+                  onClick={() => { setSearchMode('image'); setVinResult(null); setSelectedHotspot(null); }}
                   id="tab-search-image"
                 >
                   <Camera size={15} />
@@ -887,10 +2357,17 @@ export default function Home() {
                       {voiceListening ? <MicOff size={16} /> : <Mic size={16} />}
                     </button>
 
-                    {/* SEARCH BUTTON */}
-                    <button className="search-execute-btn" onClick={executeSearch}>
-                      <Search size={16} />
-                      <span>Search</span>
+                    <button className="search-execute-btn premium-liquid-btn" onClick={executeSearch}>
+                      <span className="btn-content">
+                        <Search size={16} />
+                        <span>Search</span>
+                      </span>
+                      <div className="liquid-bg">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                          <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                          <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                        </svg>
+                      </div>
                     </button>
                   </div>
 
@@ -964,80 +2441,102 @@ export default function Home() {
                 /* VEHICLE FINDER WIZARD PANEL */
                 <div className="vehicle-search-container">
                   <p className="vehicle-search-description">
-                    Select your vehicle's manufacturer make, model, and year to instantly search matching AC compressors, condensers, and other spare parts.
+                    Select your vehicle's manufacturer make, model, and year to instantly search matching AC parts. Catalog covers <strong>passenger cars, utility vehicles, and heavy commercial vehicles available in the Indian market</strong>.
                   </p>
 
-                  <div className="vehicle-wizard-grid">
-                    <div className="wizard-dropdown-group">
-                      <label htmlFor="wizard-make">Vehicle Make</label>
-                      <div className="select-wrapper">
-                        <select
-                          id="wizard-make"
-                          value={selectedMake}
-                          onChange={(e) => {
-                            setSelectedMake(e.target.value);
-                            setSelectedModel('');
-                            setSelectedYear('');
-                          }}
-                          className="wizard-select"
-                        >
-                          <option value="">Select Manufacturer</option>
-                          {Object.keys(vehicleData).map(make => (
-                            <option key={make} value={make}>{make}</option>
-                          ))}
-                        </select>
+                  <div className="vehicle-wizard-flex">
+                    <div className="vehicle-wizard-form">
+                      <div className="vehicle-wizard-grid">
+                        <div className="wizard-dropdown-group">
+                          <label htmlFor="wizard-make">Vehicle Make</label>
+                          <div className="select-wrapper">
+                            <select
+                              id="wizard-make"
+                              value={selectedMake}
+                              onChange={(e) => {
+                                setSelectedMake(e.target.value);
+                                setSelectedModel('');
+                                setSelectedYear('');
+                              }}
+                              className="wizard-select"
+                            >
+                              <option value="">Select Manufacturer</option>
+                              {Object.keys(vehicleData).map(make => (
+                                <option key={make} value={make}>{make}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="wizard-dropdown-group">
+                          <label htmlFor="wizard-model">Vehicle Model</label>
+                          <div className="select-wrapper">
+                            <select
+                              id="wizard-model"
+                              value={selectedModel}
+                              disabled={!selectedMake}
+                              onChange={(e) => {
+                                setSelectedModel(e.target.value);
+                                setSelectedYear('');
+                              }}
+                              className="wizard-select"
+                            >
+                              <option value="">Select Model</option>
+                              {selectedMake && vehicleData[selectedMake].map(model => (
+                                <option key={model} value={model}>{model}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="wizard-dropdown-group">
+                          <label htmlFor="wizard-year">Manufacturing Year</label>
+                          <div className="select-wrapper">
+                            <select
+                              id="wizard-year"
+                              value={selectedYear}
+                              disabled={!selectedModel}
+                              onChange={(e) => setSelectedYear(e.target.value)}
+                              className="wizard-select"
+                            >
+                              <option value="">Select Year</option>
+                              {vehicleYears.map(year => (
+                                <option key={year} value={year}>{year}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="wizard-dropdown-group">
-                      <label htmlFor="wizard-model">Vehicle Model</label>
-                      <div className="select-wrapper">
-                        <select
-                          id="wizard-model"
-                          value={selectedModel}
-                          disabled={!selectedMake}
-                          onChange={(e) => {
-                            setSelectedModel(e.target.value);
-                            setSelectedYear('');
-                          }}
-                          className="wizard-select"
-                        >
-                          <option value="">Select Model</option>
-                          {selectedMake && vehicleData[selectedMake].map(model => (
-                            <option key={model} value={model}>{model}</option>
-                          ))}
-                        </select>
+                    {selectedMake && selectedModel && (
+                      <div className="wizard-vehicle-preview">
+                        <img
+                          src={resolveVehicleDetails(selectedMake, selectedModel).vehicleImage}
+                          alt={`${selectedMake} ${selectedModel} preview`}
+                          onError={(e) => handleImageError(e, selectedMake, selectedModel)}
+                        />
                       </div>
-                    </div>
-
-                    <div className="wizard-dropdown-group">
-                      <label htmlFor="wizard-year">Manufacturing Year</label>
-                      <div className="select-wrapper">
-                        <select
-                          id="wizard-year"
-                          value={selectedYear}
-                          disabled={!selectedModel}
-                          onChange={(e) => setSelectedYear(e.target.value)}
-                          className="wizard-select"
-                        >
-                          <option value="">Select Year</option>
-                          {vehicleYears.map(year => (
-                            <option key={year} value={year}>{year}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="wizard-actions-row">
                     <button
-                      className="wizard-submit-btn"
+                      className="wizard-submit-btn premium-liquid-btn"
                       onClick={handleVehicleSearch}
                       disabled={!selectedMake || !selectedModel || !selectedYear}
                       type="button"
                     >
-                      <Search size={16} />
-                      <span>Find Compatible Parts</span>
+                      <span className="btn-content">
+                        <Search size={16} />
+                        <span>Find Compatible Parts</span>
+                      </span>
+                      <div className="liquid-bg">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                          <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                          <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                        </svg>
+                      </div>
                     </button>
                   </div>
                 </div>
@@ -1110,9 +2609,17 @@ export default function Home() {
                       )}
                     </div>
                     
-                    <button className="search-execute-btn" onClick={() => decodeVin()}>
-                      <Search size={16} />
-                      <span>Decode VIN</span>
+                    <button className="search-execute-btn premium-liquid-btn" onClick={() => decodeVin()}>
+                      <span className="btn-content">
+                        <Search size={16} />
+                        <span>Decode VIN</span>
+                      </span>
+                      <div className="liquid-bg">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                          <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                          <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                        </svg>
+                      </div>
                     </button>
                   </div>
 
@@ -1132,235 +2639,6 @@ export default function Home() {
                       <button onClick={() => { setVinQuery('MBJ111GB300189284'); decodeVin('MBJ111GB300189284'); }} className="sample-chip">Fortuner (Toyota)</button>
                     </div>
                   </div>
-
-                  {vinResult === 'loading' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0', gap: '16px' }}>
-                      <div className="admin-preview-spinner" style={{ width: '32px', height: '32px', border: '3px solid var(--gray-200)', borderTopColor: 'var(--red)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                      <span style={{ fontSize: '13px', color: 'var(--gray-500)' }}>Decoding VIN specs...</span>
-                    </div>
-                  )}
-
-                  {vinResult && vinResult !== 'loading' && (
-                    <div className="vin-results-wrapper animate-fade-in-up" style={{
-                      marginTop: '32px',
-                      textAlign: 'left',
-                      background: 'var(--white)',
-                      border: '1px solid var(--gray-200)',
-                      borderRadius: '12px',
-                      padding: '32px',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
-                    }}>
-                      {/* Success Alert */}
-                      <div style={{ marginBottom: '24px' }}>
-                        <div style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          background: '#E8F5E9',
-                          color: '#2E7D32',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          marginBottom: '12px'
-                        }}>
-                          <ShieldCheck size={14} />
-                          <span>Vehicle Identified</span>
-                        </div>
-                        <h2 style={{
-                          fontSize: '24px',
-                          fontWeight: 800,
-                          color: 'var(--black)',
-                          margin: 0,
-                          fontFamily: 'inherit'
-                        }}>
-                          {vinResult.make} {vinResult.model} ({vinResult.year})
-                        </h2>
-                      </div>
-
-                      <hr style={{ border: 0, borderBottom: '1px solid var(--gray-200)', margin: '0 0 24px 0' }} />
-
-                      {/* Info Cards Grid */}
-                      <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                        gap: '24px',
-                        marginBottom: '32px'
-                      }}>
-                        {/* Card 1: Vehicle Information */}
-                        <div style={{
-                          background: 'var(--white)',
-                          border: '1px solid var(--gray-200)',
-                          borderRadius: '8px',
-                          padding: '24px'
-                        }}>
-                          <h3 style={{
-                            fontSize: '13px',
-                            fontWeight: 800,
-                            color: 'var(--gray-700)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
-                            margin: '0 0 20px 0'
-                          }}>
-                            Vehicle Information
-                          </h3>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Manufacturer:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.make}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Model Range:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.model}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Model Year:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.year}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Fuel Type:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.fuelType}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Engine:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.engine}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Chassis ID:</span>
-                              <span style={{
-                                fontWeight: 600,
-                                color: 'var(--gray-800)',
-                                background: 'var(--gray-50)',
-                                border: '1px solid var(--gray-200)',
-                                padding: '3px 8px',
-                                borderRadius: '4px',
-                                fontSize: '11px',
-                                fontFamily: 'monospace'
-                              }}>{vinResult.chassis}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Manufacturing:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.region}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Card 2: AC System Technical Data */}
-                        <div style={{
-                          background: 'var(--white)',
-                          border: '1px solid var(--gray-200)',
-                          borderRadius: '8px',
-                          padding: '24px'
-                        }}>
-                          <h3 style={{
-                            fontSize: '13px',
-                            fontWeight: 800,
-                            color: 'var(--gray-700)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
-                            margin: '0 0 20px 0'
-                          }}>
-                            AC System Technical Data
-                          </h3>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>OEM Compressor:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.specs.compressor}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Refrigerant Charge:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.refrigerant}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Lubricant Oil:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.specs.oil}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>AC Drive Belt Type:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.belt}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                              <span style={{ color: 'var(--gray-500)' }}>Cabin Pollen Filter:</span>
-                              <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.pollenFilter}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Compatible Spare Parts */}
-                      <div className="compatible-parts-section">
-                        <h4 style={{ fontSize: '15px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gray-500)', marginBottom: '16px', letterSpacing: '0.5px' }}>Compatible AC Spare Parts In Our Stock</h4>
-                        <div className="compatible-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
-                          {getProducts()
-                            .filter(product => vinResult.compatiblePartIds.includes(product.id))
-                            .map(product => (
-                              <Link
-                                key={product.id}
-                                to={`/products?search=${encodeURIComponent(product.name)}`}
-                                className="catalog-match-card-link"
-                                style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
-                              >
-                                <div 
-                                  className="catalog-match-card clickable-match-card" 
-                                  style={{
-                                    display: 'flex',
-                                    gap: '12px',
-                                    padding: '12px',
-                                    background: 'var(--gray-50)',
-                                    border: '1px solid var(--gray-200)',
-                                    borderRadius: '8px',
-                                    alignItems: 'center',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease'
-                                  }}
-                                >
-                                  <div className="match-img-box" style={{ width: '48px', height: '48px', background: 'var(--white)', border: '1px solid var(--gray-100)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', flexShrink: 0 }}>
-                                    <img src={product.image} alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.src = 'https://placehold.co/50x50?text=Part'; }} />
-                                  </div>
-                                  <div className="match-info-box" style={{ flex: 1, minWidth: 0 }}>
-                                    <span className="match-brand-tag" style={{ fontSize: '9px', fontWeight: 800, color: 'var(--gray-400)', textTransform: 'uppercase' }}>{product.brand}</span>
-                                    <h6 className="match-title" style={{ margin: '2px 0 0 0', fontSize: '13px', fontWeight: 700, color: 'var(--black)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</h6>
-                                  </div>
-                                </div>
-                              </Link>
-                            ))}
-                        </div>
-                      </div>
-
-                      {/* WhatsApp Enquiry Button */}
-                      <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
-                        <a
-                          href={`https://wa.me/919962173870?text=${encodeURIComponent(
-                            `Hi RCS, I would like to enquire about compatible AC spare parts for my vehicle:\n\n*Vehicle:* ${vinResult.make} ${vinResult.model} (${vinResult.year})\n*Chassis ID/VIN:* ${vinResult.chassis}\n*Engine:* ${vinResult.engine}\n\nPlease check availability and pricing for stock components.`
-                          )}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-primary"
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            background: '#25D366',
-                            color: 'var(--white)',
-                            textDecoration: 'none',
-                            padding: '14px 28px',
-                            borderRadius: '8px',
-                            fontWeight: 700,
-                            boxShadow: '0 4px 14px rgba(37, 211, 102, 0.25)',
-                            transition: 'all 0.2s ease',
-                            fontSize: '15px'
-                          }}
-                        >
-                          <svg style={{ width: '20px', height: '20px', fill: 'currentColor' }} viewBox="0 0 16 16">
-                            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                          </svg>
-                          <span style={{ marginLeft: '10px' }}>Enquire via WhatsApp</span>
-                        </a>
-                      </div>
-                    </div>
-                  )}
                 </div>
               ) : (
                 /* UPLOAD PART IMAGE UI */
@@ -1452,6 +2730,271 @@ export default function Home() {
                 </div>
               )}
             </div>
+
+            {/* Results section anchor for vehicle wizard / VIN decode */}
+            <div id="vehicle-wizard-results-anchor" style={{ scrollMarginTop: '80px' }} />
+
+            {/* Simulated Loading State */}
+            {(searchMode === 'vin' || searchMode === 'vehicle') && vinResult === 'loading' && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '60px 0',
+                gap: '16px',
+                marginTop: '24px',
+                background: 'var(--white)',
+                border: '1px solid var(--gray-200)',
+                borderRadius: '12px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
+              }}>
+                <div className="admin-preview-spinner" style={{ width: '32px', height: '32px', border: '3px solid var(--gray-200)', borderTopColor: 'var(--red)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--gray-500)' }}>Locating compatible specifications and diagrams...</span>
+              </div>
+            )}
+
+            {/* Decoded results layout */}
+            {(searchMode === 'vin' || searchMode === 'vehicle') && vinResult && vinResult !== 'loading' && (
+              <div className="vin-results-wrapper animate-fade-in-up">
+                {/* Success Alert */}
+                <div className="vin-results-header">
+                  <div>
+                    <div style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      background: '#E8F5E9',
+                      color: '#2E7D32',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      marginBottom: '12px'
+                    }}>
+                      <ShieldCheck size={14} />
+                      <span>Vehicle Identified</span>
+                    </div>
+                    <h2 style={{
+                      fontSize: '24px',
+                      fontWeight: 800,
+                      color: 'var(--black)',
+                      margin: 0,
+                      fontFamily: 'inherit'
+                    }}>
+                      {vinResult.make} {vinResult.model} ({vinResult.year})
+                    </h2>
+                  </div>
+
+                  {vinResult.vehicleImage && (
+                    <div className="vin-vehicle-image-box">
+                      <img
+                        src={vinResult.vehicleImage}
+                        alt={`${vinResult.make} ${vinResult.model}`}
+                        onError={(e) => handleImageError(e, vinResult.make, vinResult.model)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <hr className="vin-divider" />
+
+                {/* Info Cards Grid */}
+                <div className="vin-specs-cards-grid">
+                  {/* Card 1: Vehicle Information */}
+                  <div className="vin-spec-card">
+                    <h3 style={{
+                      fontSize: '13px',
+                      fontWeight: 800,
+                      color: 'var(--gray-700)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      margin: '0 0 20px 0'
+                    }}>
+                      Vehicle Technical Specifications
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Manufacturer:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.make}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Model Series:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.model}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Model Year:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.year}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Engine Displacement:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.engine}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Fuel Type:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.fuelType}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Chassis ID / VIN:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)', fontFamily: 'monospace' }}>{vinResult.chassis}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Manufactured Region:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.region}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 2: AC System Technical Data */}
+                  <div className="vin-spec-card">
+                    <h3 style={{
+                      fontSize: '13px',
+                      fontWeight: 800,
+                      color: 'var(--gray-700)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      margin: '0 0 20px 0'
+                    }}>
+                      AC System Technical Data
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>OEM Compressor:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.specs.compressor}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Refrigerant Charge:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.refrigerant}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Lubricant Oil:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)', textAlign: 'right', marginLeft: '12px' }}>{vinResult.specs.oil}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>AC Drive Belt Type:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.belt}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                        <span style={{ color: 'var(--gray-500)' }}>Cabin Pollen Filter:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{vinResult.specs.pollenFilter}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Exploded Parts Diagram */}
+                {vinResult.diagramId && (
+                  <ExplodedDiagram
+                    diagramId={vinResult.diagramId}
+                    vehicleInfo={vinResult}
+                    onSelectComponent={(pin) => setSelectedHotspot(pin)}
+                    selectedComponentOem={selectedHotspot?.oem}
+                  />
+                )}
+
+                {/* Compatible Spare Parts */}
+                <div className="compatible-parts-section" style={{ marginTop: '32px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+                    <h4 style={{ fontSize: '15px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gray-500)', margin: 0, letterSpacing: '0.5px' }}>
+                      {selectedHotspot 
+                        ? `Compatible Parts for: ${selectedHotspot.component}` 
+                        : 'Compatible AC Spare Parts In Our Stock'}
+                    </h4>
+                    {selectedHotspot && (
+                      <button 
+                        onClick={() => setSelectedHotspot(null)}
+                        style={{
+                          background: 'var(--gray-100)',
+                          border: '1px solid var(--gray-200)',
+                          padding: '4px 10px',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          color: 'var(--gray-600)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        Show All Parts
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="compatible-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
+                    {getProducts()
+                      .filter(product => vinResult.compatiblePartIds.includes(product.id))
+                      .filter(product => {
+                        if (!selectedHotspot) return true;
+                        const compName = selectedHotspot.component.toLowerCase();
+                        const prodName = product.name.toLowerCase();
+                        return prodName.includes(compName) || compName.includes(prodName);
+                      })
+                      .map(product => (
+                        <Link
+                          key={product.id}
+                          to={`/products?search=${encodeURIComponent(product.name)}`}
+                          className="catalog-match-card-link"
+                          style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                        >
+                          <div 
+                            className="catalog-match-card clickable-match-card" 
+                            style={{
+                              display: 'flex',
+                              gap: '12px',
+                              padding: '12px',
+                              background: 'var(--gray-50)',
+                              border: '1px solid var(--gray-200)',
+                              borderRadius: '8px',
+                              alignItems: 'center',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            <div className="match-img-box" style={{ width: '48px', height: '48px', background: 'var(--white)', border: '1px solid var(--gray-100)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', flexShrink: 0 }}>
+                              <img src={product.image} alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.src = 'https://placehold.co/50x50?text=Part'; }} />
+                            </div>
+                            <div className="match-info-box" style={{ flex: 1, minWidth: 0 }}>
+                              <span className="match-brand-tag" style={{ fontSize: '9px', fontWeight: 800, color: 'var(--gray-400)', textTransform: 'uppercase' }}>{product.brand}</span>
+                              <h6 className="match-title" style={{ margin: '2px 0 0 0', fontSize: '13px', fontWeight: 700, color: 'var(--black)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</h6>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                  </div>
+                  {getProducts()
+                    .filter(product => vinResult.compatiblePartIds.includes(product.id))
+                    .filter(product => {
+                      if (!selectedHotspot) return true;
+                      const compName = selectedHotspot.component.toLowerCase();
+                      const prodName = product.name.toLowerCase();
+                      return prodName.includes(compName) || compName.includes(prodName);
+                    }).length === 0 && (
+                      <div style={{ textAlign: 'center', padding: '24px', background: 'var(--gray-50)', borderRadius: '8px', border: '1px dashed var(--gray-200)', color: 'var(--gray-500)', fontSize: '13px' }}>
+                        No compatible stock items matching this component found. Please click "Request Quote" above to enquire directly.
+                      </div>
+                    )}
+                </div>
+
+                {/* WhatsApp Enquiry Button */}
+                <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
+                  <a
+                    href={`https://wa.me/919962173870?text=${encodeURIComponent(
+                      `Hi RCS, I would like to enquire about compatible AC spare parts for my vehicle:\n\n*Vehicle:* ${vinResult.make} ${vinResult.model} (${vinResult.year})\n*Chassis ID/VIN:* ${vinResult.chassis}\n*Engine:* ${vinResult.engine}\n\nPlease check availability and pricing for stock components.`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="vin-whatsapp-btn"
+                  >
+                    <svg style={{ width: '20px', height: '20px', fill: 'currentColor' }} viewBox="0 0 16 16">
+                      <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                    </svg>
+                    <span style={{ marginLeft: '10px' }}>Enquire via WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            )}
             
             {/* REAL-TIME B2B SEARCH RESULTS PREVIEW */}
             {searchQuery && (

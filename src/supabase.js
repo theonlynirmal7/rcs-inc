@@ -12,7 +12,7 @@ export const supabase = isSupabaseConfigured
 // IndexedDB Helper for fallback offline database
 const openIndexedDB = () => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('rcs_local_db', 3);
+    const request = indexedDB.open('rcs_local_db', 4);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains('products')) {
@@ -100,6 +100,87 @@ const initializeLocalDataIfEmpty = async () => {
         });
       }
     }
+  }
+
+  const dbDiagrams = await getLocalData('diagrams');
+  
+  // Unconditionally seed/update the A/C System Exploded View Diagram with exact coordinates
+  await saveLocalData('diagrams', {
+    id: 'ac-system-exploded',
+    name: 'A/C System Exploded View Diagram',
+    image_url: '/diagrams/ac-system-exploded.png?v=5',
+    hotspots: [
+      { id: 1, component: 'A/C Compressor Assembly', x: 9.3, y: 12.3, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.' },
+      { id: 2, component: 'Condenser', x: 44.5, y: 6.2, oem: 'CN-38012C', stock: 'In Stock', description: 'Cools and condenses high-pressure gas into liquid.' },
+      { id: 3, component: 'Receiver Drier', x: 60.5, y: 7.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters moisture and debris from the refrigerant liquid.' },
+      { id: 4, component: 'Cooling Fan Assembly', x: 9.3, y: 44.3, oem: 'FN-48092C', stock: 'In Stock', description: 'Pulls air through the condenser to cool the refrigerant.' },
+      { id: 5, component: 'A/C Hoses & Pipes', x: 6.2, y: 59.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant.' },
+      { id: 6, component: 'Expansion Valve', x: 30.8, y: 52.2, oem: 'EV-68023C', stock: 'In Stock', description: 'Regulates flow of refrigerant into the evaporator core.' },
+      { id: 7, component: 'Evaporator Core', x: 48.2, y: 52.2, oem: 'EC-70044C', stock: 'In Stock', description: 'Absorbs heat from the cabin air to provide cooling.' },
+      { id: 8, component: 'Blower Motor', x: 61.8, y: 59.8, oem: 'BM-80055C', stock: 'In Stock', description: 'Blows chilled air through the vents into the cabin.' },
+      { id: 9, component: 'Cabin Air Filter', x: 32.2, y: 81.2, oem: 'CF-90066C', stock: 'In Stock', description: 'Filters dust, pollen, and allergens from cabin intake air.' },
+      { id: 10, component: 'HVAC Unit (Air Box Assembly)', x: 95.8, y: 64.2, oem: 'HU-10077C', stock: 'In Stock', description: 'Houses the evaporator, heater core, blend doors, and blower.' },
+      { id: 11, component: 'AC Pressure Switch', x: 61.8, y: 78.2, oem: 'PS-11088C', stock: 'In Stock', description: 'Monitors system pressure to protect compressor from damage.' }
+    ]
+  });
+
+  const hvacDiagrams = dbDiagrams.filter(d => d.id !== 'ac-system-exploded');
+  if (hvacDiagrams.length < 4) {
+    await saveLocalData('diagrams', {
+      id: 'swift-hvac',
+      name: 'Maruti Suzuki Swift AC HVAC Unit Casing',
+      image_url: '/diagrams/swift-hvac.png',
+      hotspots: [
+        { id: 10, component: 'Heater Core', x: 48, y: 84, oem: '95411-68LA0', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+        { id: 100, component: 'Evaporator Coil', x: 32, y: 45, oem: '95412-68LA0', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+        { id: 280, component: 'Blower Motor', x: 88, y: 48, oem: '74250-68LA1', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+        { id: 480, component: 'Cabin Filter', x: 52, y: 86, oem: '95861-68LA0', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+        { id: 70, component: 'Actuator Motor', x: 68, y: 30, oem: '74130-68LA0', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+        { id: 270, component: 'Blower Resistor', x: 88, y: 56, oem: '74150-68LA0', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+      ]
+    });
+
+    await saveLocalData('diagrams', {
+      id: 'creta-hvac',
+      name: 'Hyundai Creta AC HVAC Unit Casing',
+      image_url: '/diagrams/creta-hvac.png',
+      hotspots: [
+        { id: 10, component: 'Heater Core', x: 46, y: 80, oem: '95411-H8000', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+        { id: 100, component: 'Evaporator Coil', x: 30, y: 48, oem: '95412-H8000', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+        { id: 280, component: 'Blower Motor', x: 85, y: 44, oem: '74250-H8010', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+        { id: 480, component: 'Cabin Filter', x: 50, y: 82, oem: '95861-H8000', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+        { id: 70, component: 'Actuator Motor', x: 66, y: 28, oem: '74130-H8000', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+        { id: 270, component: 'Blower Resistor', x: 85, y: 52, oem: '74150-H8000', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+      ]
+    });
+
+    await saveLocalData('diagrams', {
+      id: 'nexon-hvac',
+      name: 'Tata Nexon AC HVAC Unit Casing',
+      image_url: '/diagrams/nexon-hvac.png',
+      hotspots: [
+        { id: 10, component: 'Heater Core', x: 50, y: 82, oem: '95411-N000', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+        { id: 100, component: 'Evaporator Coil', x: 34, y: 46, oem: '95412-N000', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+        { id: 280, component: 'Blower Motor', x: 86, y: 46, oem: '74250-N010', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+        { id: 480, component: 'Cabin Filter', x: 54, y: 84, oem: '95861-N000', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+        { id: 70, component: 'Actuator Motor', x: 70, y: 32, oem: '74130-N000', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+        { id: 270, component: 'Blower Resistor', x: 86, y: 54, oem: '74150-N000', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+      ]
+    });
+
+    await saveLocalData('diagrams', {
+      id: 'fortuner-hvac',
+      name: 'Toyota Fortuner AC HVAC Unit Casing',
+      image_url: '/diagrams/fortuner-hvac.png',
+      hotspots: [
+        { id: 10, component: 'Heater Core', x: 52, y: 80, oem: '95411-F000', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+        { id: 100, component: 'Evaporator Coil', x: 36, y: 44, oem: '95412-F000', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+        { id: 280, component: 'Blower Motor', x: 84, y: 44, oem: '74250-F010', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+        { id: 480, component: 'Cabin Filter', x: 56, y: 82, oem: '95861-F000', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+        { id: 70, component: 'Actuator Motor', x: 72, y: 30, oem: '74130-F000', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+        { id: 270, component: 'Blower Resistor', x: 84, y: 52, oem: '74150-F000', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+      ]
+    });
   }
 };
 
@@ -424,18 +505,54 @@ export const dbService = {
     return syncLocalCache();
   },
 
+  parseUserAgent(ua) {
+    let browser = 'Unknown Browser';
+    let os = 'Unknown OS';
+    let deviceType = 'Desktop';
+
+    if (/mobile/i.test(ua)) deviceType = 'Mobile';
+    else if (/tablet|ipad/i.test(ua)) deviceType = 'Tablet';
+
+    if (/chrome|crios/i.test(ua)) browser = 'Chrome';
+    else if (/firefox|fxios/i.test(ua)) browser = 'Firefox';
+    else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = 'Safari';
+    else if (/edg/i.test(ua)) browser = 'Edge';
+
+    if (/windows/i.test(ua)) os = 'Windows';
+    else if (/macintosh|mac os x/i.test(ua)) os = 'macOS';
+    else if (/iphone|ipad|ipod/i.test(ua)) os = 'iOS';
+    else if (/android/i.test(ua)) os = 'Android';
+    else if (/linux/i.test(ua)) os = 'Linux';
+
+    return { browser, os, deviceType };
+  },
+
   async recordVisit(pagePath) {
+    const ua = navigator.userAgent;
+    const { browser, os, deviceType } = this.parseUserAgent(ua);
     const visitRecord = {
       created_at: new Date().toISOString(),
-      page_path: pagePath || '/'
+      page_path: pagePath || '/',
+      browser,
+      os,
+      device_type: deviceType,
+      screen_resolution: `${window.screen.width}x${window.screen.height}`,
+      referrer: document.referrer || 'Direct'
     };
     
     if (isSupabaseConfigured) {
       try {
+        // Try inserting full record
         const { error } = await supabase
           .from('site_visits')
           .insert([visitRecord]);
-        if (error) throw error;
+        if (error) {
+          // If error occurs (e.g. column not defined on remote table), fall back to only standard columns
+          const { error: fallbackErr } = await supabase
+            .from('site_visits')
+            .insert([{ created_at: visitRecord.created_at, page_path: visitRecord.page_path }]);
+          if (fallbackErr) throw fallbackErr;
+        }
       } catch (err) {
         console.error('Error inserting visit to Supabase, falling back to local store:', err);
         await saveLocalData('site_visits', visitRecord);
@@ -488,14 +605,184 @@ export const dbService = {
     const recentVisits = visits.slice(0, 10).map(v => ({
       id: v.id,
       created_at: v.created_at,
-      page_path: v.page_path || '/'
+      page_path: v.page_path || '/',
+      browser: v.browser || '',
+      os: v.os || '',
+      device_type: v.device_type || '',
+      screen_resolution: v.screen_resolution || '',
+      referrer: v.referrer || ''
     }));
+
+    // Calculate live active users in the last 5 minutes
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const activeNowCount = visits.filter(v => v.created_at && new Date(v.created_at) >= fiveMinutesAgo).length;
+    const activeNow = Math.max(1, activeNowCount);
 
     return {
       totalVisits,
       visitsToday,
+      activeNow,
       chartData,
       recentVisits
     };
   }
+};
+
+const staticDiagrams = [
+  {
+    id: 'swift-hvac',
+    name: 'Maruti Suzuki Swift AC HVAC Unit Casing',
+    image_url: '/diagrams/swift-hvac.png',
+    hotspots: [
+      { id: 10, component: 'Heater Core', x: 48, y: 84, oem: '95411-68LA0', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+      { id: 100, component: 'Evaporator Coil', x: 32, y: 45, oem: '95412-68LA0', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+      { id: 280, component: 'Blower Motor', x: 88, y: 48, oem: '74250-68LA1', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+      { id: 480, component: 'Cabin Filter', x: 52, y: 86, oem: '95861-68LA0', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+      { id: 70, component: 'Actuator Motor', x: 68, y: 30, oem: '74130-68LA0', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+      { id: 270, component: 'Blower Resistor', x: 88, y: 56, oem: '74150-68LA0', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+    ]
+  },
+  {
+    id: 'creta-hvac',
+    name: 'Hyundai Creta AC HVAC Unit Casing',
+    image_url: '/diagrams/creta-hvac.png',
+    hotspots: [
+      { id: 10, component: 'Heater Core', x: 46, y: 80, oem: '95411-H8000', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+      { id: 100, component: 'Evaporator Coil', x: 30, y: 48, oem: '95412-H8000', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+      { id: 280, component: 'Blower Motor', x: 85, y: 44, oem: '74250-H8010', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+      { id: 480, component: 'Cabin Filter', x: 50, y: 82, oem: '95861-H8000', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+      { id: 70, component: 'Actuator Motor', x: 66, y: 28, oem: '74130-H8000', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+      { id: 270, component: 'Blower Resistor', x: 85, y: 52, oem: '74150-H8000', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+    ]
+  },
+  {
+    id: 'nexon-hvac',
+    name: 'Tata Nexon AC HVAC Unit Casing',
+    image_url: '/diagrams/nexon-hvac.png',
+    hotspots: [
+      { id: 10, component: 'Heater Core', x: 50, y: 82, oem: '95411-N000', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+      { id: 100, component: 'Evaporator Coil', x: 34, y: 46, oem: '95412-N000', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+      { id: 280, component: 'Blower Motor', x: 86, y: 46, oem: '74250-N010', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+      { id: 480, component: 'Cabin Filter', x: 54, y: 84, oem: '95861-N000', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+      { id: 70, component: 'Actuator Motor', x: 70, y: 32, oem: '74130-N000', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+      { id: 270, component: 'Blower Resistor', x: 86, y: 54, oem: '74150-N000', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+    ]
+  },
+  {
+    id: 'fortuner-hvac',
+    name: 'Toyota Fortuner AC HVAC Unit Casing',
+    image_url: '/diagrams/fortuner-hvac.png',
+    hotspots: [
+      { id: 10, component: 'Heater Core', x: 52, y: 80, oem: '95411-F000', stock: 'In Stock', description: 'Absorbs engine heat to provide cabin heating.' },
+      { id: 100, component: 'Evaporator Coil', x: 36, y: 44, oem: '95412-F000', stock: 'In Stock', description: 'Absorbs cabin heat to provide cooling.' },
+      { id: 280, component: 'Blower Motor', x: 84, y: 44, oem: '74250-F010', stock: 'In Stock', description: 'Centrifugal blower fan assembly drawing air into the cabin.' },
+      { id: 480, component: 'Cabin Filter', x: 56, y: 82, oem: '95861-F000', stock: 'In Stock', description: 'Pollen and dust filtration element.' },
+      { id: 70, component: 'Actuator Motor', x: 72, y: 30, oem: '74130-F000', stock: 'In Stock', description: 'Electric servo actuator controlling air distribution doors.' },
+      { id: 270, component: 'Blower Resistor', x: 84, y: 52, oem: '74150-F000', stock: 'In Stock', description: 'Regulates blower motor speed levels.' }
+    ]
+  },
+  {
+    id: 'ac-system-exploded',
+    name: 'A/C System Exploded View Diagram',
+    image_url: '/diagrams/ac-system-exploded.png',
+    hotspots: [
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 2, component: 'Condenser Assembly', x: 29.5, y: 13.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Cools and condenses high-pressure gaseous refrigerant into a liquid state.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
+      { id: 3, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
+      { id: 4, component: 'Block Expansion Valve', x: 21.2, y: 52.8, oem: 'EV-68023C', stock: 'In Stock', description: 'Regulates flow of refrigerant into the evaporator core to control cooling output.', brands: 'Fujikoki, Danfoss, Valeo, Denso' },
+      { id: 5, component: 'Evaporator Core', x: 71.4, y: 52.8, oem: 'EC-70044C', stock: 'In Stock', description: 'Absorbs heat from the passenger cabin air to deliver chilled, cooled airflow.', brands: 'Valeo, Denso, Subros, Estra, Mahle Behr' },
+      { id: 6, component: 'Cabin Air Filter', x: 60.3, y: 92.2, oem: 'CF-90066C', stock: 'In Stock', description: 'Filters dust, pollen, and allergens from cabin intake air.', brands: 'Zip Filters, Mahle Filter, Denso, Valeo' },
+      { id: 7, component: 'Blower Fan & Blower Motor', x: 81.2, y: 92.2, oem: 'BM-80055C', stock: 'In Stock', description: 'Blows chilled air from the evaporator through the vehicle vents.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 8, component: 'A/C Control Module / ECU', x: 89.6, y: 75.4, oem: 'CM-10077C', stock: 'In Stock', description: 'Automotive climate control module and engine interface unit managing A/C compressor cycle.', brands: 'Hanon, Doowon, Denso, Behr Hella Service' },
+      { id: 9, component: 'A/C Hoses & Pipes', x: 11.8, y: 89.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' }
+    ]
+  },
+  {
+    id: 'bus-hvac',
+    name: 'Bus A/C System Exploded View Diagram',
+    image_url: '/diagrams/bus-hvac.png',
+    hotspots: [
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 2, component: 'Bus Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Large-capacity condenser coil designed for optimal heat rejection in commercial AC systems.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
+      { id: 3, component: 'Condenser Fan Assembly', x: 71.4, y: 7.5, oem: 'FN-48092C', stock: 'In Stock', description: 'Pulls air through the bus condenser to cool the refrigerant.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 4, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
+      { id: 5, component: 'Block Expansion Valve', x: 21.2, y: 52.8, oem: 'EV-68023C', stock: 'In Stock', description: 'Regulates flow of refrigerant into the evaporator core to control cooling output.', brands: 'Fujikoki, Danfoss, Valeo, Denso' },
+      { id: 6, component: 'A/C Hoses & Pipes', x: 60.3, y: 92.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' },
+      { id: 7, component: 'Bus Blower Assembly', x: 89.6, y: 38.5, oem: 'BM-80055C', stock: 'In Stock', description: 'Complete blower assembly for commercial bus HVAC systems.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 8, component: 'Cabin Air Filter (Bottom)', x: 81.2, y: 92.2, oem: 'CF-90066C', stock: 'In Stock', description: 'Bottom dust and pollen filtration element for cabin intake air.', brands: 'Zip Filters, Mahle Filter, Denso, Valeo' },
+      { id: 9, component: 'A/C Hoses & Pipes', x: 11.8, y: 89.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' },
+      { id: 10, component: 'Cabin Air Filter (Fresh Air)', x: 88.5, y: 76.2, oem: 'CF-90088C', stock: 'In Stock', description: 'Fresh air intake filter cleaning outdoor air entering the bus AC system.', brands: 'Zip Filters, Mahle Filter, Denso, Valeo' }
+    ]
+  },
+  {
+    id: 'truck-hvac',
+    name: 'Truck A/C System Exploded View Diagram',
+    image_url: '/diagrams/truck-hvac.png',
+    hotspots: [
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 2, component: 'Truck Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Heavy-duty condenser coil designed for optimal heat dissipation in commercial trucks.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
+      { id: 3, component: 'Condenser Fan Assembly', x: 71.4, y: 7.5, oem: 'FN-48092C', stock: 'In Stock', description: 'Pulls air through the truck condenser to cool the refrigerant.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 4, component: 'A/C Hoses & Pipes', x: 71.4, y: 41.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' },
+      { id: 5, component: 'Block Expansion Valve', x: 21.2, y: 52.8, oem: 'EV-68023C', stock: 'In Stock', description: 'Regulates flow of refrigerant into the evaporator core to control cooling output.', brands: 'Fujikoki, Danfoss, Valeo, Denso' },
+      { id: 6, component: 'Truck Blower Assembly', x: 60.3, y: 92.2, oem: 'BM-80055C', stock: 'In Stock', description: 'Centrifugal blower fan and motor assembly drawing air into the truck cabin.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 7, component: 'Cabin Air Filter', x: 81.2, y: 92.2, oem: 'CF-90066C', stock: 'In Stock', description: 'Filters dust, pollen, and allergens from cabin intake air.', brands: 'Zip Filters, Mahle Filter, Denso, Valeo' },
+      { id: 8, component: 'A/C Pressure Switch / Control Valve', x: 85.6, y: 92.2, oem: 'PS-11088C', stock: 'In Stock', description: 'Monitors system pressure to protect compressor from damage.', brands: 'Hanon, Doowon, Denso, Behr Hella Service' },
+      { id: 9, component: 'A/C Hoses & Pipes', x: 11.8, y: 89.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' },
+      { id: 10, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
+      { id: 11, component: 'HVAC Air Box Casing', x: 36.8, y: 89.2, oem: 'AC-10099C', stock: 'In Stock', description: 'Heavy-duty cabin climate unit casing housing the evaporator core.', brands: 'Estra, Valeo, Subros, Sanden' }
+    ]
+  },
+  {
+    id: 'dozer-hvac',
+    name: 'Bulldozer & Earthmover A/C System Exploded View Diagram',
+    image_url: '/diagrams/dozer-hvac.png',
+    hotspots: [
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 2, component: 'Heavy Duty Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Heavy-duty condenser coil designed for optimal heat dissipation in heavy earthmovers.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
+      { id: 3, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
+      { id: 4, component: 'A/C Hoses & Pipes', x: 71.4, y: 41.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' },
+      { id: 5, component: 'Block Expansion Valve', x: 21.2, y: 52.8, oem: 'EV-68023C', stock: 'In Stock', description: 'Regulates flow of refrigerant into the evaporator core to control cooling output.', brands: 'Fujikoki, Danfoss, Valeo, Denso' },
+      { id: 6, component: 'Heavy Duty Blower Assembly', x: 60.3, y: 92.2, oem: 'BM-80055C', stock: 'In Stock', description: 'High-volume blower fan and motor assembly drawing air into the operator cabin.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 7, component: 'Cabin Air Filter', x: 81.2, y: 92.2, oem: 'CF-90066C', stock: 'In Stock', description: 'Filters dust, pollen, and allergens from cabin intake air.', brands: 'Zip Filters, Mahle Filter, Denso, Valeo' },
+      { id: 8, component: 'A/C Manual Control Switch Panel', x: 85.6, y: 92.2, oem: 'SP-11088C', stock: 'In Stock', description: 'Operator dial switch module regulating cabin temperature and fan speed levels.', brands: 'Hanon, Doowon, Denso, Behr Hella Service' },
+      { id: 9, component: 'A/C Hoses & Pipes', x: 11.8, y: 89.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' }
+    ]
+  },
+  {
+    id: 'lcv-hvac',
+    name: 'Payload & Light Commercial Vehicle A/C System Exploded View Diagram',
+    image_url: '/diagrams/lcv-hvac.png',
+    hotspots: [
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 2, component: 'LCV Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Condenser coil optimized for payload and light commercial vehicle cab cooling.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
+      { id: 3, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
+      { id: 4, component: 'Condenser Fan Assembly', x: 71.4, y: 7.5, oem: 'FN-48092C', stock: 'In Stock', description: 'Pulls cooling airflow through the condenser coil assembly.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 5, component: 'Block Expansion Valve', x: 21.2, y: 52.8, oem: 'EV-68023C', stock: 'In Stock', description: 'Regulates flow of refrigerant into the evaporator core to control cooling output.', brands: 'Fujikoki, Danfoss, Valeo, Denso' },
+      { id: 6, component: 'LCV Blower Assembly', x: 60.3, y: 92.2, oem: 'BM-80055C', stock: 'In Stock', description: 'Centrifugal blower motor unit pushing cold air into the passenger compartment.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
+      { id: 7, component: 'Cabin Air Filter', x: 81.2, y: 92.2, oem: 'CF-90066C', stock: 'In Stock', description: 'Filters dust, pollen, and allergens from cabin intake air.', brands: 'Zip Filters, Mahle Filter, Denso, Valeo' },
+      { id: 8, component: 'A/C Manual Control Switch Panel', x: 85.6, y: 92.2, oem: 'SP-11088C', stock: 'In Stock', description: 'LCV dash console switch unit regulating climate temperature settings.', brands: 'Hanon, Doowon, Denso, Behr Hella Service' },
+      { id: 9, component: 'A/C Hoses & Pipes', x: 11.8, y: 89.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' }
+    ]
+  }
+];
+
+export const getDiagram = async (id) => {
+  const localFound = staticDiagrams.find(d => d.id === id);
+  if (localFound) return localFound;
+
+  try {
+    if (isSupabaseConfigured) {
+      const { data, error } = await supabase
+        .from('diagrams')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (!error && data) return data;
+    }
+  } catch (err) {
+    console.error('Supabase diagram fetch error, falling back:', err);
+  }
+  // Local DB fallback
+  const list = await getLocalData('diagrams');
+  return list.find(d => d.id === id) || null;
 };

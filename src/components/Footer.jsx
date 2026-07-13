@@ -19,7 +19,7 @@ export default function Footer() {
             </p>
             <div className="footer-stats-grid">
               <div className="footer-stat-item">
-                <span className="stat-num">500+</span>
+                <span className="stat-num">1000+</span>
                 <span className="stat-label">Products Available</span>
               </div>
               <div className="footer-stat-item">
@@ -134,9 +134,17 @@ export default function Footer() {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="footer-quote-btn"
+                className="footer-quote-btn premium-liquid-btn"
               >
-                Request a Quote
+                <span className="btn-content">
+                  Request a Quote
+                </span>
+                <div className="liquid-bg">
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                    <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                  </svg>
+                </div>
               </a>
             </div>
           </div>

@@ -1,0 +1,524 @@
+/* Header block above diagram */
+.exploded-diagram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--gray-200);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.header-left h3 {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--black);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.header-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-500);
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.brand-logo-text {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--red);
+  display: block;
+  line-height: 1;
+}
+
+.brand-logo-sub {
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--gray-600);
+  letter-spacing: 1.5px;
+}
+
+/* Layout */
+.exploded-diagram-section {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  text-align: left;
+}
+
+.exploded-diagram-container {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 1100px) {
+  .exploded-diagram-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.diagram-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.diagram-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Viewport Area */
+.diagram-viewport {
+  position: relative;
+  background: #fdfdfd;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  height: 520px;
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+}
+
+.diagram-viewport.dragging {
+  cursor: grabbing;
+}
+
+/* Control Toolbar Overlay */
+.diagram-toolbar {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  border-radius: 6px;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.toolbar-btn:hover {
+  background: var(--gray-50);
+  color: var(--black);
+  border-color: var(--gray-300);
+}
+
+.toolbar-btn.reset-btn {
+  font-size: 11px;
+  width: auto;
+  padding: 0 10px;
+}
+
+.zoom-indicator {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-500);
+  padding: 0 4px;
+  font-family: monospace;
+}
+
+/* Canvas Wrapper with transform rules */
+.diagram-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagram-canvas img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Hotspot Pin Element */
+.hotspot-pin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: var(--white);
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.hotspot-pin:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 4px 12px rgba(212, 32, 39, 0.3);
+}
+
+.hotspot-pin.active {
+  background: var(--red);
+  color: var(--white);
+  border-color: var(--red);
+  box-shadow: 0 0 12px rgba(212, 32, 39, 0.5);
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.pin-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--red);
+  transition: color 0.2s;
+}
+
+.hotspot-pin.active .pin-label {
+  color: var(--white);
+}
+
+/* Guidelines Footer Toolbar */
+.diagram-guidelines-toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  background: #f8f9fa;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+@media (max-width: 768px) {
+  .diagram-guidelines-toolbar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.guideline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.guideline-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.guideline-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.guideline-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gray-800);
+  margin-bottom: 2px;
+}
+
+.guideline-desc {
+  font-size: 11px;
+  color: var(--gray-500);
+  line-height: 1.4;
+}
+
+/* Sidebar Card 1: Spec Card */
+.diagram-spec-card {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 16px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 16px;
+  align-items: center;
+}
+
+.spec-card-image {
+  background: #fcfcfc;
+  border-radius: 6px;
+  padding: 8px;
+  border: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90px;
+}
+
+.spec-card-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.spec-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spec-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.spec-label {
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.spec-val {
+  font-weight: 700;
+  color: var(--gray-800);
+  text-align: right;
+}
+
+.spec-val.badge {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+/* Sidebar Card 2: PARTS LEGEND Card */
+.parts-legend-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+}
+
+.parts-legend-header {
+  background: var(--red);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  padding: 12px;
+  letter-spacing: 0.5px;
+}
+
+.parts-legend-list {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.parts-legend-row {
+  border-bottom: 1px solid var(--gray-200);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.parts-legend-row:last-child {
+  border-bottom: none;
+}
+
+.parts-legend-row:hover {
+  background: #fffcfc;
+}
+
+.parts-legend-row.active {
+  background: #fff5f5;
+  border-left: 3px solid var(--red);
+}
+
+.parts-legend-row-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.legend-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--red);
+  background: #ffebee;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parts-legend-row.active .legend-num {
+  background: var(--red);
+  color: var(--white);
+}
+
+.legend-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+/* Expanded active legend details */
+.parts-legend-row-details {
+  padding: 0 16px 16px 48px;
+  border-top: 1px dashed rgba(212, 32, 39, 0.1);
+  margin-top: 4px;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.legend-detail-label {
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.legend-detail-val {
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.legend-detail-val.oem-tag {
+  font-family: monospace;
+  font-size: 10px;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.legend-detail-val.stock-status {
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.legend-detail-val.stock-status.in-stock {
+  color: #2e7d32;
+  background: #e8f5e9;
+}
+
+.legend-detail-val.stock-status.out-of-stock {
+  color: var(--gray-600);
+  background: var(--gray-100);
+}
+
+.legend-detail-desc {
+  font-size: 11px;
+  color: var(--gray-600);
+  line-height: 1.4;
+  margin: 4px 0 8px 0;
+}
+
+.legend-whatsapp-btn {
+  background: #2e7d32;
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  padding: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  display: inline-block;
+  width: auto;
+  align-self: flex-start;
+}
+
+.legend-whatsapp-btn:hover {
+  opacity: 0.9;
+}
+
+/* Sidebar Card 3: Note Card */
+.diagram-note-card {
+  background: #f8f9fa;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.note-card-title {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gray-700);
+  margin-bottom: 4px;
+}
+
+.note-card-text {
+  font-size: 11px;
+  color: var(--gray-500);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Whatsapp Enquiry Banner */
+.whatsapp-enquiry-banner {
+  background: #e8f5e9;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.whatsapp-enquiry-banner:hover {
+  border-color: #81c784;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.08);
+}
+
+.whatsapp-icon-circle {
+  background: #2e7d32;
+  color: var(--white);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,8 +1,8 @@
 /* ===== DESIGN TOKENS ===== */
 :root {
-  --red: #D42027;
-  --red-dark: #B01A20;
-  --red-light: #FF4D53;
+  --red: #ff2a1d;
+  --red-dark: #cc1b10;
+  --red-light: #ff5f57;
   --black: #1A1A1A;
   --black-soft: #2D2D2D;
   --white: #FFFFFF;
@@ -286,4 +286,133 @@ input, select, textarea {
 .reveal.delay-400 { transition-delay: 400ms; }
 .reveal.delay-500 { transition-delay: 500ms; }
 
+/* ===== PREMIUM LIQUID BUTTON ANIMATION ===== */
+.premium-liquid-btn {
+  --btn-bg: #E31E24;
+  --btn-text: #ffffff;
+  --btn-hover-color: #E31E24;
+  --btn-shadow: rgba(227, 30, 36, 0.15);
+  --btn-shadow-hover: rgba(227, 30, 36, 0.25);
+  
+  position: relative;
+  overflow: hidden;
+  background: var(--btn-bg) !important;
+  color: var(--btn-text) !important;
+  border: 2px solid transparent !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px var(--btn-shadow) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: 
+    color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scale(1);
+  z-index: 1;
+  cursor: pointer;
+  text-decoration: none;
+}
 
+.premium-liquid-btn * {
+  color: inherit !important;
+}
+
+.premium-liquid-btn.btn-whatsapp {
+  --btn-bg: #25D366;
+  --btn-hover-color: #25D366;
+  --btn-shadow: rgba(37, 211, 102, 0.15);
+  --btn-shadow-hover: rgba(37, 211, 102, 0.25);
+}
+
+.premium-liquid-btn:hover:not(:disabled),
+.premium-liquid-btn:focus-visible:not(:disabled) {
+  color: var(--btn-hover-color) !important;
+  border-color: var(--btn-hover-color) !important;
+  transform: scale(1.02) !important;
+  box-shadow: 0 8px 20px var(--btn-shadow-hover) !important;
+  outline: none !important;
+}
+
+/* Make sure text and icons inside are positioned above the liquid blobs */
+.premium-liquid-btn .btn-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+.premium-liquid-btn svg {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.premium-liquid-btn:hover svg.lucide-arrow-right,
+.premium-liquid-btn:focus-visible svg.lucide-arrow-right {
+  transform: translateX(6px);
+}
+
+/* Liquid Blobs Background Overlay */
+.premium-liquid-btn .liquid-bg {
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 1;
+}
+
+.premium-liquid-btn .liquid-bg svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.premium-liquid-btn .liquid-bg path {
+  fill: #ffffff;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Blob 1 enters from top-left */
+.premium-liquid-btn .blob-1 {
+  transform: translate(-105%, -105%) scale(0.2);
+  transform-origin: top left;
+}
+
+/* Blob 2 enters from bottom-right */
+.premium-liquid-btn .blob-2 {
+  transform: translate(105%, 105%) scale(0.2);
+  transform-origin: bottom right;
+}
+
+.premium-liquid-btn:hover:not(:disabled) .blob-1,
+.premium-liquid-btn:focus-visible:not(:disabled) .blob-1 {
+  transform: translate(0, 0) scale(2.8);
+}
+
+.premium-liquid-btn:hover:not(:disabled) .blob-2,
+.premium-liquid-btn:focus-visible:not(:disabled) .blob-2 {
+  transform: translate(0, 0) scale(2.8);
+}
+
+.premium-liquid-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.premium-liquid-btn:disabled .liquid-bg {
+  display: none !important;
+}

@@ -44,6 +44,11 @@ const brandInfo = {
     origin: 'India',
     specialty: 'Compressors, Condensers, HVAC Units',
   },
+  'J.K. Automotive': {
+    desc: 'High-reliability automotive air conditioning manufacturer delivering premium replacement compressors, clutches, control valves, and electrical components.',
+    origin: 'India',
+    specialty: 'AC Compressors, Magnetic Clutches, Control Valves',
+  },
   Giladard: {
     desc: 'High-quality manufacturer of specialty automotive cooling line components and accessories.',
     origin: 'Global',
@@ -206,6 +211,7 @@ const brandLogos = {
   'Estra': '/manufacturer-logos/estra.png',
   'Doowon': '/manufacturer-logos/doowon.png',
   'Subros': '/manufacturer-logos/subros.png',
+  'J.K. Automotive': '/manufacturer-logos/jk_automotive.png',
   'Banco': '/manufacturer-logos/banco.png',
   'BPI': '/manufacturer-logos/bpi.png',
   'Value': '/manufacturer-logos/value.png',
@@ -256,8 +262,16 @@ export default function Brands() {
                   <span className="specialty-label">Specialty:</span>
                   <span>{brandInfo[brand].specialty}</span>
                 </div>
-                <Link to={`/products?category=All`} className="brand-link">
-                  View Products <ArrowRight size={14} />
+                <Link to={`/products?category=All`} className="brand-link premium-liquid-btn">
+                  <span className="btn-content">
+                    View Products <ArrowRight size={14} className="lucide-arrow-right" />
+                  </span>
+                  <div className="liquid-bg">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                      <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                      <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                    </svg>
+                  </div>
                 </Link>
               </div>
             ))}

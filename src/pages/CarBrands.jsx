@@ -131,13 +131,6 @@ const carBrands = [
     description: 'AC parts designed for Ghibli, Quattroporte, Levante, MC20.'
   },
   {
-    name: 'Mazda',
-    logoUrl: '/brand-logos/mazda.png',
-    category: 'Passenger & SUV',
-    origin: 'Japan',
-    description: 'AC parts compatible with Mazda 2, 3, 6, CX-3, CX-5, CX-9, and MX-5.'
-  },
-  {
     name: 'Mercedes-Benz',
     logoUrl: '/brand-logos/mercedes-benz.png',
     category: 'Premium Passenger',
@@ -164,13 +157,6 @@ const carBrands = [
     category: 'Passenger & SUV',
     origin: 'Japan',
     description: 'Compatible spares for Micra, Sunny, Terrano, Kicks, Magnite, Kicks.'
-  },
-  {
-    name: 'Opel',
-    logoUrl: '/brand-logos/opel.png',
-    category: 'Passenger',
-    origin: 'Germany',
-    description: 'Cooling system replacement components for Corsa, Astra, Insignia.'
   },
   {
     name: 'Porsche',
@@ -201,13 +187,6 @@ const carBrands = [
     description: 'Massive inventory for Alto, Swift, Baleno, Dzire, Brezza, Ertiga, Grand Vitara.'
   },
   {
-    name: 'Tesla',
-    logoUrl: '/brand-logos/tesla.png',
-    category: 'Passenger & SUV',
-    origin: 'United States',
-    description: 'Compatible thermal management parts for Model S, Model 3, Model X, Model Y.'
-  },
-  {
     name: 'Toyota',
     logoUrl: '/brand-logos/toyota.png',
     category: 'Passenger & SUV',
@@ -227,13 +206,6 @@ const carBrands = [
     category: 'Premium Passenger & SUV',
     origin: 'Sweden',
     description: 'Premium HVAC components for S60, S90, XC40, XC60, XC90.'
-  },
-  {
-    name: 'Bugatti',
-    logoUrl: '/brand-logos/bugatti.png',
-    category: 'Supercar',
-    origin: 'France',
-    description: 'High-end cooling and HVAC support for Veyron, Chiron.'
   },
   {
     name: 'Rolls Royce',
@@ -417,12 +389,20 @@ export default function CarBrands() {
               href="https://wa.me/919962173870?text=Hello!%20I%20need%20help%20finding%20compatible%20AC%20parts%20for%20my%20car."
               target="_blank"
               rel="noopener noreferrer"
-              className="whatsapp-cta-btn"
+              className="whatsapp-cta-btn premium-liquid-btn btn-whatsapp"
             >
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
-                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-              </svg>
-              Consult AC Expert
+              <span className="btn-content">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                </svg>
+                Consult AC Expert
+              </span>
+              <div className="liquid-bg">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
+                  <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
+                </svg>
+              </div>
             </a>
           </div>
         </div>

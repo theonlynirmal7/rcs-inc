@@ -1056,6 +1056,60 @@
   }
 }
 
+/* Vehicle Wizard Live Preview Layout */
+.vehicle-wizard-flex {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.vehicle-wizard-form {
+  flex: 1;
+}
+
+.wizard-vehicle-preview {
+  width: 220px;
+  height: 125px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  animation: fadeInUp 0.4s ease;
+  transition: var(--transition);
+}
+
+.wizard-vehicle-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.wizard-vehicle-preview:hover img {
+  transform: scale(1.08);
+}
+
+@media (max-width: 768px) {
+  .vehicle-wizard-flex {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+  
+  .wizard-vehicle-preview {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    height: 160px;
+  }
+}
+
 .vin-search-container {
   display: flex;
   flex-direction: column;
@@ -2580,6 +2634,232 @@
 
 .clickable-match-card:hover .match-img-box {
   border-color: rgba(212, 32, 39, 0.15) !important;
+}
+
+.vin-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: var(--white) !important;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.25);
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.vin-whatsapp-btn:hover {
+  background: #20ba56 !important;
+  color: var(--white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+}
+
+/* ===== VIN/VEHICLE DECODED RESULTS MOBILE RESPONSIVENESS ===== */
+.vin-results-wrapper {
+  margin-top: 32px;
+  text-align: left;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.vin-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.vin-vehicle-image-box {
+  width: 160px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+.vin-vehicle-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.vin-vehicle-image-box:hover img {
+  transform: scale(1.08);
+}
+
+.vin-divider {
+  border: 0;
+  border-bottom: 1px solid var(--gray-200);
+  margin: 0 0 24px 0;
+}
+
+.vin-specs-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.vin-spec-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .vin-results-wrapper {
+    padding: 20px;
+    margin-top: 24px;
+  }
+  
+  .vin-results-header {
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .vin-vehicle-image-box {
+    width: 200px;
+    height: 110px;
+  }
+  
+  .vin-specs-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .vin-spec-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vin-results-wrapper {
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .vin-vehicle-image-box {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  
+  .vin-results-header h2 {
+    font-size: 20px !important;
+  }
+}
+
+/* Custom HSRP Branded License Plate Overlay for Vehicle Previews */
+.hsrp-license-plate-overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 18px;
+  background: #ffffff;
+  border: 1px solid #111111;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: #111111;
+  padding-right: 4px;
+  user-select: none;
+  z-index: 10;
+}
+
+.hsrp-blue-strip {
+  background: #002277;
+  width: 14px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  border-top-left-radius: 1px;
+  border-bottom-left-radius: 1px;
+  margin-right: 4px;
+}
+
+.hsrp-logo {
+  width: 8px;
+  height: 8px;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* makes the dark RCS logo white for the blue strip! */
+}
+
+.hsrp-ind {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #ffffff;
+  font-size: 4px;
+  font-weight: 800;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.hsrp-plate-number {
+  white-space: nowrap;
+}
+
+/* ===== SUMMER SALE SECTION ===== */
+.summer-sale-section {
+  padding: 40px 0;
+  background: var(--gray-50);
+}
+
+.summer-sale-banner-link {
+  display: block;
+  text-decoration: none;
+}
+
+.summer-sale-banner-wrapper {
+  width: 100%;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid rgba(227, 30, 36, 0.15);
+  box-shadow: var(--shadow-xl), 0 20px 40px rgba(0, 0, 0, 0.12);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+  background: #000;
+}
+
+.summer-sale-banner-wrapper:hover {
+  transform: translateY(-4px) scale(1.005);
+  border-color: var(--red);
+  box-shadow: var(--shadow-2xl), 0 24px 48px rgba(227, 30, 36, 0.15);
+}
+
+.summer-sale-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
 }
 
 

@@ -46,7 +46,7 @@ export default function About() {
               <span>Years in Automotive Cooling Solutions</span>
             </div>
             <div className="story-stat">
-              <span className="stat-num">500+</span>
+              <span className="stat-num">1000+</span>
               <span>Products Available</span>
             </div>
             <div className="story-stat">

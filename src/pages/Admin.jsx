@@ -84,6 +84,50 @@ export default function Admin() {
   );
   const [passwordInput, setPasswordInput] = useState('');
 
+  // Banner Settings State
+  const [showBanner, setShowBanner] = useState(
+    () => localStorage.getItem('rcs_show_banner') !== 'false'
+  );
+  const [bannerTitle, setBannerTitle] = useState(
+    () => localStorage.getItem('rcs_banner_title') || 'RCS Summer Sale is Live!'
+  );
+  const [bannerText, setBannerText] = useState(
+    () => localStorage.getItem('rcs_banner_text') || 'Beat the heat this season! Get special pricing and up to 15% discount on bulk wholesale orders of high-performance AC Compressors, Condensers, Cooling Coils, and Blowers.'
+  );
+  const [bannerDiscount, setBannerDiscount] = useState(
+    () => localStorage.getItem('rcs_banner_discount') || '15%'
+  );
+  const [bannerImage, setBannerImage] = useState(
+    () => localStorage.getItem('rcs_banner_image') || ''
+  );
+
+  const handleBannerImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+      addToast('Image size should be less than 2MB', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setBannerImage(event.target.result);
+      addToast('Banner image uploaded successfully!');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveBannerSettings = (e) => {
+    e.preventDefault();
+    localStorage.setItem('rcs_show_banner', showBanner ? 'true' : 'false');
+    localStorage.setItem('rcs_banner_title', bannerTitle);
+    localStorage.setItem('rcs_banner_text', bannerText);
+    localStorage.setItem('rcs_banner_discount', bannerDiscount);
+    localStorage.setItem('rcs_banner_image', bannerImage);
+    addToast('Site banner settings updated successfully!');
+  };
+
   // Products state
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -119,6 +163,7 @@ export default function Admin() {
   const [visitStats, setVisitStats] = useState({
     totalVisits: 0,
     visitsToday: 0,
+    activeNow: 1,
     chartData: [],
     recentVisits: []
   });
@@ -129,6 +174,12 @@ export default function Admin() {
     if (isAuthenticated) {
       loadProducts();
       loadStats();
+
+      const interval = setInterval(() => {
+        loadStats();
+      }, 10000); // Poll traffic stats every 10 seconds
+
+      return () => clearInterval(interval);
     }
   }, [isAuthenticated]);
 
@@ -935,6 +986,83 @@ export default function Admin() {
           </div>
         </div>
 
+        {/* PROMOTIONAL BANNER MANAGER */}
+        <div className="admin-banner-settings-section" style={{ marginBottom: '24px' }}>
+          <div className="admin-analytics-card">
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 4px 0' }}>📢 Banner Campaign Manager</h3>
+            <p style={{ margin: '0 0 20px 0', fontSize: '13px', color: 'var(--admin-text-muted)' }}>Toggle and configure promotional banners across the RCS website</p>
+            
+            <form onSubmit={handleSaveBannerSettings} className="admin-banner-form">
+              <div className="admin-banner-toggle-row" style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                <label className="admin-switch-label" style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={showBanner}
+                    onChange={(e) => setShowBanner(e.target.checked)}
+                    className="admin-switch-input"
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <span style={{ fontSize: '14px', fontWeight: '700', marginLeft: '8px', color: showBanner ? '#E31E24' : 'var(--admin-text-muted)' }}>
+                    {showBanner ? 'Banner is ACTIVE' : 'Banner is DISABLED'}
+                  </span>
+                </label>
+              </div>
+
+              {showBanner && (
+                <div className="admin-banner-fields" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px', marginTop: '20px' }}>
+                  <div className="admin-form-group">
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--admin-text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>Banner Poster Image</label>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                      {bannerImage && (
+                        <img 
+                          src={bannerImage} 
+                          alt="Banner Preview" 
+                          style={{ width: '120px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--admin-border)' }} 
+                        />
+                      )}
+                      <div style={{ flex: 1 }}>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleBannerImageUpload}
+                          style={{ display: 'none' }}
+                          id="banner-image-file"
+                        />
+                        <label 
+                          htmlFor="banner-image-file" 
+                          className="admin-btn"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid var(--admin-border)', padding: '8px 12px', borderRadius: '6px', background: 'var(--admin-bg)', color: 'var(--admin-text)' }}
+                        >
+                          <Upload size={14} /> Upload Custom Image
+                        </label>
+                        {bannerImage && (
+                          <button 
+                            type="button" 
+                            onClick={() => setBannerImage('')} 
+                            className="admin-btn"
+                            style={{ marginLeft: '12px', color: '#E31E24', border: '1px solid #E31E24', padding: '8px 12px', borderRadius: '6px', background: 'transparent' }}
+                          >
+                            Reset to Default
+                          </button>
+                        )}
+                        <p style={{ margin: '6px 0 0 0', fontSize: '11px', color: 'var(--admin-text-muted)' }}>
+                          Recommended size: 800x600px. Fallback to default poster if left blank.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+                <button type="submit" className="admin-btn admin-btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Save size={16} /> Save Banner Settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
         {/* WEBSITE VISITOR TRAFFIC ANALYTICS */}
         <div className="admin-analytics-section">
           {/* 7-DAY TRAFFIC CHART */}
@@ -991,6 +1119,22 @@ export default function Admin() {
                     <span className="admin-anal-stat-label">Visits Today</span>
                     <span className="admin-anal-stat-val">{visitStats.visitsToday}</span>
                   </div>
+                  <div className="admin-anal-stat-box" style={{ position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span className="admin-anal-stat-label" style={{ margin: 0 }}>Active Now</span>
+                      <span className="live-pulse-dot" style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: '#10B981',
+                        boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.7)',
+                        animation: 'pulse 1.5s infinite'
+                      }} />
+                    </div>
+                    <span className="admin-anal-stat-val" style={{ color: '#10B981', marginTop: '6px', display: 'block' }}>
+                      {visitStats.activeNow || 1}
+                    </span>
+                  </div>
                 </div>
 
                 <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--admin-text-dark)', marginBottom: '8px', display: 'block' }}>
@@ -1005,13 +1149,25 @@ export default function Admin() {
                       ? new Date(v.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                       : '';
                     return (
-                      <div key={v.id || idx} className="admin-log-item">
-                        <span className="admin-log-path" title={v.page_path}>
-                          {v.page_path}
-                        </span>
-                        <span className="admin-log-time">
-                          {dateLabel} {timeStr}
-                        </span>
+                      <div key={v.id || idx} className="admin-log-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '4px', padding: '10px 12px', borderBottom: '1px solid var(--admin-border)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span className="admin-log-path" title={v.page_path} style={{ fontWeight: '700', color: 'var(--admin-text-dark)', fontSize: '13px' }}>
+                            {v.page_path}
+                          </span>
+                          <span className="admin-log-time" style={{ fontSize: '11px', color: 'var(--admin-text-muted)' }}>
+                            {dateLabel} {timeStr}
+                          </span>
+                        </div>
+                        {(v.browser || v.os || v.device_type) && (
+                          <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: 'var(--admin-text-muted)', flexWrap: 'wrap', marginTop: '2px' }}>
+                            {v.device_type && <span style={{ background: 'rgba(227, 30, 36, 0.08)', color: '#E31E24', padding: '1px 6px', borderRadius: '4px', fontWeight: '600' }}>{v.device_type}</span>}
+                            {v.browser && <span>{v.browser} on {v.os || 'Unknown OS'}</span>}
+                            {v.screen_resolution && <span>({v.screen_resolution})</span>}
+                            {v.referrer && v.referrer !== 'Direct' && (
+                              <span style={{ color: '#E31E24', fontWeight: '500' }}>via {v.referrer}</span>
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
                   })}

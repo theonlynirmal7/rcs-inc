@@ -1263,6 +1263,7 @@ export const brands = [
   'Mahle Behr',
   'Denso',
   'Subros',
+  'J.K. Automotive',
   'Fujikoki',
   'Danfoss',
   'Behr Hella Service',
