@@ -86,7 +86,7 @@ export default function Admin() {
 
   // Banner Settings State
   const [showBanner, setShowBanner] = useState(
-    () => localStorage.getItem('rcs_show_banner') !== 'false'
+    () => localStorage.getItem('rcs_show_banner') === 'true'
   );
   const [bannerImage, setBannerImage] = useState(
     () => localStorage.getItem('rcs_banner_image') || ''

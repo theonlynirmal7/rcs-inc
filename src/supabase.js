@@ -658,7 +658,7 @@ export const dbService = {
 
     // Default Fallback
     return {
-      showBanner: true,
+      showBanner: false,
       bannerImage: ''
     };
   },
