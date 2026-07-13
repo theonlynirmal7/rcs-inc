@@ -501,12 +501,21 @@ export default function Home() {
       }
     }, 500);
   };
-  // Banner configuration loaded dynamically
-  const isBannerVisible = localStorage.getItem('rcs_show_banner') !== 'false';
-  const customBannerTitle = localStorage.getItem('rcs_banner_title') || 'RCS Summer Sale is Live!';
-  const customBannerText = localStorage.getItem('rcs_banner_text') || 'Beat the heat this season! Get special pricing and up to 15% discount on bulk wholesale orders of high-performance AC Compressors, Condensers, Cooling Coils, and Blowers.';
-  const customBannerDiscount = localStorage.getItem('rcs_banner_discount') || '15%';
-  const customBannerImage = localStorage.getItem('rcs_banner_image') || '';
+  const [showBanner, setShowBanner] = useState(false);
+  const [bannerImage, setBannerImage] = useState('');
+
+  useEffect(() => {
+    async function loadBanner() {
+      try {
+        const banner = await dbService.getSiteBanner();
+        setShowBanner(banner.showBanner);
+        setBannerImage(banner.bannerImage);
+      } catch (err) {
+        console.error('Failed to load banner settings:', err);
+      }
+    }
+    loadBanner();
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -2243,7 +2252,7 @@ export default function Home() {
       </section>
 
       {/* SUMMER SALE BANNER SECTION */}
-      {isBannerVisible && (
+      {showBanner && (
         <section className="summer-sale-section reveal">
           <div className="container">
             <a
@@ -2254,7 +2263,7 @@ export default function Home() {
             >
               <div className="summer-sale-banner-wrapper">
                 <img 
-                  src={customBannerImage || "/summer-sale.png"} 
+                  src={bannerImage || "/summer-sale.png"} 
                   alt="RCS Promotional Sale Banner" 
                   className="summer-sale-banner-img" 
                 />

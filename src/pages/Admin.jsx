@@ -88,15 +88,6 @@ export default function Admin() {
   const [showBanner, setShowBanner] = useState(
     () => localStorage.getItem('rcs_show_banner') !== 'false'
   );
-  const [bannerTitle, setBannerTitle] = useState(
-    () => localStorage.getItem('rcs_banner_title') || 'RCS Summer Sale is Live!'
-  );
-  const [bannerText, setBannerText] = useState(
-    () => localStorage.getItem('rcs_banner_text') || 'Beat the heat this season! Get special pricing and up to 15% discount on bulk wholesale orders of high-performance AC Compressors, Condensers, Cooling Coils, and Blowers.'
-  );
-  const [bannerDiscount, setBannerDiscount] = useState(
-    () => localStorage.getItem('rcs_banner_discount') || '15%'
-  );
   const [bannerImage, setBannerImage] = useState(
     () => localStorage.getItem('rcs_banner_image') || ''
   );
@@ -118,14 +109,15 @@ export default function Admin() {
     reader.readAsDataURL(file);
   };
 
-  const handleSaveBannerSettings = (e) => {
+  const handleSaveBannerSettings = async (e) => {
     e.preventDefault();
-    localStorage.setItem('rcs_show_banner', showBanner ? 'true' : 'false');
-    localStorage.setItem('rcs_banner_title', bannerTitle);
-    localStorage.setItem('rcs_banner_text', bannerText);
-    localStorage.setItem('rcs_banner_discount', bannerDiscount);
-    localStorage.setItem('rcs_banner_image', bannerImage);
-    addToast('Site banner settings updated successfully!');
+    try {
+      await dbService.saveSiteBanner(showBanner, bannerImage);
+      addToast('Site banner settings updated successfully!');
+    } catch (err) {
+      console.error('Error saving banner settings:', err);
+      addToast('Failed to save banner settings.', 'error');
+    }
   };
 
   // Products state
@@ -169,11 +161,22 @@ export default function Admin() {
   });
   const [loadingStats, setLoadingStats] = useState(true);
 
+  const loadBannerSettings = async () => {
+    try {
+      const banner = await dbService.getSiteBanner();
+      setShowBanner(banner.showBanner);
+      setBannerImage(banner.bannerImage);
+    } catch (err) {
+      console.error('Failed to load banner settings:', err);
+    }
+  };
+
   // Fetch products and stats on load/auth
   useEffect(() => {
     if (isAuthenticated) {
       loadProducts();
       loadStats();
+      loadBannerSettings();
 
       const interval = setInterval(() => {
         loadStats();

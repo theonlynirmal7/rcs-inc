@@ -282,13 +282,15 @@ export const dbService = {
       const { data, error } = await supabase
         .from('products')
         .select('*')
+        .neq('category', 'Settings')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data || [];
     } else {
       await initializeLocalDataIfEmpty();
       const localProds = await getLocalData('products');
-      return localProds.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const filtered = localProds.filter(p => p.category !== 'Settings');
+      return filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
   },
   
@@ -625,6 +627,82 @@ export const dbService = {
       chartData,
       recentVisits
     };
+  },
+
+  async getSiteBanner() {
+    try {
+      let product = null;
+      if (isSupabaseConfigured) {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', '99999999-9999-9999-9999-999999999999')
+          .maybeSingle();
+        if (!error && data) {
+          product = data;
+        }
+      } else {
+        const localProds = await getLocalData('products');
+        product = localProds.find(p => p.id === '99999999-9999-9999-9999-999999999999');
+      }
+
+      if (product) {
+        return {
+          showBanner: product.description === 'active',
+          bannerImage: product.image || ''
+        };
+      }
+    } catch (err) {
+      console.error('Error fetching site banner settings:', err);
+    }
+
+    // Default Fallback
+    return {
+      showBanner: true,
+      bannerImage: ''
+    };
+  },
+
+  async saveSiteBanner(showBanner, bannerImage) {
+    const bannerRecord = {
+      id: '99999999-9999-9999-9999-999999999999',
+      name: 'Site Banner Settings',
+      category: 'Settings',
+      brand: 'RCS',
+      image: bannerImage || '',
+      description: showBanner ? 'active' : 'disabled',
+      oem_number: 'BANNER-CFG',
+      vehicle_type: 'Config',
+      specifications: '',
+      compatible_vehicles: '',
+      featured: false,
+      stock_status: 'In Stock',
+      created_at: new Date().toISOString()
+    };
+
+    if (isSupabaseConfigured) {
+      const { data } = await supabase
+        .from('products')
+        .select('id')
+        .eq('id', '99999999-9999-9999-9999-999999999999')
+        .maybeSingle();
+
+      if (data) {
+        const { error } = await supabase
+          .from('products')
+          .update(bannerRecord)
+          .eq('id', '99999999-9999-9999-9999-999999999999');
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('products')
+          .insert([bannerRecord]);
+        if (error) throw error;
+      }
+    } else {
+      await saveLocalData('products', bannerRecord);
+    }
+    await syncLocalCache();
   }
 };
 
