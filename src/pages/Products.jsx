@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal, Car, X } from 'lucide-react';
 import { getProducts, categories, brands } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import useSEO from '../hooks/useSEO';
 import './Products.css';
 
 export default function Products() {
@@ -15,6 +16,11 @@ export default function Products() {
   const [category, setCategory] = useState(initialCategory);
   const [brand, setBrand] = useState('All');
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  useSEO(
+    category !== 'All' ? `${category} AC Parts` : 'AC Spare Parts Catalog',
+    `Browse our complete range of genuine ${category !== 'All' ? category : ''} automotive AC spare parts, compressors, condensers, and cooling coils.`
+  );
 
   useEffect(() => {
     setProducts(getProducts());

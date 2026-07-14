@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import heroParts from '../assets/hero-parts.png';
 import { dbService } from '../supabase';
 import ExplodedDiagram from '../components/ExplodedDiagram';
+import useSEO from '../hooks/useSEO';
 import './Home.css';
 
 const marqueeBrands = [
@@ -516,6 +517,8 @@ export default function Home() {
     }
     loadBanner();
   }, []);
+
+  useSEO('Home', "Welcome to RCS (Rameswar Cool Spares) - India's premier distributor of automotive AC spare parts, compressors, condensers, and cooling coils.");
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');

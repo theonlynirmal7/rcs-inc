@@ -23,6 +23,7 @@ import { dbService } from '../supabase';
 import { useToast } from '../context/ToastContext';
 import { brands, categories } from '../data/products';
 import JSZip from 'jszip';
+import useSEO from '../hooks/useSEO';
 import './Admin.css';
 
 // Remove 'All' from categories for form inputs
@@ -76,6 +77,8 @@ function parseCSV(text) {
 }
 
 export default function Admin() {
+  useSEO('Admin Dashboard', 'Enquire and manage inventory, product catalogs, upload brand parts, and track real-time visitors.');
+
   const { addToast } = useToast();
 
   // Authentication state

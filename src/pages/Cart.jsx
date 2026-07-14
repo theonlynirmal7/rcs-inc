@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import useSEO from '../hooks/useSEO';
 import './Cart.css';
 
 export default function Cart() {
+  useSEO('Enquiry Basket', 'Review the spare parts in your cart and submit your wholesale quote request directly via WhatsApp.');
+
   const { cart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount, openWhatsApp } = useCart();
 
   if (cart.length === 0) {

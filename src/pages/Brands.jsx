@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { brands } from '../data/products';
+import useSEO from '../hooks/useSEO';
 import './Brands.css';
 
 const brandInfo = {
@@ -225,6 +226,8 @@ const brandLogos = {
 };
 
 export default function Brands() {
+  useSEO('OEM Partner Brands', 'We distribute and stock genuine automotive AC components from leading global brands including Denso, Sanden, Valeo, Subros, Behr, and Fujikoki.');
+
   return (
     <div className="brands-page page-transition">
       <section className="brands-hero">

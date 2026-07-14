@@ -1,7 +1,10 @@
 import { Shield, Users, Award, Clock } from 'lucide-react';
+import useSEO from '../hooks/useSEO';
 import './About.css';
 
 export default function About() {
+  useSEO('About Us - Rameswar Cool Spares', 'Learn about RCS, India’s leading distributor of premium automotive AC components with over 20 years of experience serving workshops, fleet operators, and dealers.');
+
   const values = [
     { icon: <Shield size={28} />, title: 'Quality Assurance', desc: 'Every part undergoes rigorous testing before reaching you. Only genuine and OEM-grade components.' },
     { icon: <Users size={28} />, title: 'Customer First', desc: 'We build lasting relationships with distributors, mechanics, and fleet operators across India.' },

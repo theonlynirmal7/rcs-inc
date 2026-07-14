@@ -27,7 +27,7 @@ export default function Navbar() {
   const updateIndicator = useCallback(() => {
     const targetPath = hoveredPath || location.pathname;
     const targetEl = linkRefs.current[targetPath];
-    if (targetEl && window.innerWidth > 900) {
+    if (targetEl && window.innerWidth > 1024) {
       setIndicatorStyle({
         transform: `translateX(${targetEl.offsetLeft}px)`,
         width: `${targetEl.offsetWidth}px`,

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, AlertTriangle, ShieldCheck, Settings, Activity } from 'lucide-react';
+import useSEO from '../hooks/useSEO';
 import './Education.css';
 
 const partsData = [
@@ -119,6 +120,8 @@ const partsData = [
 ];
 
 export default function Education() {
+  useSEO('Car AC Systems & Maintenance Guide', 'Learn how automotive air conditioning systems work. Read our expert guides on AC compressors, condensers, evaporators, expansion valves, and maintenance tips.');
+
   const [selectedPart, setSelectedPart] = useState(partsData[0]);
   const [activeTab, setActiveTab] = useState('overview');
 

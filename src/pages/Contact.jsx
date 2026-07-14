@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import useSEO from '../hooks/useSEO';
 import './Contact.css';
 
 export default function Contact() {
+  useSEO('Contact Us', 'Get in touch with RCS (Rameswar Cool Spares). Inquire about bulk AC parts wholesale pricing, find our store location, or send us a message on WhatsApp.');
+
   const { addToast } = useToast();
   const [selectedOption, setSelectedOption] = useState('');
 

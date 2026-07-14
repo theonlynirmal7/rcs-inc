@@ -1,0 +1,21 @@
+{
+  "short_name": "RCS Spares",
+  "name": "RCS - Rameswar Cool Spares",
+  "icons": [
+    {
+      "src": "/rcs-logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/rcs-logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#E31E24",
+  "display": "standalone",
+  "orientation": "portrait"
+}

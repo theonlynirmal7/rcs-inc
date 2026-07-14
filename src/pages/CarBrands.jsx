@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShieldCheck, Car, HelpCircle, ArrowRight } from 'lucide-react';
+import useSEO from '../hooks/useSEO';
 import './CarBrands.css';
 
 const carBrands = [
@@ -240,6 +241,8 @@ const carBrands = [
 const categories = ['All', 'Passenger', 'SUV', 'Premium Passenger', 'Premium SUV', 'Commercial & UV', 'Luxury & Supercar'];
 
 export default function CarBrands() {
+  useSEO('Supported Vehicle Brands', 'Find compatible car AC spare parts, compressors, cooling coils, and condensers for Isuzu, Maruti Suzuki, Toyota, Hyundai, Honda, Mercedes-Benz, BMW, Audi, and more.');
+
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
