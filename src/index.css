@@ -301,6 +301,7 @@ input, select, textarea {
   border: 2px solid transparent !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 12px var(--btn-shadow) !important;
+  padding: 12px 28px !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
