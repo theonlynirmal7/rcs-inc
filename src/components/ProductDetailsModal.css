@@ -107,8 +107,8 @@
   justify-content: center;
   margin-bottom: 16px;
   overflow: hidden;
+  position: relative;
 }
-
 .pd-image-wrapper img {
   max-height: 100%;
   max-width: 100%;

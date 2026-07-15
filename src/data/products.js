@@ -1259,11 +1259,11 @@ export function deleteProduct(id) {
 
 export const categories = ['All', 'Car', 'Truck', 'Bus', 'Payload Vehicle', 'Construction Vehicle', 'Bulldozer'];
 export const brands = [
+  'Mann Filter',
   'Mahle Filter',
   'Mahle Behr',
   'Denso',
   'Subros',
-  'J.K. Automotive',
   'Fujikoki',
   'Danfoss',
   'Behr Hella Service',
@@ -1294,5 +1294,8 @@ export const brands = [
   'Taco International',
   'Lucas TVS',
   'TCCI',
-  'Formula'
+  'Formula',
+  'Hyundai Genuine Parts',
+  'Symbol Refrigeration Solutions',
+  'Hongsen'
 ];

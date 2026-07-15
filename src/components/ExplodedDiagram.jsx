@@ -85,9 +85,16 @@ export default function ExplodedDiagram({
 
   // Click pin event
   const handlePinClick = (pin) => {
-    setSelectedPin(pin);
-    if (onSelectComponent) {
-      onSelectComponent(pin);
+    if (selectedPin?.id === pin.id) {
+      setSelectedPin(null);
+      if (onSelectComponent) {
+        onSelectComponent(null);
+      }
+    } else {
+      setSelectedPin(pin);
+      if (onSelectComponent) {
+        onSelectComponent(pin);
+      }
     }
   };
 
@@ -143,7 +150,6 @@ export default function ExplodedDiagram({
         </div>
         <div className="header-right">
           <span className="brand-logo-text">RCS</span>
-          <span className="brand-logo-sub">THE COOLING EXPERTS</span>
         </div>
       </div>
       
@@ -178,35 +184,16 @@ export default function ExplodedDiagram({
               }}
             >
               <img src={diagram.image_url} alt={diagram.name} draggable="false" />
-              
-              {/* Hotspots Pin Overlay */}
-              {diagram.hotspots.map((pin) => (
-                <div 
-                  key={pin.id}
-                  className={`hotspot-pin ${selectedPin?.id === pin.id ? 'active' : ''}`}
-                  style={{
-                    left: `${pin.x}%`,
-                    top: `${pin.y}%`
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePinClick(pin);
-                  }}
-                  onMouseDown={(e) => e.stopPropagation()}
-                >
-                  <span className="pin-label">{pin.id}</span>
-                </div>
-              ))}
             </div>
           </div>
-
+               
           {/* Guidelines Footer Toolbar */}
           <div className="diagram-guidelines-toolbar">
             <div className="guideline-item">
               <span className="guideline-icon">🖱️</span>
               <div className="guideline-texts">
                 <span className="guideline-title">How to use</span>
-                <span className="guideline-desc">Click on any part number to view details and compatible products.</span>
+                <span className="guideline-desc">Select components from the Parts Legend to view specs and enquire.</span>
               </div>
             </div>
             <div className="guideline-item">

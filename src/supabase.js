@@ -764,7 +764,7 @@ const staticDiagrams = [
     name: 'A/C System Exploded View Diagram',
     image_url: '/diagrams/ac-system-exploded.png',
     hotspots: [
-      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, Estra, Hanon' },
       { id: 2, component: 'Condenser Assembly', x: 29.5, y: 13.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Cools and condenses high-pressure gaseous refrigerant into a liquid state.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
       { id: 3, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
       { id: 4, component: 'Block Expansion Valve', x: 21.2, y: 52.8, oem: 'EV-68023C', stock: 'In Stock', description: 'Regulates flow of refrigerant into the evaporator core to control cooling output.', brands: 'Fujikoki, Danfoss, Valeo, Denso' },
@@ -780,7 +780,7 @@ const staticDiagrams = [
     name: 'Bus A/C System Exploded View Diagram',
     image_url: '/diagrams/bus-hvac.png',
     hotspots: [
-      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, Estra, Hanon' },
       { id: 2, component: 'Bus Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Large-capacity condenser coil designed for optimal heat rejection in commercial AC systems.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
       { id: 3, component: 'Condenser Fan Assembly', x: 71.4, y: 7.5, oem: 'FN-48092C', stock: 'In Stock', description: 'Pulls air through the bus condenser to cool the refrigerant.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
       { id: 4, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
@@ -797,7 +797,7 @@ const staticDiagrams = [
     name: 'Truck A/C System Exploded View Diagram',
     image_url: '/diagrams/truck-hvac.png',
     hotspots: [
-      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, Estra, Hanon' },
       { id: 2, component: 'Truck Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Heavy-duty condenser coil designed for optimal heat dissipation in commercial trucks.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
       { id: 3, component: 'Condenser Fan Assembly', x: 71.4, y: 7.5, oem: 'FN-48092C', stock: 'In Stock', description: 'Pulls air through the truck condenser to cool the refrigerant.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },
       { id: 4, component: 'A/C Hoses & Pipes', x: 71.4, y: 41.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' },
@@ -815,7 +815,7 @@ const staticDiagrams = [
     name: 'Bulldozer & Earthmover A/C System Exploded View Diagram',
     image_url: '/diagrams/dozer-hvac.png',
     hotspots: [
-      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, Estra, Hanon' },
       { id: 2, component: 'Heavy Duty Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Heavy-duty condenser coil designed for optimal heat dissipation in heavy earthmovers.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
       { id: 3, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
       { id: 4, component: 'A/C Hoses & Pipes', x: 71.4, y: 41.2, oem: 'HP-50033C', stock: 'In Stock', description: 'High and low pressure lines carrying refrigerant liquid and gas between components.', brands: 'Giladard, Subros, Denso, Estra' },
@@ -831,7 +831,7 @@ const staticDiagrams = [
     name: 'Payload & Light Commercial Vehicle A/C System Exploded View Diagram',
     image_url: '/diagrams/lcv-hvac.png',
     hotspots: [
-      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, J.K. Automotive, Estra, Hanon' },
+      { id: 1, component: 'A/C Compressor Assembly', x: 5.3, y: 15.2, oem: 'CO-29007C', stock: 'In Stock', description: 'Compresses refrigerant gas and circulates it through the system.', brands: 'Subros, Denso, Sanden, Estra, Hanon' },
       { id: 2, component: 'LCV Condenser Coil', x: 29.5, y: 7.5, oem: 'CN-38012C', stock: 'In Stock', description: 'Condenser coil optimized for payload and light commercial vehicle cab cooling.', brands: 'Subros, Denso, Sanden, Behr Hella Service, Estra, Valeo' },
       { id: 3, component: 'Receiver Drier / Accumulator', x: 88.7, y: 26.2, oem: 'RD-10022C', stock: 'In Stock', description: 'Filters out moisture, debris, and contaminants from the liquid refrigerant.', brands: 'Denso, Sanden, Valeo, Behr Hella Service' },
       { id: 4, component: 'Condenser Fan Assembly', x: 71.4, y: 7.5, oem: 'FN-48092C', stock: 'In Stock', description: 'Pulls cooling airflow through the condenser coil assembly.', brands: 'Spal, Valeo, Sanden, Subros, Estra' },

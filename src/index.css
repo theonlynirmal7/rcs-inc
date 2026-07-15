@@ -290,17 +290,16 @@ input, select, textarea {
 .premium-liquid-btn {
   --btn-bg: #E31E24;
   --btn-text: #ffffff;
-  --btn-hover-color: #E31E24;
-  --btn-shadow: rgba(227, 30, 36, 0.15);
-  --btn-shadow-hover: rgba(227, 30, 36, 0.25);
+  --btn-shadow: rgba(227, 30, 36, 0.2);
+  --btn-shadow-hover: rgba(227, 30, 36, 0.4);
   
   position: relative;
   overflow: hidden;
   background: var(--btn-bg) !important;
   color: var(--btn-text) !important;
-  border: 2px solid transparent !important;
-  border-radius: 16px !important;
-  box-shadow: 0 4px 12px var(--btn-shadow) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 14px var(--btn-shadow) !important;
   padding: 12px 28px !important;
   display: inline-flex;
   align-items: center;
@@ -308,10 +307,9 @@ input, select, textarea {
   gap: 8px;
   font-weight: 600;
   transition: 
-    color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   transform: scale(1);
   z-index: 1;
   cursor: pointer;
@@ -324,21 +322,50 @@ input, select, textarea {
 
 .premium-liquid-btn.btn-whatsapp {
   --btn-bg: #25D366;
-  --btn-hover-color: #25D366;
-  --btn-shadow: rgba(37, 211, 102, 0.15);
-  --btn-shadow-hover: rgba(37, 211, 102, 0.25);
+  --btn-text: #ffffff;
+  --btn-shadow: rgba(37, 211, 102, 0.22);
+  --btn-shadow-hover: rgba(37, 211, 102, 0.42);
+
+  background: var(--btn-bg) !important;
+  color: var(--btn-text) !important;
+  border-radius: 100px !important;
+  box-shadow: 0 4px 18px var(--btn-shadow) !important;
+}
+
+/* Diagonal Shimmer Element */
+.premium-liquid-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  transition: none;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .premium-liquid-btn:hover:not(:disabled),
 .premium-liquid-btn:focus-visible:not(:disabled) {
-  color: var(--btn-hover-color) !important;
-  border-color: var(--btn-hover-color) !important;
-  transform: scale(1.02) !important;
-  box-shadow: 0 8px 20px var(--btn-shadow-hover) !important;
+  transform: scale(1.025) !important;
+  box-shadow: 0 8px 24px var(--btn-shadow-hover) !important;
+  filter: brightness(1.05);
   outline: none !important;
 }
 
-/* Make sure text and icons inside are positioned above the liquid blobs */
+.premium-liquid-btn:hover:not(:disabled)::before,
+.premium-liquid-btn:focus-visible:not(:disabled)::before {
+  left: 150%;
+  transition: left 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
 .premium-liquid-btn .btn-content {
   position: relative;
   z-index: 3;
@@ -352,68 +379,22 @@ input, select, textarea {
 }
 
 .premium-liquid-btn svg {
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .premium-liquid-btn:hover svg.lucide-arrow-right,
 .premium-liquid-btn:focus-visible svg.lucide-arrow-right {
-  transform: translateX(6px);
+  transform: translateX(4px);
 }
 
-/* Liquid Blobs Background Overlay */
+/* Hide the old liquid background markup */
 .premium-liquid-btn .liquid-bg {
-  position: absolute;
-  inset: -2px;
-  pointer-events: none;
-  z-index: 2;
-  overflow: hidden;
-  border-radius: inherit;
-  opacity: 1;
-}
-
-.premium-liquid-btn .liquid-bg svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.premium-liquid-btn .liquid-bg path {
-  fill: #ffffff;
-  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-
-/* Blob 1 enters from top-left */
-.premium-liquid-btn .blob-1 {
-  transform: translate(-105%, -105%) scale(0.2);
-  transform-origin: top left;
-}
-
-/* Blob 2 enters from bottom-right */
-.premium-liquid-btn .blob-2 {
-  transform: translate(105%, 105%) scale(0.2);
-  transform-origin: bottom right;
-}
-
-.premium-liquid-btn:hover:not(:disabled) .blob-1,
-.premium-liquid-btn:focus-visible:not(:disabled) .blob-1 {
-  transform: translate(0, 0) scale(2.8);
-}
-
-.premium-liquid-btn:hover:not(:disabled) .blob-2,
-.premium-liquid-btn:focus-visible:not(:disabled) .blob-2 {
-  transform: translate(0, 0) scale(2.8);
+  display: none !important;
 }
 
 .premium-liquid-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed !important;
   transform: none !important;
   box-shadow: none !important;
-}
-
-.premium-liquid-btn:disabled .liquid-bg {
-  display: none !important;
 }

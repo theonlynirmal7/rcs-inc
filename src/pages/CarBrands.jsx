@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Search, ShieldCheck, Car, HelpCircle, ArrowRight } from 'lucide-react';
 import useSEO from '../hooks/useSEO';
 import './CarBrands.css';
@@ -10,241 +10,375 @@ const carBrands = [
     logoUrl: '/brand-logos/isuzu.png',
     category: 'Commercial & UV',
     origin: 'Japan',
-    description: 'Compatible AC parts for D-Max, V-Cross, MU-X, and commercial trucks.'
+    description: 'Compatible AC parts for D-Max, V-Cross, MU-X, and commercial trucks.',
+    types: ['Car', 'Truck', 'Payload Vehicle']
   },
   {
     name: 'Aston Martin',
     logoUrl: '/brand-logos/aston-martin.png',
     category: 'Luxury Sports',
     origin: 'United Kingdom',
-    description: 'Precision climate components for Vantage, DB11, DBS, and DBX.'
+    description: 'Precision climate components for Vantage, DB11, DBS, and DBX.',
+    types: ['Car']
   },
   {
     name: 'Audi',
     logoUrl: '/brand-logos/audi.png',
     category: 'Premium Passenger',
     origin: 'Germany',
-    description: 'OEM-grade compressors and evaporators for A3, A4, A6, Q3, Q5, Q7.'
+    description: 'OEM-grade compressors and evaporators for A3, A4, A6, Q3, Q5, Q7.',
+    types: ['Car']
   },
   {
     name: 'Bentley',
     logoUrl: '/brand-logos/bentley.png',
     category: 'Ultra Luxury',
     origin: 'United Kingdom',
-    description: 'Bespoke climate control parts for Continental GT, Flying Spur, Bentayga.'
+    description: 'Bespoke climate control parts for Continental GT, Flying Spur, Bentayga.',
+    types: ['Car']
   },
   {
     name: 'BMW',
     logoUrl: '/brand-logos/bmw.png',
     category: 'Premium Passenger',
     origin: 'Germany',
-    description: 'Premium condensers and blowers for 3 Series, 5 Series, 7 Series, X1, X3, X5.'
+    description: 'Premium condensers and blowers for 3 Series, 5 Series, 7 Series, X1, X3, X5.',
+    types: ['Car']
+  },
+  {
+    name: 'Bugatti',
+    logoUrl: '/brand-logos/bugatti.png',
+    category: 'Supercar',
+    origin: 'France',
+    description: 'High-performance bespoke climate control units for Veyron, Chiron, Divo.',
+    types: ['Car']
   },
   {
     name: 'Chevrolet',
     logoUrl: '/brand-logos/chevrolet.png',
     category: 'Passenger',
     origin: 'United States',
-    description: 'Replacement AC parts for Beat, Cruze, Sail, Tavera, Enjoy, Trailblazer.'
+    description: 'Replacement AC parts for Beat, Cruze, Sail, Tavera, Enjoy, Trailblazer.',
+    types: ['Car']
   },
   {
     name: 'Citroen',
     logoUrl: '/brand-logos/citroen.png',
     category: 'Passenger',
     origin: 'France',
-    description: 'Modern cooling solutions for C3, C3 Aircross, C5 Aircross, and eC3.'
+    description: 'Modern cooling solutions for C3, C3 Aircross, C5 Aircross, and eC3.',
+    types: ['Car']
   },
   {
     name: 'Ferrari',
     logoUrl: '/brand-logos/ferrari.png',
     category: 'Supercar',
     origin: 'Italy',
-    description: 'High-performance HVAC components for Roma, Portofino, F8, SF90.'
+    description: 'High-performance HVAC components for Roma, Portofino, F8, SF90.',
+    types: ['Car']
   },
   {
     name: 'Ford',
     logoUrl: '/brand-logos/ford.png',
     category: 'Passenger & SUV',
     origin: 'United States',
-    description: 'Genuine parts for Figo, Aspire, EcoSport, Endeavour, Mustang.'
+    description: 'Genuine parts for Figo, Aspire, EcoSport, Endeavour, Mustang.',
+    types: ['Car']
   },
   {
     name: 'Honda',
     logoUrl: '/brand-logos/honda.png',
     category: 'Passenger',
     origin: 'Japan',
-    description: 'Highly reliable AC components for City, Amaze, Civic, Jazz, WR-V, CR-V.'
+    description: 'Highly reliable AC components for City, Amaze, Civic, Jazz, WR-V, CR-V.',
+    types: ['Car']
   },
   {
     name: 'Hyundai',
     logoUrl: '/brand-logos/hyundai.png',
     category: 'Passenger & SUV',
     origin: 'South Korea',
-    description: 'Full AC system support for i10, i20, Verna, Creta, Venue, Alcazar, Tucson.'
+    description: 'Full AC system support for i10, i20, Verna, Creta, Venue, Alcazar, Tucson.',
+    types: ['Car']
   },
   {
     name: 'Jaguar',
     logoUrl: '/brand-logos/jaguar.png',
     category: 'Premium Passenger',
     origin: 'United Kingdom',
-    description: 'Luxury climate control parts for XE, XF, XJ, F-Pace, F-Type.'
+    description: 'Luxury climate control parts for XE, XF, XJ, F-Pace, F-Type.',
+    types: ['Car']
   },
   {
     name: 'Jeep',
     logoUrl: '/brand-logos/jeep.png',
     category: 'SUV',
     origin: 'United States',
-    description: 'Heavy-duty AC units for Compass, Meridian, Wrangler, Grand Cherokee.'
+    description: 'Heavy-duty AC units for Compass, Meridian, Wrangler, Grand Cherokee.',
+    types: ['Car']
   },
   {
     name: 'Kia',
     logoUrl: '/brand-logos/kia.png',
     category: 'Passenger & SUV',
     origin: 'South Korea',
-    description: 'Complete cooling solutions for Seltos, Sonet, Carens, Carnival, EV6.'
+    description: 'Complete cooling solutions for Seltos, Sonet, Carens, Carnival, EV6.',
+    types: ['Car']
   },
   {
     name: 'Lamborghini',
     logoUrl: '/brand-logos/lamborghini.png',
     category: 'Supercar',
     origin: 'Italy',
-    description: 'Heavy-duty cooling units for Huracan, Aventador, Urus.'
+    description: 'Heavy-duty cooling units for Huracan, Aventador, Urus.',
+    types: ['Car']
   },
   {
     name: 'Land Rover',
     logoUrl: '/brand-logos/land-rover.png',
     category: 'Premium SUV',
     origin: 'United Kingdom',
-    description: 'Robust climate spares for Defender, Discovery, Range Rover Evoque, Velar, Sport.'
+    description: 'Robust climate spares for Defender, Discovery, Range Rover Evoque, Velar, Sport.',
+    types: ['Car']
   },
   {
     name: 'Lexus',
     logoUrl: '/brand-logos/lexus.png',
     category: 'Premium Passenger',
     origin: 'Japan',
-    description: 'Ultra-quiet climate components for ES, NX, RX, LX, LC.'
+    description: 'Ultra-quiet climate components for ES, NX, RX, LX, LC.',
+    types: ['Car']
   },
   {
     name: 'Maserati',
     logoUrl: '/brand-logos/maserati.png',
     category: 'Luxury Sports',
     origin: 'Italy',
-    description: 'AC parts designed for Ghibli, Quattroporte, Levante, MC20.'
+    description: 'AC parts designed for Ghibli, Quattroporte, Levante, MC20.',
+    types: ['Car']
   },
   {
     name: 'Mercedes-Benz',
     logoUrl: '/brand-logos/mercedes-benz.png',
     category: 'Premium Passenger',
     origin: 'Germany',
-    description: 'Advanced HVAC spares for A-Class, C-Class, E-Class, S-Class, GLA, GLC, GLE, GLS.'
+    description: 'Advanced HVAC spares for A-Class, C-Class, E-Class, S-Class, GLA, GLC, GLE, GLS.',
+    types: ['Car', 'Bus', 'Truck']
   },
   {
     name: 'Mini',
     logoUrl: '/brand-logos/mini.png',
     category: 'Passenger',
     origin: 'United Kingdom',
-    description: 'Climate spares for Mini Cooper, Clubman, Countryman.'
+    description: 'Climate spares for Mini Cooper, Clubman, Countryman.',
+    types: ['Car']
   },
   {
     name: 'Mitsubishi',
     logoUrl: '/brand-logos/mitsubishi.png',
     category: 'SUV & UV',
     origin: 'Japan',
-    description: 'Heavy-duty AC units for Lancer, Pajero, Outlander, Montero.'
+    description: 'Heavy-duty AC units for Lancer, Pajero, Outlander, Montero.',
+    types: ['Car']
   },
   {
     name: 'Nissan',
     logoUrl: '/brand-logos/nissan.png',
     category: 'Passenger & SUV',
     origin: 'Japan',
-    description: 'Compatible spares for Micra, Sunny, Terrano, Kicks, Magnite, Kicks.'
+    description: 'Compatible spares for Micra, Sunny, Terrano, Kicks, Magnite, Kicks.',
+    types: ['Car']
   },
   {
     name: 'Porsche',
     logoUrl: '/brand-logos/porsche.png',
     category: 'Luxury Sports',
     origin: 'Germany',
-    description: 'OEM-grade AC parts for 911, Boxster, Cayman, Cayenne, Macan, Panamera, Taycan.'
+    description: 'OEM-grade AC parts for 911, Boxster, Cayman, Cayenne, Macan, Panamera, Taycan.',
+    types: ['Car']
   },
   {
     name: 'Renault',
     logoUrl: '/brand-logos/renault.png',
     category: 'Passenger & SUV',
     origin: 'France',
-    description: 'Cooling components for Kwid, Triber, Kiger, Duster.'
+    description: 'Cooling components for Kwid, Triber, Kiger, Duster.',
+    types: ['Car']
   },
   {
     name: 'Skoda',
     logoUrl: '/brand-logos/skoda.png',
     category: 'Passenger',
     origin: 'Czech Republic',
-    description: 'Premium AC compressors and condensers for Rapid, Octavia, Superb, Kushaq, Slavia, Kodiaq.'
+    description: 'Premium AC compressors and condensers for Rapid, Octavia, Superb, Kushaq, Slavia, Kodiaq.',
+    types: ['Car']
   },
   {
     name: 'Maruti Suzuki',
     logoUrl: '/brand-logos/suzuki.png',
     category: 'Passenger & SUV',
     origin: 'India / Japan',
-    description: 'Massive inventory for Alto, Swift, Baleno, Dzire, Brezza, Ertiga, Grand Vitara.'
+    description: 'Massive inventory for Alto, Swift, Baleno, Dzire, Brezza, Ertiga, Grand Vitara.',
+    types: ['Car']
   },
   {
     name: 'Toyota',
     logoUrl: '/brand-logos/toyota.png',
     category: 'Passenger & SUV',
     origin: 'Japan',
-    description: 'High-performance AC units for Glanza, Urban Cruiser, Innova Crysta, Fortuner.'
+    description: 'High-performance AC units for Glanza, Urban Cruiser, Innova Crysta, Fortuner.',
+    types: ['Car']
   },
   {
     name: 'Volkswagen',
     logoUrl: '/brand-logos/volkswagen.png',
     category: 'Passenger & SUV',
     origin: 'Germany',
-    description: 'German-engineered AC spares for Polo, Vento, Taigun, Virtus, Tiguan.'
+    description: 'German-engineered AC spares for Polo, Vento, Taigun, Virtus, Tiguan.',
+    types: ['Car']
   },
   {
     name: 'Volvo',
     logoUrl: '/brand-logos/volvo.png',
     category: 'Premium Passenger & SUV',
     origin: 'Sweden',
-    description: 'Premium HVAC components for S60, S90, XC40, XC60, XC90.'
+    description: 'Premium HVAC components for S60, S90, XC40, XC60, XC90.',
+    types: ['Car', 'Bus', 'Truck']
   },
   {
     name: 'Rolls Royce',
     logoUrl: '/brand-logos/rolls-royce.png',
     category: 'Ultra Luxury',
     origin: 'United Kingdom',
-    description: 'Bespoke climate control parts for Ghost, Phantom, Wraith, Dawn, Cullinan.'
+    description: 'Bespoke climate control parts for Ghost, Phantom, Wraith, Dawn, Cullinan.',
+    types: ['Car']
   },
   {
     name: 'Mahindra',
     logoUrl: '/brand-logos/mahindra.png',
     category: 'SUV & Commercial',
     origin: 'India',
-    description: 'Heavy-duty AC systems for Thar, Scorpio Classic/N, XUV300, XUV700, Bolero.'
+    description: 'Heavy-duty AC systems for Thar, Scorpio Classic/N, XUV300, XUV700, Bolero.',
+    types: ['Car', 'Truck', 'Payload Vehicle']
   },
   {
     name: 'Tata Motors',
     logoUrl: '/brand-logos/tata.png',
     category: 'Passenger & Commercial',
     origin: 'India',
-    description: 'Sturdy HVAC components for Tiago, Tigor, Altroz, Nexon, Harrier, Safari, Punch.'
+    description: 'Sturdy HVAC components for Tiago, Tigor, Altroz, Nexon, Harrier, Safari, Punch.',
+    types: ['Car', 'Bus', 'Truck', 'Payload Vehicle']
   },
   {
     name: 'MG',
     logoUrl: '/brand-logos/mg.png',
     category: 'Passenger & SUV',
     origin: 'United Kingdom / China',
-    description: 'Compatible cooling solutions for Hector, Astor, Gloster, ZS EV, Comet.'
+    description: 'Compatible cooling solutions for Hector, Astor, Gloster, ZS EV, Comet.',
+    types: ['Car']
+  },
+  {
+    name: 'Ashok Leyland',
+    logoUrl: '/brand-logos/ashok-leyland.png',
+    category: 'Bus & Truck',
+    origin: 'India',
+    description: 'Top manufacturer of commercial vehicles in India. Heavy-duty AC spares for Viking, Cheetah, Oyster, Dost, Partner.',
+    types: ['Bus', 'Truck', 'Payload Vehicle']
+  },
+  {
+    name: 'BharatBenz',
+    logoUrl: '/brand-logos/bharatbenz.png',
+    category: 'Bus & Truck',
+    origin: 'India / Germany',
+    description: 'Daimler-backed premium commercial vehicle brand. Advanced HVAC solutions for heavy trucks and luxury coaches.',
+    types: ['Bus', 'Truck']
+  },
+  {
+    name: 'Eicher Motors',
+    logoUrl: '/brand-logos/eicher.png',
+    category: 'Bus & Truck',
+    origin: 'India',
+    description: 'Joint venture with Volvo. Durable AC compressors, blowers, and lines for light, medium, and heavy transport fleets.',
+    types: ['Bus', 'Truck']
+  },
+  {
+    name: 'SML Isuzu',
+    logoUrl: '/brand-logos/sml-isuzu.png',
+    category: 'Bus & Truck',
+    origin: 'India / Japan',
+    description: 'Trusted manufacturer of school buses, ambulances, staff buses, and light cargo vehicles in India.',
+    types: ['Bus', 'Truck', 'Payload Vehicle']
+  },
+  {
+    name: 'JCB',
+    logoUrl: '/brand-logos/jcb.png',
+    category: 'Heavy Equipment',
+    origin: 'United Kingdom / India',
+    description: 'India\'s leading backhoe loader and excavator manufacturer. Rugged AC cabin compressors and expansion valves.',
+    types: ['Bulldozer', 'Construction Vehicle']
+  },
+  {
+    name: 'Caterpillar (CAT)',
+    logoUrl: '/brand-logos/caterpillar.png',
+    category: 'Heavy Equipment',
+    origin: 'United States',
+    description: 'Global construction giant. Heavy-duty climate systems built to withstand harsh mining and quarry environments.',
+    types: ['Bulldozer', 'Construction Vehicle']
+  },
+  {
+    name: 'Komatsu',
+    logoUrl: '/brand-logos/komatsu.png',
+    category: 'Heavy Equipment',
+    origin: 'Japan',
+    description: 'High-precision Japanese industrial machinery. Reliable cabin climate control modules for dozers, dumpers, and excavators.',
+    types: ['Bulldozer', 'Construction Vehicle']
+  },
+  {
+    name: 'Tata Hitachi',
+    logoUrl: '/brand-logos/tata-hitachi.png',
+    category: 'Heavy Equipment',
+    origin: 'India / Japan',
+    description: 'Leading hydraulic excavator manufacturer. Built-to-last AC evaporators and condenser units for earthmoving operations.',
+    types: ['Bulldozer', 'Construction Vehicle']
+  },
+  {
+    name: 'BEML',
+    logoUrl: '/brand-logos/beml.png',
+    category: 'Heavy Equipment',
+    origin: 'India',
+    description: 'Public sector undertaking manufacturing heavy mining dozers, dumpers, and metro coaches with specialized AC units.',
+    types: ['Bulldozer', 'Construction Vehicle']
   }
 ];
 
-const categories = ['All', 'Passenger', 'SUV', 'Premium Passenger', 'Premium SUV', 'Commercial & UV', 'Luxury & Supercar'];
+const categories = ['All', 'Car', 'Bus', 'Truck', 'Bulldozer', 'Payload Vehicle', 'Construction Vehicle'];
 
 export default function CarBrands() {
-  useSEO('Supported Vehicle Brands', 'Find compatible car AC spare parts, compressors, cooling coils, and condensers for Isuzu, Maruti Suzuki, Toyota, Hyundai, Honda, Mercedes-Benz, BMW, Audi, and more.');
+  useSEO('Supported Vehicle Brands', 'Find compatible car, bus, truck, and bulldozer AC spare parts for Maruti Suzuki, Tata Motors, Ashok Leyland, Mahindra, JCB, Volvo, and more.');
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') || 'All';
 
   const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (cat) {
+      setSelectedCategory(cat);
+    } else {
+      setSelectedCategory('All');
+    }
+  }, [searchParams]);
+
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat);
+    if (cat === 'All') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ category: cat });
+    }
+  };
 
   const filteredBrands = carBrands.filter(brand => {
     const matchesSearch = brand.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -252,11 +386,7 @@ export default function CarBrands() {
     
     if (selectedCategory === 'All') return matchesSearch;
     
-    if (selectedCategory === 'Luxury & Supercar') {
-      return matchesSearch && (brand.category === 'Supercar' || brand.category === 'Luxury Sports' || brand.category === 'Ultra Luxury');
-    }
-    
-    return matchesSearch && brand.category.includes(selectedCategory);
+    return matchesSearch && brand.types && brand.types.includes(selectedCategory);
   });
 
   return (
@@ -314,7 +444,7 @@ export default function CarBrands() {
                 <button
                   key={cat}
                   className={`tab-btn ${selectedCategory === cat ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat)}
+                  onClick={() => handleCategoryChange(cat)}
                 >
                   {cat}
                 </button>

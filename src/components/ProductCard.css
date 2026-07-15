@@ -6,6 +6,7 @@
   transition: var(--transition);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .product-card:hover {
@@ -38,7 +39,6 @@
 .product-card:hover .product-card-img img {
   transform: scale(1.06);
 }
-
 .product-badge {
   position: absolute;
   top: 12px;

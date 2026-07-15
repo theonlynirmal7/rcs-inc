@@ -50,24 +50,37 @@
 
 /* BROWSE PARTS button — exact skewed/angled shape from design */
 .hero-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--red);
-  color: var(--white);
-  padding: 15px 30px;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  border-radius: 4px 18px 4px 18px;
-  transition: var(--transition);
+  --btn-bg: #ffffff;
+  --btn-text: #E31E24;
+  --btn-shadow: rgba(227, 30, 36, 0.15);
+  --btn-shadow-hover: rgba(227, 30, 36, 0.28);
+
+  background: #ffffff !important;
+  color: #E31E24 !important;
+  border: 2px solid #E31E24 !important;
+  border-radius: 100px !important;
+  padding: 12px 28px !important;
+  font-size: 14.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  box-shadow: 0 4px 18px var(--btn-shadow) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-.hero-cta:hover {
-  background: var(--red-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(212, 32, 39, 0.35);
+.hero-cta::before {
+  background: linear-gradient(
+    to right,
+    rgba(227, 30, 36, 0) 0%,
+    rgba(227, 30, 36, 0.12) 50%,
+    rgba(227, 30, 36, 0) 100%
+  ) !important;
+}
+
+.hero-cta:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 8px 24px var(--btn-shadow-hover) !important;
+  background: rgba(227, 30, 36, 0.02) !important;
+  filter: none !important;
 }
 
 .hero-buttons {
@@ -78,28 +91,32 @@
 }
 
 .hero-whatsapp-btn {
+  --btn-bg: #25D366;
+  --btn-text: #ffffff;
+  --btn-shadow: rgba(37, 211, 102, 0.22);
+  --btn-shadow-hover: rgba(37, 211, 102, 0.42);
+
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #FFFFFF;
-  color: var(--red);
-  border: 2px solid var(--red);
-  padding: 13px 30px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 4px 18px 4px 18px;
+  background: var(--btn-bg) !important;
+  color: var(--btn-text) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 12px 28px !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  border-radius: 100px !important;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 18px var(--btn-shadow) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
   box-sizing: border-box;
-  height: 49px;
 }
 
-.hero-whatsapp-btn:hover {
-  background: #25D366;
-  color: #FFFFFF;
-  border-color: #25D366;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.25);
+.hero-whatsapp-btn:hover:not(:disabled) {
+  background: var(--btn-bg) !important;
+  color: var(--btn-text) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 8px 24px var(--btn-shadow-hover) !important;
 }
 
 .hero-whatsapp-btn .whatsapp-icon {
@@ -2860,6 +2877,113 @@
   height: auto;
   display: block;
   object-fit: cover;
+}
+
+/* ===== RED WHATSAPP REQUEST CARD ===== */
+.whatsapp-request-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.whatsapp-request-card {
+  background: var(--red);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  color: var(--white);
+  box-shadow: 0 12px 30px rgba(227, 30, 36, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.request-card-header {
+  margin-bottom: 28px;
+}
+
+.request-card-header .card-tag {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  opacity: 0.9;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.request-card-header h2 {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  font-family: var(--font-heading);
+  margin: 0;
+}
+
+.request-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.request-form-grid .form-group {
+  width: 100%;
+}
+
+.request-form-grid .form-group.full-width {
+  grid-column: span 2;
+}
+
+.request-form-grid .form-input {
+  width: 100%;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--white);
+  font-size: 15px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.request-form-grid .form-input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.request-form-grid .form-input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--white);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.premium-liquid-btn.btn-whatsapp-submit {
+  --btn-bg: #111;
+  --btn-text: #ffffff;
+  --btn-shadow: rgba(0, 0, 0, 0.15);
+  --btn-shadow-hover: rgba(0, 0, 0, 0.35);
+
+  background: var(--btn-bg) !important;
+  color: var(--btn-text) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 4px 14px var(--btn-shadow) !important;
+  padding: 14px 32px !important;
+  grid-column: span 2;
+  justify-self: start;
+  margin-top: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+@media (max-width: 600px) {
+  .whatsapp-request-card {
+    padding: 24px;
+  }
+  .request-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .request-form-grid .form-group.full-width {
+    grid-column: span 1;
+  }
+  .premium-liquid-btn.btn-whatsapp-submit {
+    grid-column: span 1;
+    width: 100%;
+  }
 }
 
 

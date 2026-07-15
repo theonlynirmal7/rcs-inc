@@ -30,6 +30,11 @@ const brandInfo = {
     origin: 'Germany',
     specialty: 'Visco Clutches, Radiators, Condensers',
   },
+  'Mann Filter': {
+    desc: 'Premium quality German engineered filtration systems. Global leader in high-reliability cabin air filters and thermal management systems.',
+    origin: 'Germany',
+    specialty: 'Cabin Air Filters, Air Filters, Oil Filters',
+  },
   'Zip Filters': {
     desc: 'High-performance filtration brand delivering premium cabin air filters and air filtration systems for vehicles.',
     origin: 'India',
@@ -44,11 +49,6 @@ const brandInfo = {
     desc: 'India\'s leading automotive AC manufacturer, founded in technical collaboration with Denso.',
     origin: 'India',
     specialty: 'Compressors, Condensers, HVAC Units',
-  },
-  'J.K. Automotive': {
-    desc: 'High-reliability automotive air conditioning manufacturer delivering premium replacement compressors, clutches, control valves, and electrical components.',
-    origin: 'India',
-    specialty: 'AC Compressors, Magnetic Clutches, Control Valves',
   },
   Giladard: {
     desc: 'High-quality manufacturer of specialty automotive cooling line components and accessories.',
@@ -185,6 +185,21 @@ const brandInfo = {
     origin: 'Global',
     specialty: 'Refrigerant Gases, Compressor Oils, Flush Solvents',
   },
+  'Hyundai Genuine Parts': {
+    desc: 'Official OEM replacement components manufactured to Hyundai\'s rigorous quality and durability standards.',
+    origin: 'South Korea',
+    specialty: 'Genuine Compressors, Condensers, Evaporator Coils',
+  },
+  'Symbol Refrigeration Solutions': {
+    desc: 'Premium manufacturer of highly reliable refrigeration and automotive climate control solutions, expansion valves, and switches.',
+    origin: 'Global',
+    specialty: 'Expansion Valves, Control Elements, Pressure Valves',
+  },
+  'Hongsen': {
+    desc: 'Leading manufacturer of high-quality refrigeration control parts, solenoids, sight glasses, and valves for auto air conditioning systems.',
+    origin: 'China',
+    specialty: 'Solenoid Valves, Sight Glasses, Control Valves',
+  },
 };
 
 const brandLogos = {
@@ -212,7 +227,7 @@ const brandLogos = {
   'Estra': '/manufacturer-logos/estra.png',
   'Doowon': '/manufacturer-logos/doowon.png',
   'Subros': '/manufacturer-logos/subros.png',
-  'J.K. Automotive': '/manufacturer-logos/jk_automotive.png',
+  'Mann Filter': '/manufacturer-logos/mann_filter.png',
   'Banco': '/manufacturer-logos/banco.png',
   'BPI': '/manufacturer-logos/bpi.png',
   'Value': '/manufacturer-logos/value.png',
@@ -220,9 +235,11 @@ const brandLogos = {
   'Zilax': '/manufacturer-logos/zilax.png',
   'Vika': '/manufacturer-logos/vika.png',
   'Tata': '/brand-logos/tata.png',
+  'Taco International': '/brand-logos/tata.png',
   'Lucas TVS': '/manufacturer-logos/lucas_tvs.png',
   'TCCI': '/manufacturer-logos/tcci.png',
   'Formula': '/manufacturer-logos/formula.png',
+  'Hyundai Genuine Parts': '/brand-logos/hyundai.png',
 };
 
 export default function Brands() {

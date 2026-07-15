@@ -16,7 +16,7 @@ export default function About() {
     <div className="about-page page-transition">
       <section className="about-hero">
         <div className="container">
-          <div className="section-label">About RCS <span className="dot"></span></div>
+          <div className="section-label">About RCS • Since 2003 <span className="dot"></span></div>
           <h1 className="section-title">
             Trusted by India's <span className="highlight">Premier Garages</span> and Car Owners
           </h1>
@@ -45,8 +45,8 @@ export default function About() {
           </div>
           <div className="story-stats">
             <div className="story-stat">
-              <span className="stat-num">20+</span>
-              <span>Years in Automotive Cooling Solutions</span>
+              <span className="stat-num">Since 2003</span>
+              <span>Trusted Automotive Cooling Solutions</span>
             </div>
             <div className="story-stat">
               <span className="stat-num">1000+</span>

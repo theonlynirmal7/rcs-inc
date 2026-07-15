@@ -8,6 +8,7 @@ import './Navbar.css';
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const location = useLocation();
   const linkRefs = useRef({});
   const [hoveredPath, setHoveredPath] = useState(null);
@@ -22,10 +23,18 @@ export default function Navbar() {
 
   useEffect(() => {
     setMobileOpen(false);
+    setMobileDropdownOpen(false);
   }, [location]);
 
   const updateIndicator = useCallback(() => {
-    const targetPath = hoveredPath || location.pathname;
+    let targetPath = hoveredPath || location.pathname;
+
+    if (!hoveredPath) {
+      if (location.pathname === '/car-brands' || (location.pathname === '/products' && location.search.includes('category'))) {
+        targetPath = '/vehicles-serve';
+      }
+    }
+
     const targetEl = linkRefs.current[targetPath];
     if (targetEl && window.innerWidth > 1024) {
       setIndicatorStyle({
@@ -36,7 +45,7 @@ export default function Navbar() {
     } else {
       setIndicatorStyle(prev => ({ ...prev, opacity: 0 }));
     }
-  }, [hoveredPath, location.pathname]);
+  }, [hoveredPath, location.pathname, location.search]);
 
   // Immediate update on hover change
   useEffect(() => {
@@ -53,11 +62,13 @@ export default function Navbar() {
     };
   }, [location.pathname, updateIndicator]);
 
-  const navLinks = [
+  const leftLinks = [
     { to: '/', label: 'Home' },
     { to: '/products', label: 'Products' },
     { to: '/brands', label: 'Brands' },
-    { to: '/car-brands', label: 'Car Brands' },
+  ];
+
+  const rightLinks = [
     { to: '/education', label: 'AC Systems Guide' },
     { to: '/about', label: 'About Us' },
     { to: '/contact', label: 'Contact' },
@@ -79,13 +90,119 @@ export default function Navbar() {
           id="nav-links"
           onMouseLeave={() => setHoveredPath(null)}
         >
-          {navLinks.map(link => (
+          {leftLinks.map(link => (
             <NavLink
               key={link.to}
               to={link.to}
               ref={el => { linkRefs.current[link.to] = el; }}
               className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              id={`nav-${link.label.toLowerCase()}`}
+              id={`nav-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+              onMouseEnter={() => setHoveredPath(link.to)}
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </NavLink>
+          ))}
+
+          {/* DROPDOWN */}
+          <div
+            className="nav-dropdown"
+            onMouseEnter={() => {
+              if (window.innerWidth > 1024) {
+                setHoveredPath('/vehicles-serve');
+              }
+            }}
+            onMouseLeave={() => {
+              if (window.innerWidth > 1024) {
+                setHoveredPath(null);
+              }
+            }}
+          >
+            <button
+              ref={el => { linkRefs.current['/vehicles-serve'] = el; }}
+              className={`nav-link nav-dropdown-toggle ${
+                location.pathname === '/car-brands' ||
+                (location.pathname === '/products' && location.search.includes('category'))
+                  ? 'active' : ''
+              }`}
+              id="nav-vehicles-dropdown"
+              onClick={() => {
+                setMobileDropdownOpen(!mobileDropdownOpen);
+              }}
+            >
+              Vehicles We Serve <span className="chevron-arrow">▼</span>
+            </button>
+            <div className={`nav-dropdown-menu ${mobileDropdownOpen ? 'mobile-show' : ''}`}>
+              <Link
+                to="/car-brands?category=Car"
+                className="dropdown-item"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setMobileDropdownOpen(false);
+                }}
+              >
+                Car Brands
+              </Link>
+              <Link
+                to="/car-brands?category=Bus"
+                className="dropdown-item"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setMobileDropdownOpen(false);
+                }}
+              >
+                Bus Brands
+              </Link>
+              <Link
+                to="/car-brands?category=Truck"
+                className="dropdown-item"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setMobileDropdownOpen(false);
+                }}
+              >
+                Truck Brands
+              </Link>
+              <Link
+                to="/car-brands?category=Bulldozer"
+                className="dropdown-item"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setMobileDropdownOpen(false);
+                }}
+              >
+                Bulldozer Brands
+              </Link>
+              <Link
+                to="/car-brands?category=Payload Vehicle"
+                className="dropdown-item"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setMobileDropdownOpen(false);
+                }}
+              >
+                Payload Vehicles
+              </Link>
+              <Link
+                to="/car-brands?category=Construction Vehicle"
+                className="dropdown-item"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setMobileDropdownOpen(false);
+                }}
+              >
+                Construction Vehicles
+              </Link>
+            </div>
+          </div>
+
+          {rightLinks.map(link => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              ref={el => { linkRefs.current[link.to] = el; }}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              id={`nav-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
               onMouseEnter={() => setHoveredPath(link.to)}
               onClick={() => setMobileOpen(false)}
             >

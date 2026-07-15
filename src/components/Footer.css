@@ -218,9 +218,10 @@
 }
 
 .footer-quote-btn:hover {
-  background: transparent;
+  background: transparent !important;
   color: var(--red) !important;
-  box-shadow: 0 4px 12px rgba(212, 32, 39, 0.15);
+  border-color: var(--red) !important;
+  box-shadow: 0 4px 12px rgba(212, 32, 39, 0.15) !important;
 }
 
 /* Follow Us Social Icons */

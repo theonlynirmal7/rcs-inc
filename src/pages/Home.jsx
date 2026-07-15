@@ -17,13 +17,13 @@ const marqueeBrands = [
   { name: 'Tata Motors', logoUrl: '/brand-logos/tata.png' },
   { name: 'Mahindra', logoUrl: '/brand-logos/mahindra.png' },
   { name: 'BMW', logoUrl: '/brand-logos/bmw.png' },
+  { name: 'Bugatti', logoUrl: '/brand-logos/bugatti.png' },
   { name: 'Mercedes-Benz', logoUrl: '/brand-logos/mercedes-benz.png' },
   { name: 'Audi', logoUrl: '/brand-logos/audi.png' },
   { name: 'Volkswagen', logoUrl: '/brand-logos/volkswagen.png' },
   { name: 'Ford', logoUrl: '/brand-logos/ford.png' },
   { name: 'Chevrolet', logoUrl: '/brand-logos/chevrolet.png' },
-  { name: 'Kia', logoUrl: '/brand-logos/kia.png' },
-  { name: 'J.K. Automotive', logoUrl: '/brand-logos/jk_automotive.png' }
+  { name: 'Kia', logoUrl: '/brand-logos/kia.png' }
 ];
 
 const faqCategories = [
@@ -533,6 +533,13 @@ export default function Home() {
   const [vinError, setVinError] = useState(null);
   const [showVinGuide, setShowVinGuide] = useState(false);
   const [selectedHotspot, setSelectedHotspot] = useState(null);
+  const [plateForm, setPlateForm] = useState({
+    name: '',
+    product: '',
+    regNumber: '',
+    vin: '',
+    phone: ''
+  });
 
   // Visual part upload states
   const [imageFile, setImageFile] = useState(null);
@@ -758,23 +765,23 @@ export default function Home() {
       vehicleImage = '/vehicles/duster.png';
     } else if (model.includes('i20')) {
       vehicleImage = '/vehicles/i20.png';
-    } else if (model.includes('a3')) {
+    } else if (make.includes('audi') && model.includes('a3')) {
       vehicleImage = '/vehicles/audi_a3.png';
-    } else if (model.includes('a4')) {
+    } else if (make.includes('audi') && model.includes('a4')) {
       vehicleImage = '/vehicles/audi_a4.png';
-    } else if (model.includes('a6')) {
+    } else if (make.includes('audi') && model.includes('a6')) {
       vehicleImage = '/vehicles/audi_a6.png';
-    } else if (model.includes('a8')) {
+    } else if (make.includes('audi') && model.includes('a8')) {
       vehicleImage = '/vehicles/audi_a8l.png';
-    } else if (model.includes('q3')) {
+    } else if (make.includes('audi') && model.includes('q3')) {
       vehicleImage = '/vehicles/audi_q3.png';
-    } else if (model.includes('q5')) {
+    } else if (make.includes('audi') && model.includes('q5')) {
       vehicleImage = '/vehicles/audi_q5.png';
-    } else if (model.includes('q7')) {
+    } else if (make.includes('audi') && model.includes('q7')) {
       vehicleImage = '/vehicles/audi_q7.png';
-    } else if (model.includes('q8')) {
+    } else if (make.includes('audi') && model.includes('q8')) {
       vehicleImage = '/vehicles/audi_q8.png';
-    } else if (model.includes('e-tron') || model.includes('etron')) {
+    } else if (make.includes('audi') && (model.includes('e-tron') || model.includes('etron'))) {
       vehicleImage = '/vehicles/audi_etron.png';
     } else if (model.includes('2 series')) {
       vehicleImage = '/vehicles/bmw_2series.png';
@@ -1146,16 +1153,19 @@ export default function Home() {
   };
 
   const decodeVin = async (vinToDecode) => {
-    const vin = (vinToDecode || vinQuery).trim().toUpperCase();
-    if (!vin) {
-      setVinError('Please enter a VIN or Chassis Number.');
+    const query = (vinToDecode || vinQuery).trim().toUpperCase();
+    if (!query) {
+      setVinError('Please enter a Plate Number.');
       setVinResult(null);
       return;
     }
 
-    const cleanVin = vin.replace(/[^A-HJ-NPR-Z0-9]/gi, '');
-    if (cleanVin.length < 5) {
-      setVinError('Invalid Chassis format. Please enter a valid VIN / Chassis Number.');
+    // Detect if the query is an Indian RTO License Plate or 17-digit Chassis VIN
+    const isPlate = query.length <= 11 && /^[A-Z]{2}[0-9]/i.test(query);
+    const cleanQuery = query.replace(isPlate ? /[^A-Z0-9]/gi : /[^A-HJ-NPR-Z0-9]/gi, '');
+
+    if (cleanQuery.length < 5) {
+      setVinError('Invalid format. Please enter a valid Plate Number.');
       setVinResult(null);
       return;
     }
@@ -1165,6 +1175,7 @@ export default function Home() {
     setSelectedHotspot(null); // Reset active hotspot selection
 
     const samples = {
+      // 17-digit Chassis Matches
       'MA3FDB91S00109283': {
         make: 'Maruti Suzuki',
         model: 'Swift VXI',
@@ -1240,16 +1251,258 @@ export default function Home() {
         compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
         diagramId: 'ac-system-exploded',
         vehicleImage: '/vehicles/fortuner.png'
+      },
+      
+      // Indian RTO License Plate Matches
+      'DL3CAY1234': {
+        make: 'Maruti Suzuki',
+        model: 'Swift VXI',
+        year: '2021',
+        engine: '1.2L K12N DualJet Petrol',
+        fuelType: 'Petrol',
+        chassis: 'MA3FDB91S00109283',
+        region: 'Delhi RTO (DL-3C)',
+        specs: {
+          compressor: 'Subros / Denso 10S11C',
+          refrigerant: 'R-134a (370 ± 20g)',
+          oil: 'PAG 46 (80 ml)',
+          belt: '6PK1150',
+          pollenFilter: '210 x 200 x 29 mm'
+        },
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/swift.png'
+      },
+      'MH12PK9876': {
+        make: 'Hyundai',
+        model: 'Creta SX',
+        year: '2022',
+        engine: '1.5L CRDi Diesel',
+        fuelType: 'Diesel',
+        chassis: 'MALCN81CPKM109482',
+        region: 'Pune RTO (MH-12)',
+        specs: {
+          compressor: 'Hanon/Doowon DV16',
+          refrigerant: 'R-134a (450 ± 25g)',
+          oil: 'PAG 46 (100 ml)',
+          belt: '6PK1255',
+          pollenFilter: '225 x 195 x 25 mm'
+        },
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/creta.png'
+      },
+      'KA03MM5555': {
+        make: 'Tata Motors',
+        model: 'Nexon XM',
+        year: '2020',
+        engine: '1.2L Revotron Turbo Petrol',
+        fuelType: 'Petrol',
+        chassis: 'MAT602148E0B09381',
+        region: 'Bengaluru RTO (KA-03)',
+        specs: {
+          compressor: 'Subros Sub-Compact Rotary',
+          refrigerant: 'R-134a (420 ± 15g)',
+          oil: 'PAG 46 (90 ml)',
+          belt: '5PK1030',
+          pollenFilter: '215 x 185 x 30 mm'
+        },
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/nexon.png'
+      },
+      'TN09XX4321': {
+        make: 'Toyota',
+        model: 'Fortuner Sigma4',
+        year: '2019',
+        engine: '2.8L 1GD-FTV Turbo Diesel',
+        fuelType: 'Diesel',
+        chassis: 'MBJ111GB300189284',
+        region: 'Chennai RTO (TN-09)',
+        specs: {
+          compressor: 'Denso 10S17C Dual AC System',
+          refrigerant: 'R-134a (650 ± 30g)',
+          oil: 'ND-OIL 8 / PAG 46 (120 ml)',
+          belt: '7PK2050',
+          pollenFilter: '215 x 190 x 28 mm'
+        },
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386, 15, 16, 17],
+        diagramId: 'ac-system-exploded',
+        vehicleImage: '/vehicles/fortuner.png'
       }
     };
 
-    if (samples[cleanVin]) {
-      setVinResult(samples[cleanVin]);
+    if (samples[cleanQuery]) {
+      setVinResult({ ...samples[cleanQuery], isSimulated: true });
       return;
     }
 
+    const rtoApiKey = import.meta.env.VITE_INDIAN_VEHICLE_API_KEY || import.meta.env.VITE_RAPIDAPI_KEY || '';
+    if (rtoApiKey) {
+      // 1. Try Vehicle RC Information V2 API (fatehbrar92)
+      try {
+        const response = await fetch('https://vehicle-rc-information-v2.p.rapidapi.com/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-rapidapi-host': 'vehicle-rc-information-v2.p.rapidapi.com',
+            'x-rapidapi-key': rtoApiKey
+          },
+          body: JSON.stringify({ vehicle_number: cleanQuery })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          // Verify we got valid data, not a subscription/quota message
+          if (data && !data.message?.includes('not subscribed') && !data.message?.includes('exceeded') && !data.error) {
+            const resData = data.data || data;
+            
+            // Extract Make & Model
+            let make = resData.make || resData.maker || resData.maker_name || resData.manufacturer || '';
+            let model = resData.model || resData.model_name || '';
+            const makerModel = resData.maker_model || '';
+
+            if (makerModel && (!make || !model)) {
+              const parts = makerModel.split(' ');
+              if (parts.length > 1) {
+                if (makerModel.toUpperCase().startsWith("MARUTI SUZUKI")) {
+                  make = "Maruti Suzuki";
+                  model = parts.slice(2).join(' ');
+                } else {
+                  make = parts[0];
+                  model = parts.slice(1).join(' ');
+                }
+              } else {
+                if (!make) make = makerModel;
+                if (!model) model = 'Model';
+              }
+            }
+
+            if (!make && resData.maker_description) {
+              make = resData.maker_description.split(/[\/\-]/)[0].trim();
+            }
+            make = make || 'Vehicle';
+            make = make.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+
+            if (!model && resData.maker_description) {
+              const parts = resData.maker_description.split(/[\/\-]/);
+              model = parts[1] ? parts[1].trim() : parts[0].trim();
+            }
+            model = model || 'Model';
+            model = model.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+
+            // Extract Year
+            let year = resData.year || resData.manufacturing_year || resData.registration_year || resData.reg_year || '';
+            if (!year) {
+              const dateStr = resData.registration_date || resData.reg_date || '';
+              const match = dateStr.match(/(?:19|20)\d{2}/);
+              if (match) {
+                year = match[0];
+              }
+            }
+            year = year || '2021';
+
+            // Extract Fuel Type
+            let fuelType = resData.fuel_type || resData.fuel || resData.fuel_descr || 'Petrol';
+            fuelType = fuelType.split(' ')[0];
+            fuelType = fuelType.charAt(0).toUpperCase() + fuelType.slice(1).toLowerCase();
+
+            // Extract Engine
+            let engine = resData.engine_capacity || resData.displacement || resData.engine_no || resData.engine || '1.2L';
+            if (engine && !engine.includes('Engine') && engine.length > 5) {
+              if (/^[A-Z0-9]+$/i.test(engine)) {
+                engine = 'Standard Engine';
+              }
+            }
+
+            // Extract Region
+            let region = resData.rto_name || resData.rto_office || resData.rto || resData.state || resData.rto_location || 'India RTO';
+            region = region.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+
+            const resolved = resolveVehicleDetails(make, model);
+            
+            setVinResult({
+              make,
+              model,
+              year,
+              engine: engine.includes('Engine') ? engine : `${engine} Engine`,
+              fuelType,
+              chassis: resData.chassis_no || resData.chassis_number || resData.chassis || cleanQuery,
+              region,
+              specs: {
+                compressor: make.toLowerCase().includes('suzuki') ? 'Subros / Denso 10S11C' : 'Denso / Hanon Climate',
+                refrigerant: 'R-134a (400 ± 20g)',
+                oil: 'PAG 46 (90 ml)',
+                belt: '6PK1080',
+                pollenFilter: '215 x 190 x 25 mm'
+              },
+              compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386],
+              diagramId: resolved.diagramId || 'ac-system-exploded',
+              vehicleImage: resolved.vehicleImage,
+              isSimulated: false
+            });
+            return;
+          } else {
+            const errMsg = data.message || data.error || 'Not subscribed / Rate limit exceeded';
+            console.warn('Vehicle RC V2 API subscription/error:', errMsg);
+            setVinError(`RapidAPI: "${errMsg}". Falling back to demo database.`);
+          }
+        } else {
+          const errBody = await response.json().catch(() => ({}));
+          const errMsg = errBody.message || errBody.error || 'Access Forbidden (Unsubscribed)';
+          console.warn('Vehicle RC V2 API response error:', errMsg);
+          setVinError(`RapidAPI: "${errMsg}". Falling back to demo database.`);
+        }
+      } catch (err) {
+        console.warn('Error fetching from primary Vehicle RC V2 API:', err);
+      }
+
+      // 2. Fallback to secondary RTO API if primary fails
+      try {
+        const apiPath = isPlate ? `registration/${cleanQuery}` : `chassis/${cleanQuery}`;
+        const response = await fetch(`https://indian-vehicle-details-rto.p.rapidapi.com/${apiPath}`, {
+          headers: {
+            'X-RapidAPI-Key': rtoApiKey,
+            'X-RapidAPI-Host': 'indian-vehicle-details-rto.p.rapidapi.com'
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.make) {
+            const make = data.make;
+            const model = data.model || 'Model';
+            const year = data.registration_year || data.year || '2021';
+            const fuelType = data.fuel_type || data.fuel || 'Petrol';
+            const engine = data.engine_capacity || data.displacement || '1.2L';
+            
+            setVinResult({
+              make,
+              model,
+              year,
+              engine: engine.includes('Engine') ? engine : `${engine} Engine`,
+              fuelType,
+              chassis: data.chassis_number || cleanQuery,
+              region: data.rto_office || data.state || 'India RTO',
+              specs: {
+                compressor: make.toLowerCase().includes('suzuki') ? 'Subros / Denso 10S11C' : 'Denso / Hanon Climate',
+                refrigerant: 'R-134a (400 ± 20g)',
+                oil: 'PAG 46 (90 ml)',
+                belt: '6PK1080',
+                pollenFilter: '215 x 190 x 25 mm'
+              },
+              compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386],
+              diagramId: 'ac-system-exploded',
+              isSimulated: false
+            });
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching secondary Indian RTO details:', err);
+      }
+    }
+
     try {
-      const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${cleanVin}?format=json`);
+      const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${cleanQuery}?format=json`);
       if (!res.ok) throw new Error('API request failed');
       const data = await res.json();
       
@@ -1265,7 +1518,7 @@ export default function Home() {
         let fuel = info.FuelTypePrimary ? info.FuelTypePrimary.trim() : '';
 
         if (!make || make === 'INVALID VIN' || make.toLowerCase().includes('error')) {
-          decodeFallback(cleanVin);
+          decodeFallback(cleanQuery);
           return;
         }
 
@@ -1325,7 +1578,7 @@ export default function Home() {
           year,
           engine: engine || 'Standard Fuel-Injected Engine',
           fuelType: normalizedFuel,
-          chassis: cleanVin,
+          chassis: cleanQuery,
           region: region || info.PlantState || 'International WMI',
           specs,
           compatiblePartIds: finalCompatIds,
@@ -1333,18 +1586,52 @@ export default function Home() {
           vehicleImage: resolved.vehicleImage
         });
       } else {
-        decodeFallback(cleanVin);
+        decodeFallback(cleanQuery);
       }
     } catch (err) {
       console.warn("NHTSA API failed, using fallback decoder:", err);
-      decodeFallback(cleanVin);
+      decodeFallback(cleanQuery);
     }
   };
 
-  const decodeFallback = (cleanVin) => {
-    const wmi = cleanVin.substring(0, 3).toUpperCase();
-    const vds = cleanVin.substring(3, 8).toUpperCase();
-    const upperVin = cleanVin.toUpperCase();
+  const decodeFallback = (cleanQuery) => {
+    // If it's a license plate, map common Indian states to demo vehicles
+    if (cleanQuery.length <= 11 && /^[A-Z]{2}[0-9]/i.test(cleanQuery)) {
+      const statePrefix = cleanQuery.substring(0, 2).toUpperCase();
+      const stateMap = {
+        'DL': { make: 'Maruti Suzuki', model: 'Swift VXI', year: '2021', engine: '1.2L K12N DualJet Petrol', fuel: 'Petrol', specs: { compressor: 'Subros / Denso 10S11C', refrigerant: 'R-134a (370 ± 20g)', oil: 'PAG 46 (80 ml)', belt: '6PK1150', pollenFilter: '210 x 200 x 29 mm' }, modelDiagramId: 'swift-hvac', image: '/vehicles/swift.png' },
+        'HR': { make: 'Maruti Suzuki', model: 'Swift VXI', year: '2021', engine: '1.2L K12N DualJet Petrol', fuel: 'Petrol', specs: { compressor: 'Subros / Denso 10S11C', refrigerant: 'R-134a (370 ± 20g)', oil: 'PAG 46 (80 ml)', belt: '6PK1150', pollenFilter: '210 x 200 x 29 mm' }, modelDiagramId: 'swift-hvac', image: '/vehicles/swift.png' },
+        'MH': { make: 'Hyundai', model: 'Creta SX', year: '2022', engine: '1.5L CRDi Diesel', fuel: 'Diesel', specs: { compressor: 'Hanon/Doowon DV16', refrigerant: 'R-134a (450 ± 25g)', oil: 'PAG 46 (100 ml)', belt: '6PK1255', pollenFilter: '225 x 195 x 25 mm' }, modelDiagramId: 'creta-hvac', image: '/vehicles/creta.png' },
+        'KL': { make: 'Hyundai', model: 'Creta SX', year: '2022', engine: '1.5L CRDi Diesel', fuel: 'Diesel', specs: { compressor: 'Hanon/Doowon DV16', refrigerant: 'R-134a (450 ± 25g)', oil: 'PAG 46 (100 ml)', belt: '6PK1255', pollenFilter: '225 x 195 x 25 mm' }, modelDiagramId: 'creta-hvac', image: '/vehicles/creta.png' },
+        'KA': { make: 'Tata Motors', model: 'Nexon XM', year: '2020', engine: '1.2L Revotron Turbo Petrol', fuel: 'Petrol', specs: { compressor: 'Subros Sub-Compact Rotary', refrigerant: 'R-134a (420 ± 15g)', oil: 'PAG 46 (90 ml)', belt: '5PK1030', pollenFilter: '215 x 185 x 30 mm' }, modelDiagramId: 'nexon-hvac', image: '/vehicles/nexon.png' },
+        'GJ': { make: 'Tata Motors', model: 'Nexon XM', year: '2020', engine: '1.2L Revotron Turbo Petrol', fuel: 'Petrol', specs: { compressor: 'Subros Sub-Compact Rotary', refrigerant: 'R-134a (420 ± 15g)', oil: 'PAG 46 (90 ml)', belt: '5PK1030', pollenFilter: '215 x 185 x 30 mm' }, modelDiagramId: 'nexon-hvac', image: '/vehicles/nexon.png' },
+        'TN': { make: 'Toyota', model: 'Fortuner Sigma4', year: '2019', engine: '2.8L 1GD-FTV Turbo Diesel', fuel: 'Diesel', specs: { compressor: 'Denso 10S17C Dual AC System', refrigerant: 'R-134a (650 ± 30g)', oil: 'ND-OIL 8 / PAG 46 (120 ml)', belt: '7PK2050', pollenFilter: '215 x 190 x 28 mm' }, modelDiagramId: 'fortuner-hvac', image: '/vehicles/fortuner.png' },
+        'UP': { make: 'Toyota', model: 'Fortuner Sigma4', year: '2019', engine: '2.8L 1GD-FTV Turbo Diesel', fuel: 'Diesel', specs: { compressor: 'Denso 10S17C Dual AC System', refrigerant: 'R-134a (650 ± 30g)', oil: 'ND-OIL 8 / PAG 46 (120 ml)', belt: '7PK2050', pollenFilter: '215 x 190 x 28 mm' }, modelDiagramId: 'fortuner-hvac', image: '/vehicles/fortuner.png' }
+      };
+
+      const mapped = stateMap[statePrefix] || stateMap['DL']; // Default to Swift if unknown state
+      const resolved = resolveVehicleDetails(mapped.make, mapped.model);
+      
+      setVinResult({
+        make: mapped.make,
+        model: mapped.model,
+        year: mapped.year,
+        engine: mapped.engine,
+        fuelType: mapped.fuel,
+        chassis: cleanQuery,
+        region: `${statePrefix} RTO Region (Local Fallback)`,
+        specs: mapped.specs,
+        compatiblePartIds: [1, 2, 25, 45, 125, 135, 165, 175, 256, 306, 376, 386],
+        diagramId: resolved.diagramId || mapped.modelDiagramId,
+        vehicleImage: resolved.vehicleImage || mapped.image,
+        isSimulated: true
+      });
+      return;
+    }
+
+    const wmi = cleanQuery.substring(0, 3).toUpperCase();
+    const vds = cleanQuery.substring(3, 8).toUpperCase();
+    const upperVin = cleanQuery.toUpperCase();
 
     let make = 'Generic Vehicle';
     let model = 'Universal Model';
@@ -1877,8 +2164,8 @@ export default function Home() {
 
     // Decode model year from 10th digit
     let year = '2022';
-    if (cleanVin.length >= 10) {
-      const yearChar = cleanVin.charAt(9);
+    if (cleanQuery.length >= 10) {
+      const yearChar = cleanQuery.charAt(9);
       const yearMap = {
         'A': '2010', 'B': '2011', 'C': '2012', 'D': '2013', 'E': '2014', 'F': '2015',
         'G': '2016', 'H': '2017', 'J': '2018', 'K': '2019', 'L': '2020', 'M': '2021',
@@ -1900,13 +2187,31 @@ export default function Home() {
       year,
       engine,
       fuelType: fuel,
-      chassis: cleanVin,
+      chassis: cleanQuery,
       region: 'India / ASIA Domestic WMI Decode',
       specs,
       compatiblePartIds: finalCompatIds,
       diagramId: resolved.diagramId,
-      vehicleImage: resolved.vehicleImage
+      vehicleImage: resolved.vehicleImage,
+      isSimulated: true
     });
+  };
+
+  const sendPlateWhatsApp = (e) => {
+    e.preventDefault();
+    if (!plateForm.name.trim() || !plateForm.phone.trim()) {
+      alert('Please enter your Name and Contact/Phone Number.');
+      return;
+    }
+    const message = `Hello RCS! I would like to inquire about AC parts. Here are my details:\n\n` +
+      `*Name:* ${plateForm.name.trim()}\n` +
+      `*Product:* ${plateForm.product.trim() || 'N/A'}\n` +
+      `*Vehicle Reg Number:* ${plateForm.regNumber.trim() || 'N/A'}\n` +
+      `*VIN/Chassis Number:* ${plateForm.vin.trim() || 'N/A'}\n` +
+      `*Contact Number:* ${plateForm.phone.trim()}`;
+      
+    const encoded = encodeURIComponent(message);
+    window.open(`https://wa.me/919962173870?text=${encoded}`, '_blank');
   };
 
   // Handle Visual Part Upload logic
@@ -2310,7 +2615,7 @@ export default function Home() {
                   id="tab-search-vin"
                 >
                   <Car size={15} strokeWidth={2.2} />
-                  <span>VIN / Chassis Lookup</span>
+                  <span>Vehicle Plate Number</span>
                 </button>
                 <button
                   className={`search-tab-btn ${searchMode === 'image' ? 'active' : ''}`}
@@ -2553,103 +2858,69 @@ export default function Home() {
                   </div>
                 </div>
               ) : searchMode === 'vin' ? (
-                /* VIN / CHASSIS LOOKUP UI */
-                <div className="vin-search-container">
-                  <div className="vin-help-header">
-                    <p className="vin-search-description">
-                      Enter your 17-digit Vehicle Identification Number (VIN) or Chassis Number to retrieve matching AC system specs and compatible spare parts.
-                    </p>
-                    <button 
-                      className="where-is-vin-btn" 
-                      onClick={() => setShowVinGuide(!showVinGuide)}
-                      type="button"
-                    >
-                      <HelpCircle size={14} />
-                      <span>Where is VIN/Frame?</span>
-                    </button>
-                  </div>
-
-                  {showVinGuide && (
-                    <div className="vin-guide-card animate-fade-in-up">
-                      <div className="vin-guide-header">
-                        <h5>Where to Find Your VIN / Chassis Number</h5>
-                        <button className="close-guide-btn" onClick={() => setShowVinGuide(false)}>
-                          <X size={16} />
-                        </button>
-                      </div>
-                      <div className="vin-guide-body">
-                        <img 
-                          src="/where-is-vin.png" 
-                          alt="VIN Locations Guide" 
-                          className="vin-guide-img" 
+                /* VEHICLE REGISTRATION LOOKUP UI -> WHATSAPP REQUEST FORM */
+                <div className="whatsapp-request-container animate-fade-in-up">
+                  <div className="whatsapp-request-card">
+                    <div className="request-card-header">
+                      <span className="card-tag">— SEND A REQUEST</span>
+                      <h2>Send us a WhatsApp message</h2>
+                    </div>
+                    <form onSubmit={sendPlateWhatsApp} className="request-form-grid">
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          placeholder="Your Name *"
+                          required
+                          value={plateForm.name}
+                          onChange={(e) => setPlateForm({...plateForm, name: e.target.value})}
+                          className="form-input"
                         />
-                        <div className="vin-guide-text">
-                          <p><strong>The 4 most common locations on a vehicle:</strong></p>
-                          <ol>
-                            <li><strong>Driver's Side Dashboard:</strong> Visible through the windshield from the outside.</li>
-                            <li><strong>Driver's Side Door Jamb:</strong> Inside the door frame when the door is open.</li>
-                            <li><strong>Under the Hood:</strong> Printed on the engine block or firewall.</li>
-                            <li><strong>Vehicle Frame:</strong> Stamped on the frame near the front wheel (common on older cars & trucks).</li>
-                          </ol>
-                          <div className="vin-tips-box">
-                            <HelpCircle size={14} />
-                            <span>Can't find your VIN? Check your vehicle's registration certificate (RC), insurance policy, or manufacturer invoices.</span>
-                          </div>
-                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  <div className="unified-search-bar vin-bar">
-                    <div className="search-input-inner-wrapper">
-                      <input
-                        type="text"
-                        placeholder="Enter 17-digit VIN or Chassis Number (e.g. MA3FDB9...)"
-                        value={vinQuery}
-                        onChange={(e) => {
-                          setVinQuery(e.target.value);
-                          if (vinError) setVinError(null);
-                        }}
-                        onKeyDown={(e) => { if (e.key === 'Enter') decodeVin(); }}
-                        className="main-search-input"
-                        maxLength={17}
-                      />
-                      {vinQuery && (
-                        <button className="clear-search-btn" onClick={() => setVinQuery('')}>
-                          <X size={14} />
-                        </button>
-                      )}
-                    </div>
-                    
-                    <button className="search-execute-btn premium-liquid-btn" onClick={() => decodeVin()}>
-                      <span className="btn-content">
-                        <Search size={16} />
-                        <span>Decode VIN</span>
-                      </span>
-                      <div className="liquid-bg">
-                        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-                          <path className="blob-1" d="M 0 0 C 35 15, 65 15, 80 80 C 80 120, 0 120, 0 120 Z" />
-                          <path className="blob-2" d="M 100 100 C 65 85, 35 85, 20 20 C 20 -20, 100 -20, 100 -20 Z" />
-                        </svg>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          placeholder="Product / Spare Part Needed"
+                          value={plateForm.product}
+                          onChange={(e) => setPlateForm({...plateForm, product: e.target.value})}
+                          className="form-input"
+                        />
                       </div>
-                    </button>
-                  </div>
-
-                  {vinError && (
-                    <div className="vin-search-error">
-                      <AlertTriangle size={14} />
-                      <span>{vinError}</span>
-                    </div>
-                  )}
-
-                  <div className="vin-samples-row">
-                    <span className="samples-label">Demo Inputs:</span>
-                    <div className="samples-chips">
-                      <button onClick={() => { setVinQuery('MA3FDB91S00109283'); decodeVin('MA3FDB91S00109283'); }} className="sample-chip">Swift (Maruti)</button>
-                      <button onClick={() => { setVinQuery('MALCN81CPKM109482'); decodeVin('MALCN81CPKM109482'); }} className="sample-chip">Creta (Hyundai)</button>
-                      <button onClick={() => { setVinQuery('MAT602148E0B09381'); decodeVin('MAT602148E0B09381'); }} className="sample-chip">Nexon (Tata)</button>
-                      <button onClick={() => { setVinQuery('MBJ111GB300189284'); decodeVin('MBJ111GB300189284'); }} className="sample-chip">Fortuner (Toyota)</button>
-                    </div>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          placeholder="Vehicle Reg Number"
+                          value={plateForm.regNumber}
+                          onChange={(e) => setPlateForm({...plateForm, regNumber: e.target.value})}
+                          className="form-input"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          placeholder="VIN or Chassis Number"
+                          value={plateForm.vin}
+                          onChange={(e) => setPlateForm({...plateForm, vin: e.target.value})}
+                          className="form-input"
+                        />
+                      </div>
+                      <div className="form-group full-width">
+                        <input
+                          type="tel"
+                          placeholder="Phone Number / Contact Number *"
+                          required
+                          value={plateForm.phone}
+                          onChange={(e) => setPlateForm({...plateForm, phone: e.target.value})}
+                          className="form-input"
+                        />
+                      </div>
+                      
+                      <button type="submit" className="premium-liquid-btn btn-whatsapp-submit">
+                        <span className="btn-content">
+                          <span>SEND VIA WHATSAPP</span>
+                          <ArrowRight size={16} />
+                        </span>
+                      </button>
+                    </form>
                   </div>
                 </div>
               ) : (
@@ -2772,23 +3043,43 @@ export default function Home() {
                 {/* Success Alert */}
                 <div className="vin-results-header">
                   <div>
-                    <div style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      background: '#E8F5E9',
-                      color: '#2E7D32',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      marginBottom: '12px'
-                    }}>
-                      <ShieldCheck size={14} />
-                      <span>Vehicle Identified</span>
-                    </div>
+                    {vinResult.isSimulated ? (
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: '#FFF3E0',
+                        color: '#E65100',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        marginBottom: '12px'
+                      }}>
+                        <HelpCircle size={14} />
+                        <span>Simulated Match</span>
+                      </div>
+                    ) : (
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: '#E8F5E9',
+                        color: '#2E7D32',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        marginBottom: '12px'
+                      }}>
+                        <ShieldCheck size={14} />
+                        <span>Vehicle Identified</span>
+                      </div>
+                    )}
                     <h2 style={{
                       fontSize: '24px',
                       fontWeight: 800,
@@ -2799,6 +3090,28 @@ export default function Home() {
                       {vinResult.make} {vinResult.model} ({vinResult.year})
                     </h2>
                   </div>
+                  
+                  {vinResult.isSimulated && (
+                    <div style={{
+                      background: '#FFF8E1',
+                      border: '1.5px solid #FFE082',
+                      borderRadius: '8px',
+                      padding: '12px 16px',
+                      marginTop: '16px',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '12px',
+                      fontSize: '13px',
+                      color: '#B78103',
+                      lineHeight: '1.5',
+                      width: '100%'
+                    }}>
+                      <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: '1px' }} />
+                      <div>
+                        <strong>Demo Mode Notification:</strong> A/C spec search is currently in offline demo simulation mode. To connect the site to the live Indian VAHAN RTO database to fetch real-time specs for any registration plate in India, configure the <strong>VITE_INDIAN_VEHICLE_API_KEY</strong> environment variable in your <code>.env</code> file.
+                      </div>
+                    </div>
+                  )}
 
                   {vinResult.vehicleImage && (
                     <div className="vin-vehicle-image-box">
