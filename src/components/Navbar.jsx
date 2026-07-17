@@ -90,22 +90,30 @@ export default function Navbar() {
           id="nav-links"
           onMouseLeave={() => setHoveredPath(null)}
         >
-          {leftLinks.map(link => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              ref={el => { linkRefs.current[link.to] = el; }}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              id={`nav-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
-              onMouseEnter={() => setHoveredPath(link.to)}
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.label}
-            </NavLink>
-          ))}
+          {leftLinks.map(link => {
+            const isLinkActive = 
+              link.to === '/products'
+                ? location.pathname === '/products' && !location.search.includes('category')
+                : location.pathname === link.to;
+
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                ref={el => { linkRefs.current[link.to] = el; }}
+                className={`nav-link ${isLinkActive ? 'active' : ''}`}
+                id={`nav-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                onMouseEnter={() => setHoveredPath(link.to)}
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
           {/* DROPDOWN */}
           <div
+            ref={el => { linkRefs.current['/vehicles-serve'] = el; }}
             className="nav-dropdown"
             onMouseEnter={() => {
               if (window.innerWidth > 1024) {
@@ -119,7 +127,6 @@ export default function Navbar() {
             }}
           >
             <button
-              ref={el => { linkRefs.current['/vehicles-serve'] = el; }}
               className={`nav-link nav-dropdown-toggle ${
                 location.pathname === '/car-brands' ||
                 (location.pathname === '/products' && location.search.includes('category'))
@@ -141,17 +148,8 @@ export default function Navbar() {
                   setMobileDropdownOpen(false);
                 }}
               >
-                Car Brands
-              </Link>
-              <Link
-                to="/car-brands?category=Bus"
-                className="dropdown-item"
-                onClick={() => {
-                  setMobileOpen(false);
-                  setMobileDropdownOpen(false);
-                }}
-              >
-                Bus Brands
+                <span>🚗 Passenger Cars</span>
+                <span className="dropdown-arrow-indicator">&gt;</span>
               </Link>
               <Link
                 to="/car-brands?category=Truck"
@@ -161,17 +159,19 @@ export default function Navbar() {
                   setMobileDropdownOpen(false);
                 }}
               >
-                Truck Brands
+                <span>🚚 Trucks</span>
+                <span className="dropdown-arrow-indicator">&gt;</span>
               </Link>
               <Link
-                to="/car-brands?category=Bulldozer"
+                to="/car-brands?category=Bus"
                 className="dropdown-item"
                 onClick={() => {
                   setMobileOpen(false);
                   setMobileDropdownOpen(false);
                 }}
               >
-                Bulldozer Brands
+                <span>🚌 Buses</span>
+                <span className="dropdown-arrow-indicator">&gt;</span>
               </Link>
               <Link
                 to="/car-brands?category=Payload Vehicle"
@@ -181,7 +181,8 @@ export default function Navbar() {
                   setMobileDropdownOpen(false);
                 }}
               >
-                Payload Vehicles
+                <span>🚛 Commercial Vehicles</span>
+                <span className="dropdown-arrow-indicator">&gt;</span>
               </Link>
               <Link
                 to="/car-brands?category=Construction Vehicle"
@@ -191,7 +192,8 @@ export default function Navbar() {
                   setMobileDropdownOpen(false);
                 }}
               >
-                Construction Vehicles
+                <span>🚜 Construction Equipment</span>
+                <span className="dropdown-arrow-indicator">&gt;</span>
               </Link>
             </div>
           </div>

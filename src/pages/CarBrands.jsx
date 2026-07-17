@@ -440,15 +440,26 @@ export default function CarBrands() {
             </div>
             
             <div className="category-tabs">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  className={`tab-btn ${selectedCategory === cat ? 'active' : ''}`}
-                  onClick={() => handleCategoryChange(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
+              {categories.map(cat => {
+                const labels = {
+                  'All': 'All Vehicles',
+                  'Car': '🚗 Passenger Cars',
+                  'Bus': '🚌 Buses',
+                  'Truck': '🚚 Trucks',
+                  'Bulldozer': '🚜 Bulldozers',
+                  'Payload Vehicle': '🚛 Commercial Vehicles',
+                  'Construction Vehicle': '🚜 Construction Equipment'
+                };
+                return (
+                  <button
+                    key={cat}
+                    className={`tab-btn ${selectedCategory === cat ? 'active' : ''}`}
+                    onClick={() => handleCategoryChange(cat)}
+                  >
+                    {labels[cat] || cat}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

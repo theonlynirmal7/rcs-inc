@@ -23,7 +23,24 @@ export default function Products() {
   );
 
   useEffect(() => {
-    setProducts(getProducts());
+    const handleProductsUpdate = () => {
+      setProducts(getProducts());
+    };
+    handleProductsUpdate();
+
+    const handleStorageChange = (e) => {
+      if (e.key === 'rcs_products') {
+        handleProductsUpdate();
+      }
+    };
+
+    window.addEventListener('rcs_products_updated', handleProductsUpdate);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('rcs_products_updated', handleProductsUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {

@@ -147,7 +147,7 @@ function Counter({ target, duration = 2500, animate = false }) {
 }
 
 export default function Home() {
-  const products = getProducts();
+  const [products, setProducts] = useState(() => getProducts());
   const featured = products.slice(0, 4);
 
   const navigate = useNavigate();
@@ -515,7 +515,34 @@ export default function Home() {
         console.error('Failed to load banner settings:', err);
       }
     }
+
+    const handleProductsUpdate = () => {
+      setProducts(getProducts());
+    };
+
+    const handleBannerUpdate = () => {
+      loadBanner();
+    };
+
+    const handleStorageChange = (e) => {
+      if (e.key === 'rcs_products') {
+        handleProductsUpdate();
+        handleBannerUpdate();
+      }
+    };
+
     loadBanner();
+    handleProductsUpdate();
+
+    window.addEventListener('rcs_products_updated', handleProductsUpdate);
+    window.addEventListener('rcs_banner_updated', handleBannerUpdate);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('rcs_products_updated', handleProductsUpdate);
+      window.removeEventListener('rcs_banner_updated', handleBannerUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   useSEO('Home', "Welcome to RCS (Rameswar Cool Spares) - India's premier distributor of automotive AC spare parts, compressors, condensers, and cooling coils.");

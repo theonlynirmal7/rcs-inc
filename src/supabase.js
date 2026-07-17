@@ -210,6 +210,7 @@ const syncLocalCache = async () => {
     }));
 
     localStorage.setItem('rcs_products', JSON.stringify(mappedProducts));
+    window.dispatchEvent(new Event('rcs_products_updated'));
   } catch (err) {
     console.error('Error syncing local cache:', err);
   }
@@ -703,6 +704,7 @@ export const dbService = {
       await saveLocalData('products', bannerRecord);
     }
     await syncLocalCache();
+    window.dispatchEvent(new Event('rcs_banner_updated'));
   }
 };
 
