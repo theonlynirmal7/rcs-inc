@@ -190,6 +190,42 @@ const syncLocalCache = async () => {
     if (isSupabaseConfigured) {
       const { data } = await supabase.from('products').select('*').order('name');
       productsList = data || [];
+
+      // Auto-seed Supabase with default catalog products if empty
+      if (productsList.length === 0) {
+        const { getProducts } = await import('./data/products');
+        const defaultProds = getProducts();
+
+        // Filter out settings configuration row
+        const catalogProds = defaultProds.filter(p => p.id !== '99999999-9999-9999-9999-999999999999');
+
+        const mappedForInsert = catalogProds.map(p => {
+          const oemNum = p.oem_number || (p.name.includes('Denso') && '447260-3480') || (p.name.includes('Sanden') && 'SND-2918') || '';
+          return {
+            name: p.name,
+            category: p.category,
+            brand: p.brand,
+            image: p.image || '/compressor.png',
+            description: p.description || '',
+            stock_status: p.inStock ? 'In Stock' : 'Out of Stock',
+            oem_number: oemNum,
+            vehicle_type: p.vehicle_type || p.category,
+            specifications: p.specifications || '',
+            compatible_vehicles: p.compatible_vehicles || '',
+            featured: p.featured || false
+          };
+        });
+
+        if (mappedForInsert.length > 0) {
+          const { data: insertedData, error: insertError } = await supabase
+            .from('products')
+            .insert(mappedForInsert)
+            .select();
+          if (!insertError && insertedData) {
+            productsList = insertedData;
+          }
+        }
+      }
     } else {
       productsList = await getLocalData('products');
     }
