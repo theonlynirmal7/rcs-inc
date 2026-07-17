@@ -230,7 +230,9 @@ const syncLocalCache = async () => {
       productsList = await getLocalData('products');
     }
     
-    const mappedProducts = productsList.map(p => ({
+    const catalogProducts = productsList.filter(p => p.category !== 'Settings');
+
+    const mappedProducts = catalogProducts.map(p => ({
       id: p.id,
       name: p.name,
       category: p.category,
