@@ -1027,7 +1027,7 @@ export default function Admin() {
                       <div style={{ flex: 1 }}>
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/png, image/jpeg, image/jpg, image/webp"
                           onChange={handleBannerImageUpload}
                           style={{ display: 'none' }}
                           id="banner-image-file"
@@ -1793,14 +1793,14 @@ export default function Admin() {
                       </div>
                       <div className="admin-upload-text">
                         <h4>📷 Drag & Drop Product Images</h4>
-                        <p>or click to choose files (Multiple supported, WebP auto-compressed)</p>
+                        <p>or click to choose files (PNG, JPEG, WebP supported. Auto-compressed)</p>
                       </div>
                       <input
                         type="file"
                         ref={fileInputRef}
                         onChange={(e) => handleImageFiles(e.target.files)}
                         multiple
-                        accept="image/*"
+                        accept="image/png, image/jpeg, image/jpg, image/webp"
                         style={{ display: 'none' }}
                       />
                     </div>
