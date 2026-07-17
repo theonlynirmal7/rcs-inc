@@ -529,6 +529,13 @@ export function getProducts() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     let products = JSON.parse(stored);
+    
+    // If Supabase is configured, bypass local offline migrations
+    const isSupabase = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+    if (isSupabase) {
+      return products;
+    }
+
     let modified = false;
 
     // Migrate brand 'Mahle' to 'Mahle Filter'
