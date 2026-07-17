@@ -350,16 +350,27 @@ export const dbService = {
 
   async addProduct(product, images) {
     const id = isSupabaseConfigured ? undefined : (product.id || Date.now());
-    const newProduct = { 
-      ...product, 
-      id, 
-      created_at: new Date().toISOString() 
+    
+    // Map only valid database columns to avoid schema cache/RLS mismatch errors
+    const dbProduct = {
+      name: product.name,
+      category: product.category,
+      brand: product.brand,
+      image: product.image || '/compressor.png',
+      description: product.description || '',
+      oem_number: product.oem_number || '',
+      vehicle_type: product.vehicle_type || product.category,
+      specifications: product.specifications || '',
+      compatible_vehicles: product.compatible_vehicles || '',
+      featured: product.featured || false,
+      stock_status: product.stock_status || (product.inStock ? 'In Stock' : 'Out of Stock'),
+      created_at: new Date().toISOString()
     };
     
     if (isSupabaseConfigured) {
       const { data, error } = await supabase
         .from('products')
-        .insert([newProduct])
+        .insert([dbProduct])
         .select()
         .single();
       if (error) throw error;
@@ -382,6 +393,7 @@ export const dbService = {
       await syncLocalCache();
       return data;
     } else {
+      const newProduct = { ...dbProduct, id };
       await saveLocalData('products', newProduct);
       if (images && images.length > 0) {
         for (let i = 0; i < images.length; i++) {
@@ -403,10 +415,25 @@ export const dbService = {
   },
 
   async updateProduct(id, product, images) {
+    // Map only valid database columns to avoid schema cache/RLS mismatch errors
+    const dbProduct = {
+      name: product.name,
+      category: product.category,
+      brand: product.brand,
+      image: product.image || '/compressor.png',
+      description: product.description || '',
+      oem_number: product.oem_number || '',
+      vehicle_type: product.vehicle_type || product.category,
+      specifications: product.specifications || '',
+      compatible_vehicles: product.compatible_vehicles || '',
+      featured: product.featured || false,
+      stock_status: product.stock_status || (product.inStock ? 'In Stock' : 'Out of Stock')
+    };
+
     if (isSupabaseConfigured) {
       const { data, error } = await supabase
         .from('products')
-        .update(product)
+        .update(dbProduct)
         .eq('id', id)
         .select()
         .single();
@@ -441,7 +468,7 @@ export const dbService = {
       const existing = await getLocalData('products');
       const idx = existing.findIndex(p => p.id === id);
       if (idx !== -1) {
-        const updated = { ...existing[idx], ...product };
+        const updated = { ...existing[idx], ...dbProduct };
         await saveLocalData('products', updated);
 
         if (images !== null && images !== undefined) {
