@@ -19,7 +19,7 @@ import {
   RefreshCw,
   Image as ImageIcon
 } from 'lucide-react';
-import { dbService } from '../supabase';
+import { dbService, compressAndConvertToWebp } from '../supabase';
 import { useToast } from '../context/ToastContext';
 import { brands, categories } from '../data/products';
 import JSZip from 'jszip';
@@ -95,21 +95,19 @@ export default function Admin() {
     () => localStorage.getItem('rcs_banner_image') || ''
   );
 
-  const handleBannerImageUpload = (e) => {
+  const handleBannerImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
-    if (file.size > 2 * 1024 * 1024) {
-      addToast('Image size should be less than 2MB', 'error');
-      return;
-    }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setBannerImage(event.target.result);
-      addToast('Banner image uploaded successfully!');
-    };
-    reader.readAsDataURL(file);
+    try {
+      addToast('Compressing and optimizing banner image...', 'info');
+      const webpBase64 = await compressAndConvertToWebp(file, 0.7);
+      setBannerImage(webpBase64);
+      addToast('Banner image uploaded and optimized successfully!');
+    } catch (err) {
+      console.error(err);
+      addToast('Failed to optimize banner image', 'error');
+    }
   };
 
   const handleSaveBannerSettings = async (e) => {
