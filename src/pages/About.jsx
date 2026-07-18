@@ -47,8 +47,8 @@ export default function About() {
             <div className="layout-image-container top-right">
               <div className="layout-backdrop"></div>
               <img 
-                src="/mechanic-working.png" 
-                alt="Professional Mechanic Servicing Car AC" 
+                src="/radiator-racks.png" 
+                alt="RCS Radiator and Condenser Inventory" 
                 className="layout-image"
               />
             </div>
