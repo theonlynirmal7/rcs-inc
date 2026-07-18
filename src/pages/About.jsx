@@ -30,19 +30,6 @@ export default function About() {
 
       <section className="about-story">
         <div className="container about-story-grid">
-          <div className="story-content">
-            <h2>Our Story</h2>
-            <p>
-              Founded with a simple mission — to make quality AC spare parts accessible and affordable for every 
-              vehicle on the road. Over the years, RCS has grown into a trusted name in the automotive cooling 
-              industry, serving thousands of customers nationwide.
-            </p>
-            <p>
-              We stock parts from leading global manufacturers including Denso, Sanden, Valeo, Behr, and Danfoss. 
-              Whether you need a compressor for a sedan, a condenser for a truck, or a complete AC kit for a 
-              fleet of buses — RCS has you covered.
-            </p>
-          </div>
           <div className="story-images-layout">
             <div className="layout-image-container top-right">
               <div className="layout-backdrop"></div>
@@ -60,6 +47,19 @@ export default function About() {
                 className="layout-image"
               />
             </div>
+          </div>
+          <div className="story-content">
+            <h2>Our Story</h2>
+            <p>
+              Founded with a simple mission — to make quality AC spare parts accessible and affordable for every 
+              vehicle on the road. Over the years, RCS has grown into a trusted name in the automotive cooling 
+              industry, serving thousands of customers nationwide.
+            </p>
+            <p>
+              We stock parts from leading global manufacturers including Denso, Sanden, Valeo, Behr, and Danfoss. 
+              Whether you need a compressor for a sedan, a condenser for a truck, or a complete AC kit for a 
+              fleet of buses — RCS has you covered.
+            </p>
           </div>
         </div>
 
