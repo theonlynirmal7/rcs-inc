@@ -43,12 +43,23 @@ export default function About() {
               fleet of buses — RCS has you covered.
             </p>
           </div>
-          <div className="story-image-container">
-            <img 
-              src="/warehouse-inventory.png" 
-              alt="RCS Warehouse Inventory" 
-              className="story-image"
-            />
+          <div className="story-images-layout">
+            <div className="layout-image-container top-right">
+              <div className="layout-backdrop"></div>
+              <img 
+                src="/mechanic-working.png" 
+                alt="Professional Mechanic Servicing Car AC" 
+                className="layout-image"
+              />
+            </div>
+            <div className="layout-image-container bottom-left">
+              <div className="layout-backdrop"></div>
+              <img 
+                src="/warehouse-inventory.png" 
+                alt="RCS Warehouse Inventory" 
+                className="layout-image"
+              />
+            </div>
           </div>
         </div>
 
