@@ -78,7 +78,15 @@ export default function Navbar() {
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`} id="main-navbar">
       <div className="navbar-inner container">
         {/* LOGO */}
-        <Link to="/" className="nav-logo" id="nav-logo">
+        <Link 
+          to="/" 
+          className="nav-logo" 
+          id="nav-logo"
+          onClick={() => {
+            setMobileOpen(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
           <div className="logo-wrapper">
             <img src={rcsLogo} alt="RCS Logo" className="logo-img" />
           </div>
