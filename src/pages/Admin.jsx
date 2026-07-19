@@ -100,13 +100,13 @@ export default function Admin() {
     if (!file) return;
 
     try {
-      addToast('Compressing and optimizing banner image...', 'info');
-      const webpBase64 = await compressAndConvertToWebp(file, 0.7);
-      setBannerImage(webpBase64);
+      addToast('Uploading and optimizing banner image...', 'info');
+      const result = await dbService.uploadImage(file, 'banner');
+      setBannerImage(result.image_url);
       addToast('Banner image uploaded and optimized successfully!');
     } catch (err) {
       console.error(err);
-      addToast('Failed to optimize banner image', 'error');
+      addToast('Failed to upload banner image', 'error');
     }
   };
 
@@ -114,6 +114,8 @@ export default function Admin() {
     e.preventDefault();
     try {
       await dbService.saveSiteBanner(showBanner, bannerImage);
+      localStorage.setItem('rcs_show_banner', showBanner ? 'true' : 'false');
+      localStorage.setItem('rcs_banner_image', bannerImage || '');
       addToast('Site banner settings updated successfully!');
     } catch (err) {
       console.error('Error saving banner settings:', err);
@@ -167,6 +169,8 @@ export default function Admin() {
       const banner = await dbService.getSiteBanner();
       setShowBanner(banner.showBanner);
       setBannerImage(banner.bannerImage);
+      localStorage.setItem('rcs_show_banner', banner.showBanner ? 'true' : 'false');
+      localStorage.setItem('rcs_banner_image', banner.bannerImage || '');
     } catch (err) {
       console.error('Failed to load banner settings:', err);
     }
