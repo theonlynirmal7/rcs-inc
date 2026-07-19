@@ -2588,7 +2588,7 @@ export default function Home() {
 
       {/* SUMMER SALE BANNER SECTION */}
       {showBanner && (
-        <section className="summer-sale-section reveal">
+        <section className="summer-sale-section">
           <div className="container">
             <a
               href="https://wa.me/919962173870?text=Hello%21%20I%27m%20interested%20in%20inquiring%20about%20your%20promotional%20sale%20offers."

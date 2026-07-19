@@ -2871,6 +2871,7 @@
 .summer-sale-section {
   padding: 40px 0;
   background: var(--gray-50);
+  animation: fadeIn 0.6s ease-out forwards;
 }
 
 .summer-sale-banner-link {
