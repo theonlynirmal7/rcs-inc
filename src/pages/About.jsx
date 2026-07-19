@@ -1,5 +1,5 @@
 import { Shield, Users, Award, Clock } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import useSEO from '../hooks/useSEO';
 import './About.css';
 
@@ -35,8 +35,69 @@ function CardSlider({ srcList, interval = 5000, altText, direction = 'right' }) 
   );
 }
 
+function Counter({ target, duration = 2500, animate = false }) {
+  const [count, setCount] = useState(0);
+  const animatedRef = useRef(false);
+
+  useEffect(() => {
+    if (animate && !animatedRef.current) {
+      animatedRef.current = true;
+      const end = parseInt(target, 10);
+      if (isNaN(end)) return;
+      
+      const startTime = performance.now();
+
+      const runAnimate = (currentTime) => {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const easeProgress = progress * (2 - progress); // easeOutQuad
+        
+        const currentCount = Math.floor(easeProgress * end);
+        setCount(currentCount);
+
+        if (progress < 1) {
+          requestAnimationFrame(runAnimate);
+        } else {
+          setCount(end);
+        }
+      };
+
+      requestAnimationFrame(runAnimate);
+    }
+  }, [animate, target, duration]);
+
+  const suffix = target.replace(/[0-9]/g, '');
+
+  return <span>{count}{suffix}</span>;
+}
+
 export default function About() {
   useSEO('About Us - Rameswar Cool Spares', 'Learn about RCS, India’s leading distributor of premium automotive AC components with over 20 years of experience serving workshops, fleet operators, and dealers.');
+
+  const [animateStats, setAnimateStats] = useState(false);
+  const statsSectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setAnimateStats(true);
+        observer.unobserve(entry.target);
+      }
+    }, {
+      threshold: 0.1
+    });
+
+    const targetEl = statsSectionRef.current;
+    if (targetEl) {
+      observer.observe(targetEl);
+    }
+
+    return () => {
+      if (targetEl) {
+        observer.unobserve(targetEl);
+      }
+    };
+  }, []);
 
   const values = [
     { icon: <Shield size={28} />, title: 'Quality Assurance', desc: 'Every part undergoes rigorous testing before reaching you. Only genuine and OEM-grade components.' },
@@ -107,22 +168,30 @@ export default function About() {
           </div>
         </div>
 
-        <div className="container" style={{ marginTop: '50px' }}>
+        <div className="container" style={{ marginTop: '50px' }} ref={statsSectionRef}>
           <div className="story-stats-row">
             <div className="story-stat">
-              <span className="stat-num">Since 2003</span>
+              <span className="stat-num">
+                Since <Counter target="2003" animate={animateStats} />
+              </span>
               <span>Trusted Automotive Cooling Solutions</span>
             </div>
             <div className="story-stat">
-              <span className="stat-num">1000+</span>
+              <span className="stat-num">
+                <Counter target="1000+" animate={animateStats} />
+              </span>
               <span>Products Available</span>
             </div>
             <div className="story-stat">
-              <span className="stat-num">1000+</span>
+              <span className="stat-num">
+                <Counter target="1000+" animate={animateStats} />
+              </span>
               <span>Dealers & Workshops Served</span>
             </div>
             <div className="story-stat">
-              <span className="stat-num">50+</span>
+              <span className="stat-num">
+                <Counter target="50+" animate={animateStats} />
+              </span>
               <span>OEM & Aftermarket Brands</span>
             </div>
           </div>
