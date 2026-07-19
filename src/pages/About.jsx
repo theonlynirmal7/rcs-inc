@@ -9,19 +9,30 @@ function SlidingImage({ srcList, interval = 5000, altText, direction = 'right' }
   const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
+    let animTimeout;
+    let resetTimeout;
+
     const timer = setInterval(() => {
       const next = (currentIndex + 1) % srcList.length;
       setNextIndex(next);
-      setAnimating(true);
+      
+      // Wait a tiny frame for browser to mount the next image off-screen before starting slide
+      animTimeout = setTimeout(() => {
+        setAnimating(true);
+      }, 50);
 
-      setTimeout(() => {
+      resetTimeout = setTimeout(() => {
         setCurrentIndex(next);
         setNextIndex(null);
         setAnimating(false);
-      }, 600);
+      }, 650);
     }, interval);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      clearTimeout(animTimeout);
+      clearTimeout(resetTimeout);
+    };
   }, [currentIndex, srcList, interval]);
 
   const currentSrc = srcList[currentIndex];
