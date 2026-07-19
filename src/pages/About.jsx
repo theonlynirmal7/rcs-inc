@@ -3,32 +3,45 @@ import { useState, useEffect } from 'react';
 import useSEO from '../hooks/useSEO';
 import './About.css';
 
-function FadingImage({ srcList, interval = 5000, altText }) {
-  const [index, setIndex] = useState(0);
-  const [src, setSrc] = useState(srcList[0]);
-  const [fade, setFade] = useState(true);
+function SlidingImage({ srcList, interval = 5000, altText, direction = 'right' }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [nextIndex, setNextIndex] = useState(null);
+  const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setFade(false);
+      const next = (currentIndex + 1) % srcList.length;
+      setNextIndex(next);
+      setAnimating(true);
+
       setTimeout(() => {
-        setIndex(prev => {
-          const next = (prev + 1) % srcList.length;
-          setSrc(srcList[next]);
-          return next;
-        });
-        setFade(true);
-      }, 300);
+        setCurrentIndex(next);
+        setNextIndex(null);
+        setAnimating(false);
+      }, 600);
     }, interval);
+
     return () => clearInterval(timer);
-  }, [srcList, interval]);
+  }, [currentIndex, srcList, interval]);
+
+  const currentSrc = srcList[currentIndex];
+  const nextSrc = nextIndex !== null ? srcList[nextIndex] : null;
 
   return (
-    <img 
-      src={src} 
-      alt={altText} 
-      className={`layout-image ${fade ? 'fade-in' : 'fade-out'}`}
-    />
+    <div className={`sliding-image-container ${animating ? 'animating' : ''} slide-${direction}`}>
+      <img 
+        src={currentSrc} 
+        alt={altText} 
+        className="layout-image current"
+      />
+      {nextSrc && (
+        <img 
+          src={nextSrc} 
+          alt={altText} 
+          className="layout-image next"
+        />
+      )}
+    </div>
   );
 }
 
@@ -63,7 +76,7 @@ export default function About() {
           <div className="story-images-layout">
             <div className="layout-image-container top-right">
               <div className="layout-backdrop"></div>
-              <FadingImage 
+              <SlidingImage 
                 srcList={[
                   '/radiator-racks.png',
                   '/warehouse-slide-1.png',
@@ -71,18 +84,20 @@ export default function About() {
                   '/warehouse-slide-5.png'
                 ]}
                 interval={5000}
+                direction="right"
                 altText="RCS Radiator and Condenser Inventory"
               />
             </div>
             <div className="layout-image-container bottom-left">
               <div className="layout-backdrop"></div>
-              <FadingImage 
+              <SlidingImage 
                 srcList={[
                   '/warehouse-inventory.png',
                   '/warehouse-slide-2.png',
                   '/warehouse-slide-4.png'
                 ]}
                 interval={5000}
+                direction="left"
                 altText="RCS Warehouse Inventory Stacks"
               />
             </div>
