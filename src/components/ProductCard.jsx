@@ -5,14 +5,13 @@ import { ShoppingBag } from 'lucide-react';
 import './ProductCard.css';
 
 export default function ProductCard({ product }) {
-  const [selectedBrand, setSelectedBrand] = useState(product.brand);
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
   const [showAddedFeedback, setShowAddedFeedback] = useState(false);
 
   const cartItem = cart.find(item => item.id === product.id);
 
   const handleInitialAdd = () => {
-    addToCart({ ...product, brand: selectedBrand }, 1);
+    addToCart(product, 1);
     setShowAddedFeedback(true);
     setTimeout(() => {
       setShowAddedFeedback(false);
@@ -55,22 +54,7 @@ export default function ProductCard({ product }) {
         <h3 className="product-name">{product.name}</h3>
         <p className="product-desc">{product.description}</p>
         
-        {/* Brand Selector Dropdown */}
-        <div className="product-brand-selector">
-          <label htmlFor={`brand-select-${product.id}`} className="brand-select-label">Brand</label>
-          <div className="brand-select-wrapper">
-            <select
-              id={`brand-select-${product.id}`}
-              value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
-              className="brand-select-dropdown"
-            >
-              {brands.map(b => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+
 
         <div className="product-card-footer">
           {cartItem && !showAddedFeedback ? (
@@ -94,7 +78,7 @@ export default function ProductCard({ product }) {
 
           <a
             href={`https://wa.me/919962173870?text=${encodeURIComponent(
-              `Hello! I'm interested in enquiring about the following product:\n\n*Product:* ${product.name}\n*Brand:* ${selectedBrand}\n*Category:* ${product.category}\n*Quantity:* ${cartItem ? cartItem.quantity : 1}\n\nPlease share pricing and availability.`
+              `Hello! I'm interested in enquiring about the following product:\n\n*Product:* ${product.name}\n*Brand:* ${product.brand}\n*Category:* ${product.category}\n*Quantity:* ${cartItem ? cartItem.quantity : 1}\n\nPlease share pricing and availability.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
