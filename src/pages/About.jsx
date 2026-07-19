@@ -1,63 +1,36 @@
-import { Shield, Users, Award, Clock } from 'lucide-react';
+import { Shield, Users, Award, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import useSEO from '../hooks/useSEO';
 import './About.css';
 
-function SlidingImage({ srcList, interval = 5000, altText, direction = 'right' }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [nextIndex, setNextIndex] = useState(null);
-  const [animating, setAnimating] = useState(false);
-
-  useEffect(() => {
-    let animTimeout;
-    let resetTimeout;
-
-    const timer = setInterval(() => {
-      const next = (currentIndex + 1) % srcList.length;
-      setNextIndex(next);
-      
-      // Wait a tiny frame for browser to mount the next image off-screen before starting slide
-      animTimeout = setTimeout(() => {
-        setAnimating(true);
-      }, 50);
-
-      resetTimeout = setTimeout(() => {
-        setCurrentIndex(next);
-        setNextIndex(null);
-        setAnimating(false);
-      }, 650);
-    }, interval);
-
-    return () => {
-      clearInterval(timer);
-      clearTimeout(animTimeout);
-      clearTimeout(resetTimeout);
-    };
-  }, [currentIndex, srcList, interval]);
-
-  const currentSrc = srcList[currentIndex];
-  const nextSrc = nextIndex !== null ? srcList[nextIndex] : null;
-
-  return (
-    <div className={`sliding-image-container ${animating ? 'animating' : ''} slide-${direction}`}>
-      <img 
-        src={currentSrc} 
-        alt={altText} 
-        className="layout-image current"
-      />
-      {nextSrc && (
-        <img 
-          src={nextSrc} 
-          alt={altText} 
-          className="layout-image next"
-        />
-      )}
-    </div>
-  );
-}
-
 export default function About() {
   useSEO('About Us - Rameswar Cool Spares', 'Learn about RCS, India’s leading distributor of premium automotive AC components with over 20 years of experience serving workshops, fleet operators, and dealers.');
+
+  const slides = [
+    '/radiator-racks.png',
+    '/warehouse-slide-1.png',
+    '/warehouse-slide-2.png',
+    '/warehouse-slide-3.png',
+    '/warehouse-slide-4.png',
+    '/warehouse-slide-5.png'
+  ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handlePrev = () => {
+    setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const handleNext = () => {
+    setCurrentSlide(prev => (prev + 1) % slides.length);
+  };
 
   const values = [
     { icon: <Shield size={28} />, title: 'Quality Assurance', desc: 'Every part undergoes rigorous testing before reaching you. Only genuine and OEM-grade components.' },
@@ -84,33 +57,40 @@ export default function About() {
 
       <section className="about-story">
         <div className="container about-story-grid">
-          <div className="story-images-layout">
-            <div className="layout-image-container top-right">
-              <div className="layout-backdrop"></div>
-              <SlidingImage 
-                srcList={[
-                  '/radiator-racks.png',
-                  '/warehouse-slide-1.png',
-                  '/warehouse-slide-3.png',
-                  '/warehouse-slide-5.png'
-                ]}
-                interval={5000}
-                direction="right"
-                altText="RCS Radiator and Condenser Inventory"
-              />
-            </div>
-            <div className="layout-image-container bottom-left">
-              <div className="layout-backdrop"></div>
-              <SlidingImage 
-                srcList={[
-                  '/warehouse-inventory.png',
-                  '/warehouse-slide-2.png',
-                  '/warehouse-slide-4.png'
-                ]}
-                interval={5000}
-                direction="left"
-                altText="RCS Warehouse Inventory Stacks"
-              />
+          <div className="story-carousel-container">
+            <div className="story-carousel-wrapper">
+              <div 
+                className="story-carousel-track"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {slides.map((src, index) => (
+                  <div key={index} className="story-carousel-slide">
+                    <img 
+                      src={src} 
+                      alt={`RCS Warehouse Storage - View ${index + 1}`} 
+                      className="carousel-image"
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              <button className="carousel-btn prev-btn" onClick={handlePrev} aria-label="Previous slide">
+                <ChevronLeft size={20} />
+              </button>
+              <button className="carousel-btn next-btn" onClick={handleNext} aria-label="Next slide">
+                <ChevronRight size={20} />
+              </button>
+
+              <div className="carousel-dots">
+                {slides.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`carousel-dot ${currentSlide === index ? 'active' : ''}`}
+                    onClick={() => setCurrentSlide(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
           <div className="story-content">
