@@ -533,25 +533,50 @@ export const dbService = {
   },
 
   async uploadImage(file, imageType) {
-    const { file: compressedFile } = await compressAndConvertToWebp(file);
+    let compressedFile = null;
+    try {
+      const result = await compressAndConvertToWebp(file);
+      compressedFile = result.file;
+    } catch (err) {
+      console.warn('WebP compression failed, using original file:', err);
+      compressedFile = file;
+    }
     
     if (isSupabaseConfigured) {
-      const fileName = `${Date.now()}_${compressedFile.name}`;
-      const { data, error } = await supabase.storage
-        .from('product-images')
-        .upload(fileName, compressedFile);
-      if (error) throw error;
+      try {
+        const fileName = `${Date.now()}_${compressedFile.name}`;
+        const { data, error } = await supabase.storage
+          .from('product-images')
+          .upload(fileName, compressedFile);
+        if (error) throw error;
 
-      const { data: publicUrlData } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(data.path);
-      
-      return {
-        image_url: publicUrlData.publicUrl,
-        image_type: imageType,
-        is_cover: false,
-        name: compressedFile.name,
-      };
+        const { data: publicUrlData } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(data.path);
+        
+        return {
+          image_url: publicUrlData.publicUrl,
+          image_type: imageType,
+          is_cover: false,
+          name: compressedFile.name,
+        };
+      } catch (uploadErr) {
+        console.warn('Supabase storage upload failed, falling back to base64:', uploadErr);
+        // Fallback to base64
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve({
+              image_url: reader.result,
+              image_type: imageType,
+              is_cover: false,
+              name: compressedFile.name,
+            });
+          };
+          reader.onerror = () => reject(uploadErr);
+          reader.readAsDataURL(compressedFile);
+        });
+      }
     } else {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();

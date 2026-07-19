@@ -106,7 +106,7 @@ export default function Admin() {
       addToast('Banner image uploaded and optimized successfully!');
     } catch (err) {
       console.error(err);
-      addToast('Failed to upload banner image', 'error');
+      addToast('Failed to upload banner image: ' + (err.message || err), 'error');
     }
   };
 
