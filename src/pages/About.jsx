@@ -1,35 +1,39 @@
-import { Shield, Users, Award, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Shield, Users, Award, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import useSEO from '../hooks/useSEO';
 import './About.css';
 
-export default function About() {
-  useSEO('About Us - Rameswar Cool Spares', 'Learn about RCS, India’s leading distributor of premium automotive AC components with over 20 years of experience serving workshops, fleet operators, and dealers.');
-
-  const slides = [
-    '/warehouse-slide-1.png',
-    '/warehouse-slide-2.png',
-    '/warehouse-slide-3.png',
-    '/warehouse-slide-4.png',
-    '/warehouse-slide-5.png'
-  ];
-
-  const [currentSlide, setCurrentSlide] = useState(0);
+function FadingImage({ srcList, interval = 5000, altText }) {
+  const [index, setIndex] = useState(0);
+  const [src, setSrc] = useState(srcList[0]);
+  const [fade, setFade] = useState(true);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % slides.length);
-    }, 4500);
+      setFade(false);
+      setTimeout(() => {
+        setIndex(prev => {
+          const next = (prev + 1) % srcList.length;
+          setSrc(srcList[next]);
+          return next;
+        });
+        setFade(true);
+      }, 300);
+    }, interval);
     return () => clearInterval(timer);
-  }, []);
+  }, [srcList, interval]);
 
-  const handlePrev = () => {
-    setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length);
-  };
+  return (
+    <img 
+      src={src} 
+      alt={altText} 
+      className={`layout-image ${fade ? 'fade-in' : 'fade-out'}`}
+    />
+  );
+}
 
-  const handleNext = () => {
-    setCurrentSlide(prev => (prev + 1) % slides.length);
-  };
+export default function About() {
+  useSEO('About Us - Rameswar Cool Spares', 'Learn about RCS, India’s leading distributor of premium automotive AC components with over 20 years of experience serving workshops, fleet operators, and dealers.');
 
   const values = [
     { icon: <Shield size={28} />, title: 'Quality Assurance', desc: 'Every part undergoes rigorous testing before reaching you. Only genuine and OEM-grade components.' },
@@ -56,40 +60,31 @@ export default function About() {
 
       <section className="about-story">
         <div className="container about-story-grid">
-          <div className="story-carousel-container">
-            <div className="story-carousel-wrapper">
-              <div 
-                className="story-carousel-track"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {slides.map((src, index) => (
-                  <div key={index} className="story-carousel-slide">
-                    <img 
-                      src={src} 
-                      alt={`RCS Warehouse Storage - View ${index + 1}`} 
-                      className="carousel-image"
-                    />
-                  </div>
-                ))}
-              </div>
-              
-              <button className="carousel-btn prev-btn" onClick={handlePrev} aria-label="Previous slide">
-                <ChevronLeft size={20} />
-              </button>
-              <button className="carousel-btn next-btn" onClick={handleNext} aria-label="Next slide">
-                <ChevronRight size={20} />
-              </button>
-
-              <div className="carousel-dots">
-                {slides.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`carousel-dot ${currentSlide === index ? 'active' : ''}`}
-                    onClick={() => setCurrentSlide(index)}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
+          <div className="story-images-layout">
+            <div className="layout-image-container top-right">
+              <div className="layout-backdrop"></div>
+              <FadingImage 
+                srcList={[
+                  '/radiator-racks.png',
+                  '/warehouse-slide-1.png',
+                  '/warehouse-slide-3.png',
+                  '/warehouse-slide-5.png'
+                ]}
+                interval={5000}
+                altText="RCS Radiator and Condenser Inventory"
+              />
+            </div>
+            <div className="layout-image-container bottom-left">
+              <div className="layout-backdrop"></div>
+              <FadingImage 
+                srcList={[
+                  '/warehouse-inventory.png',
+                  '/warehouse-slide-2.png',
+                  '/warehouse-slide-4.png'
+                ]}
+                interval={5000}
+                altText="RCS Warehouse Inventory Stacks"
+              />
             </div>
           </div>
           <div className="story-content">
