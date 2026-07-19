@@ -68,7 +68,7 @@ function Counter({ target, duration = 2500, animate = false }) {
 
   const suffix = target.replace(/[0-9]/g, '');
 
-  return <span>{count}{suffix}</span>;
+  return <>{count}{suffix}</>;
 }
 
 export default function About() {
