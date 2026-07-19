@@ -396,6 +396,8 @@
     border: none;
     padding: 0;
     box-shadow: none;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .sidebar-title {
@@ -466,6 +468,8 @@
 
   .edu-viewport {
     padding: 24px 20px;
+    max-width: 100%;
+    overflow: hidden;
   }
   .viewport-header {
     flex-direction: column;
