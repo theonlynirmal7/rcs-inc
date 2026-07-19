@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import useSEO from '../hooks/useSEO';
 import './About.css';
 
-function CardSlider({ srcList, interval = 5000, altText }) {
+function CardSlider({ srcList, interval = 5000, altText, direction = 'right' }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -13,11 +13,13 @@ function CardSlider({ srcList, interval = 5000, altText }) {
     return () => clearInterval(timer);
   }, [srcList, interval]);
 
+  const translation = direction === 'left' ? currentIndex * 100 : -currentIndex * 100;
+
   return (
     <div className="card-slider-container">
       <div 
-        className="card-slider-track"
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        className={`card-slider-track slide-${direction}`}
+        style={{ transform: `translateX(${translation}%)` }}
       >
         {srcList.map((src, index) => (
           <div key={index} className="card-slider-slide">
@@ -72,6 +74,7 @@ export default function About() {
                   '/warehouse-slide-5.png'
                 ]}
                 interval={5000}
+                direction="right"
                 altText="RCS Radiator and Condenser Inventory"
               />
             </div>
@@ -84,6 +87,7 @@ export default function About() {
                   '/warehouse-slide-4.png'
                 ]}
                 interval={5000}
+                direction="left"
                 altText="RCS Warehouse Inventory Stacks"
               />
             </div>
